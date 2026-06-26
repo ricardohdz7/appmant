@@ -87,6 +87,19 @@ export function MaintenanceProvider({ children }: { children: ReactNode }) {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
+        // Reconstruct Date objects from ISO strings
+        if (parsed.planningEntries) {
+          parsed.planningEntries = parsed.planningEntries.map((p: any) => ({
+            ...p,
+            scheduledDate: typeof p.scheduledDate === 'string' ? new Date(p.scheduledDate) : p.scheduledDate,
+          }));
+        }
+        if (parsed.costEntries) {
+          parsed.costEntries = parsed.costEntries.map((c: any) => ({
+            ...c,
+            date: typeof c.date === 'string' ? new Date(c.date) : c.date,
+          }));
+        }
         dispatch({ type: "LOAD_STATE", payload: parsed });
       } catch (e) {
         console.error("Failed to load state from localStorage", e);

@@ -3,6 +3,7 @@
 import { useMaintenanceContext } from "@/lib/MaintenanceContext";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2 } from "lucide-react";
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 
 export function CostsTab() {
@@ -121,7 +122,7 @@ export function CostsTab() {
           <tbody>
             {branchCosts.map((cost) => (
               <tr key={cost.id} className="border-b border-gray-200 hover:bg-gray-50">
-                <td className="px-4 py-3 text-gray-600">{cost.date.toLocaleDateString("es-SV")}</td>
+                <td className="px-4 py-3 text-gray-600">{formatDate(cost.date)}</td>
                 <td className="px-4 py-3 text-gray-900 font-medium">{cost.material}</td>
                 <td className="px-4 py-3 text-center text-gray-600">{cost.quantity}</td>
                 <td className="px-4 py-3 text-center text-gray-600">${cost.unitCost.toFixed(2)}</td>

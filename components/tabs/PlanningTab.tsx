@@ -6,6 +6,7 @@ import { Download, Plus, Trash2 } from "lucide-react";
 import { downloadCSV } from "@/lib/exportUtils";
 import { calculateKPIs } from "@/lib/kpiCalculations";
 import { KPIDashboard } from "@/components/KPIDashboard";
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 
 export function PlanningTab() {
@@ -126,7 +127,7 @@ export function PlanningTab() {
                         <tr key={entry.id} className="border-b border-gray-200 hover:bg-gray-50">
                           <td className="px-4 py-3 text-gray-900">{branch.name}</td>
                           <td className="px-4 py-3 text-gray-600">
-                            {entry.scheduledDate.toLocaleDateString("es-SV")}
+                            {formatDate(entry.scheduledDate)}
                           </td>
                           <td className="px-4 py-3 text-gray-600">{entry.technicalResponsible}</td>
                           <td className="px-4 py-3">
