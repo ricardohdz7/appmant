@@ -59,9 +59,9 @@ export function GanttTab() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-white rounded-lg shadow-sm p-4">
-          <h3 className="font-semibold text-sm mb-3">Resumen por Empresa</h3>
-          <div className="space-y-2 text-sm">
+        <div className="bg-white rounded-lg shadow-md p-4 border-2 border-gray-300">
+          <h3 className="font-bold text-base text-gray-900 mb-4">Resumen por Empresa</h3>
+          <div className="space-y-3 text-sm">
             {Array.from(
               new Set(state.branches.map((b) => b.enterprise))
             ).map((enterprise) => {
@@ -76,9 +76,9 @@ export function GanttTab() {
               ).length;
 
               return (
-                <div key={enterprise} className="flex justify-between">
-                  <span className="text-gray-700">{enterprise}</span>
-                  <span className="font-semibold">
+                <div key={enterprise} className="flex justify-between items-center p-2 bg-gray-50 rounded border border-gray-200">
+                  <span className="font-semibold text-gray-900">{enterprise}</span>
+                  <span className="font-bold text-gray-900 bg-gray-200 px-3 py-1 rounded">
                     {completed}/{total} ({Math.round((completed / total) * 100)}%)
                   </span>
                 </div>
@@ -87,9 +87,9 @@ export function GanttTab() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-4">
-          <h3 className="font-semibold text-sm mb-3">Resumen por Marca</h3>
-          <div className="space-y-2 text-sm">
+        <div className="bg-white rounded-lg shadow-md p-4 border-2 border-gray-300">
+          <h3 className="font-bold text-base text-gray-900 mb-4">Resumen por Marca</h3>
+          <div className="space-y-3 text-sm">
             {Array.from(
               new Set(state.branches.map((b) => b.brand))
             ).map((brand) => {
@@ -104,9 +104,9 @@ export function GanttTab() {
               ).length;
 
               return (
-                <div key={brand} className="flex justify-between">
-                  <span className="text-gray-700">{brand}</span>
-                  <span className="font-semibold">
+                <div key={brand} className="flex justify-between items-center p-2 bg-gray-50 rounded border border-gray-200">
+                  <span className="font-semibold text-gray-900">{brand}</span>
+                  <span className="font-bold text-gray-900 bg-gray-200 px-3 py-1 rounded">
                     {completed}/{total} ({Math.round((completed / total) * 100)}%)
                   </span>
                 </div>
