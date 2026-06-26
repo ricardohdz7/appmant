@@ -92,7 +92,7 @@ export function CalendarTab() {
 
       <div className="mt-4 p-4 bg-white rounded-lg border-2 border-gray-300 shadow-sm">
         <h3 className="font-bold text-sm text-gray-900 mb-3">Leyenda de Estados</h3>
-        <div className="flex gap-6 text-sm">
+        <div className="flex gap-6 text-sm flex-wrap">
           <div className="flex items-center gap-3">
             <div className="w-6 h-6 rounded bg-green-100 border-2 border-green-600" />
             <span className="font-semibold text-gray-900">Realizado</span>
@@ -105,6 +105,61 @@ export function CalendarTab() {
             <div className="w-6 h-6 rounded bg-red-100 border-2 border-red-600" />
             <span className="font-semibold text-gray-900">Pendiente</span>
           </div>
+          <div className="flex items-center gap-3">
+            <div className="w-6 h-6 rounded bg-gray-100 border-2 border-gray-400" />
+            <span className="font-semibold text-gray-900">Sin Datos</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-4 bg-white rounded-lg shadow-md overflow-x-auto border border-gray-300">
+        <div className="p-4">
+          <h3 className="font-bold text-base text-gray-900 mb-4">Sucursales sin Mantenimiento Atrasado</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {state.branches
+              .filter((branch) => {
+                // Find the current month that should have maintenance (0, 3, 6, 9)
+                const now = new Date();
+                const currentMonth = now.getMonth();
+                const currentYear = state.currentYear;
+                
+                // Determine which quarter month should have been completed by now
+                let quarterMonth = 0;
+                if (currentMonth >= 9) quarterMonth = 9;
+                else if (currentMonth >= 6) quarterMonth = 6;
+                else if (currentMonth >= 3) quarterMonth = 3;
+                else quarterMonth = 0;
+                
+                const entry = state.calendarEntries.find(
+                  (e) => e.branchId === branch.id && e.month === quarterMonth && e.year === currentYear
+                );
+                
+                // Branch is on time if it has "realizado" or "programado"
+                return entry && (entry.status === "realizado" || entry.status === "programado");
+              })
+              .map((branch) => (
+                <div key={branch.id} className="flex items-center gap-2 p-2 bg-green-50 rounded border border-green-300">
+                  <div className="w-3 h-3 rounded-full bg-green-600" />
+                  <span className="text-sm font-medium text-green-900">{branch.name}</span>
+                </div>
+              ))}
+          </div>
+          {state.branches.filter((branch) => {
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = state.currentYear;
+            let quarterMonth = 0;
+            if (currentMonth >= 9) quarterMonth = 9;
+            else if (currentMonth >= 6) quarterMonth = 6;
+            else if (currentMonth >= 3) quarterMonth = 3;
+            else quarterMonth = 0;
+            const entry = state.calendarEntries.find(
+              (e) => e.branchId === branch.id && e.month === quarterMonth && e.year === currentYear
+            );
+            return entry && (entry.status === "realizado" || entry.status === "programado");
+          }).length === 0 && (
+            <p className="text-gray-500 text-sm">No hay sucursales sin mantenimiento atrasado en este período</p>
+          )}
         </div>
       </div>
     </div>

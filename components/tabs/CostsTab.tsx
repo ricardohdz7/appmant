@@ -174,11 +174,50 @@ export function CostsTab() {
       {branchCosts.length > 0 && (
         <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
           <div className="flex justify-between items-center">
-            <span className="font-semibold text-blue-900">Total de Costos:</span>
+            <span className="font-semibold text-blue-900">Total de Costos (Sucursal Actual):</span>
             <span className="text-2xl font-bold text-blue-600">${total.toFixed(2)}</span>
           </div>
         </div>
       )}
+
+      <div className="bg-white rounded-lg shadow-md overflow-x-auto border border-gray-300">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-gray-300 bg-gray-100">
+              <th className="px-4 py-3 text-left font-bold text-gray-900">Sucursal</th>
+              <th className="px-4 py-3 text-center font-bold text-gray-900">Total de Insumos</th>
+            </tr>
+          </thead>
+          <tbody>
+            {state.branches.map((branch) => {
+              const branchTotal = state.costEntries
+                .filter((c) => c.branchId === branch.id)
+                .reduce((sum, c) => sum + c.quantity * c.unitCost, 0);
+              
+              return (
+                <tr key={branch.id} className="border-b border-gray-200 hover:bg-gray-100">
+                  <td className="px-4 py-3 text-gray-900 font-medium">{branch.name}</td>
+                  <td className="px-4 py-3 text-center">
+                    <span className="font-bold text-blue-700">
+                      ${branchTotal > 0 ? branchTotal.toFixed(2) : "0.00"}
+                    </span>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+          <tfoot>
+            <tr className="bg-gray-100 border-t-2 border-gray-300">
+              <td className="px-4 py-3 font-bold text-gray-900">TOTAL GENERAL</td>
+              <td className="px-4 py-3 text-center">
+                <span className="font-bold text-lg text-blue-600">
+                  ${state.costEntries.reduce((sum, c) => sum + c.quantity * c.unitCost, 0).toFixed(2)}
+                </span>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
     </div>
   );
 }
