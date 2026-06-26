@@ -90,19 +90,20 @@ export function CalendarTab() {
         </table>
       </div>
 
-      <div className="mt-4 p-4 bg-white rounded-lg border border-gray-200">
-        <div className="flex gap-4 text-sm">
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-green-100 border border-green-400" />
-            <span>Realizado</span>
+      <div className="mt-4 p-4 bg-white rounded-lg border-2 border-gray-300 shadow-sm">
+        <h3 className="font-bold text-sm text-gray-900 mb-3">Leyenda de Estados</h3>
+        <div className="flex gap-6 text-sm">
+          <div className="flex items-center gap-3">
+            <div className="w-6 h-6 rounded bg-green-100 border-2 border-green-600" />
+            <span className="font-semibold text-gray-900">Realizado</span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-blue-100 border border-blue-400" />
-            <span>Programado</span>
+          <div className="flex items-center gap-3">
+            <div className="w-6 h-6 rounded bg-blue-100 border-2 border-blue-600" />
+            <span className="font-semibold text-gray-900">Programado</span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-red-100 border border-red-400" />
-            <span>Pendiente</span>
+          <div className="flex items-center gap-3">
+            <div className="w-6 h-6 rounded bg-red-100 border-2 border-red-600" />
+            <span className="font-semibold text-gray-900">Pendiente</span>
           </div>
         </div>
       </div>

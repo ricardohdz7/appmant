@@ -39,13 +39,13 @@ export function MainDashboard() {
 
             <div className="flex items-center gap-4">
               <div className="text-right">
-                <label className="text-sm font-medium">Año:</label>
+                <label className="text-sm font-medium text-white">Año:</label>
                 <select
                   value={state.currentYear}
                   onChange={(e) =>
                     dispatch({ type: "SET_YEAR", payload: parseInt(e.target.value) })
                   }
-                  className="ml-2 px-3 py-1 rounded bg-primary-foreground text-primary text-sm font-medium"
+                  className="ml-2 px-3 py-1 rounded bg-white text-gray-900 text-sm font-semibold"
                 >
                   {[2023, 2024, 2025, 2026, 2027].map((year) => (
                     <option key={year} value={year}>
