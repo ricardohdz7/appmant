@@ -2,7 +2,7 @@
 
 import { useMaintenanceContext } from "@/lib/MaintenanceContext";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Copy } from "lucide-react";
 import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 
@@ -15,15 +15,15 @@ export function CostsTab() {
   const [assignedTo, setAssignedTo] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
 
-  const handleAddCost = () => {
+  const handleAddCost = (branchId: string = selectedBranch) => {
     if (!material || !quantity || !unitCost) return;
 
-    const id = `c${Date.now()}`;
+    const id = `c${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     dispatch({
       type: "ADD_COST_ENTRY",
       payload: {
         id,
-        branchId: selectedBranch,
+        branchId,
         date: new Date(date),
         material,
         quantity: parseInt(quantity),
@@ -31,11 +31,20 @@ export function CostsTab() {
         assignedTo,
       },
     });
+  };
+
+  const handleAddToAllBranches = () => {
+    if (!material || !quantity || !unitCost) return;
+
+    state.branches.forEach((branch) => {
+      handleAddCost(branch.id);
+    });
 
     setMaterial("");
     setQuantity("");
     setUnitCost("");
     setAssignedTo("");
+    alert(`Costo agregado a todas las ${state.branches.length} sucursales`);
   };
 
   const branchCosts = state.costEntries.filter((c) => c.branchId === selectedBranch);
@@ -45,8 +54,8 @@ export function CostsTab() {
     <div className="space-y-4">
       <h2 className="text-lg font-semibold">Costos de Insumos</h2>
 
-      <div className="bg-white rounded-lg shadow-sm p-4 space-y-3">
-        <h3 className="font-semibold text-sm">Agregar Costo</h3>
+      <div className="bg-white rounded-lg shadow-md p-6 space-y-3 border border-gray-300">
+        <h3 className="font-bold text-base text-gray-900">Agregar Costo</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <select
             value={selectedBranch}
@@ -99,9 +108,27 @@ export function CostsTab() {
             className="px-3 py-2 border-2 border-gray-400 rounded text-sm text-gray-900 font-medium bg-white placeholder-gray-500"
           />
 
-          <Button onClick={handleAddCost} className="col-span-2 md:col-span-1 flex items-center gap-2">
+          <Button 
+            onClick={() => {
+              handleAddCost();
+              setMaterial("");
+              setQuantity("");
+              setUnitCost("");
+              setAssignedTo("");
+            }} 
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+          >
             <Plus className="w-4 h-4" />
-            Agregar Costo
+            Agregar a Sucursal
+          </Button>
+
+          <Button 
+            onClick={handleAddToAllBranches}
+            variant="outline"
+            className="flex items-center gap-2 border-2 border-green-600 text-green-600 hover:bg-green-50"
+          >
+            <Copy className="w-4 h-4" />
+            Agregar a Todas
           </Button>
         </div>
       </div>

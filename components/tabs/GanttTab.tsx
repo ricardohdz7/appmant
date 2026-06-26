@@ -14,40 +14,33 @@ export function GanttTab() {
 
       <KPIDashboard kpis={kpis} />
 
-      <div className="bg-white rounded-lg shadow-sm overflow-x-auto">
+      <div className="bg-white rounded-lg shadow-md overflow-x-auto border border-gray-300">
         <table className="w-full text-xs">
           <thead>
-            <tr className="border-b border-gray-200 bg-gray-50 sticky top-0">
-              <th className="px-4 py-3 text-left font-semibold text-gray-700 sticky left-0 bg-gray-50 z-10 min-w-32">
+            <tr className="border-b border-gray-300 bg-gray-100 sticky top-0">
+              <th className="px-4 py-3 text-left font-bold text-gray-900 sticky left-0 bg-gray-100 z-10 min-w-32">
                 Sucursal
               </th>
-              {Array.from({ length: 12 }).map((_, month) => (
-                <th key={month} className="px-2 py-3 text-center font-semibold text-gray-700 whitespace-nowrap w-12">
-                  {getMonthName(month).substring(0, 3)}
+              {[0, 3, 6, 9].map((month) => (
+                <th key={month} className="px-3 py-3 text-center font-bold text-gray-900 whitespace-nowrap">
+                  {getMonthName(month)}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
             {state.branches.map((branch) => (
-              <tr key={branch.id} className="border-b border-gray-200 hover:bg-gray-50">
+              <tr key={branch.id} className="border-b border-gray-200 hover:bg-gray-100">
                 <td className="px-4 py-3 text-gray-900 sticky left-0 bg-white z-10 font-medium text-xs">
                   {branch.name}
                 </td>
-                {Array.from({ length: 12 }).map((_, month) => {
+                {[0, 3, 6, 9].map((month) => {
                   const entry = state.calendarEntries.find(
                     (e) => e.branchId === branch.id && e.month === month && e.year === state.currentYear
                   );
 
-                  const colors: Record<string, string> = {
-                    realizado: "bg-green-500",
-                    programado: "bg-blue-500",
-                    pendiente: "bg-red-500",
-                    "": "bg-gray-200",
-                  };
-
                   return (
-                    <td key={month} className="px-2 py-3 text-center">
+                    <td key={month} className="px-3 py-3 text-center">
                       <div className="h-8 rounded flex items-center justify-center" style={{
                         backgroundColor: getStatusColor(entry?.status || ""),
                         opacity: 0.8,
@@ -73,11 +66,12 @@ export function GanttTab() {
               new Set(state.branches.map((b) => b.enterprise))
             ).map((enterprise) => {
               const branchesInEnterprise = state.branches.filter((b) => b.enterprise === enterprise);
-              const total = branchesInEnterprise.length * 12;
+              const total = branchesInEnterprise.length * 4;
               const completed = state.calendarEntries.filter(
                 (e) =>
                   e.year === state.currentYear &&
                   e.status === "realizado" &&
+                  [0, 3, 6, 9].includes(e.month) &&
                   branchesInEnterprise.some((b) => b.id === e.branchId)
               ).length;
 
@@ -100,11 +94,12 @@ export function GanttTab() {
               new Set(state.branches.map((b) => b.brand))
             ).map((brand) => {
               const branchesInBrand = state.branches.filter((b) => b.brand === brand);
-              const total = branchesInBrand.length * 12;
+              const total = branchesInBrand.length * 4;
               const completed = state.calendarEntries.filter(
                 (e) =>
                   e.year === state.currentYear &&
                   e.status === "realizado" &&
+                  [0, 3, 6, 9].includes(e.month) &&
                   branchesInBrand.some((b) => b.id === e.branchId)
               ).length;
 
