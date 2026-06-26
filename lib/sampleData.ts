@@ -37,117 +37,118 @@ export const sampleBranches: Branch[] = [
 ];
 
 export const sampleCalendarEntries: CalendarEntry[] = [
-  // b1
-  { branchId: "b1", year: 2025, month: 1, status: "realizado", responsible: "Douglas, Ricardo" },
-  { branchId: "b1", year: 2025, month: 2, status: "pendiente", responsible: "" },
+  // Q1 (Jan) - b1 to b21
+  { branchId: "b1", year: 2025, month: 0, status: "realizado", responsible: "Douglas, Ricardo" },
+  { branchId: "b2", year: 2025, month: 0, status: "realizado", responsible: "Douglas, Ricardo" },
+  { branchId: "b3", year: 2025, month: 0, status: "realizado", responsible: "Douglas, Ricardo" },
+  { branchId: "b4", year: 2025, month: 0, status: "programado", responsible: "Douglas" },
+  { branchId: "b5", year: 2025, month: 0, status: "realizado", responsible: "Ricardo" },
+  { branchId: "b6", year: 2025, month: 0, status: "programado", responsible: "Douglas" },
+  { branchId: "b7", year: 2025, month: 0, status: "realizado", responsible: "Ricardo" },
+  { branchId: "b8", year: 2025, month: 0, status: "programado", responsible: "Douglas" },
+  { branchId: "b9", year: 2025, month: 0, status: "realizado", responsible: "Douglas" },
+  { branchId: "b10", year: 2025, month: 0, status: "programado", responsible: "Douglas, Ricardo" },
+  { branchId: "b11", year: 2025, month: 0, status: "realizado", responsible: "Ricardo" },
+  { branchId: "b12", year: 2025, month: 0, status: "programado", responsible: "Douglas" },
+  { branchId: "b13", year: 2025, month: 0, status: "realizado", responsible: "Douglas, Ricardo" },
+  { branchId: "b14", year: 2025, month: 0, status: "programado", responsible: "Douglas, Ricardo" },
+  { branchId: "b15", year: 2025, month: 0, status: "realizado", responsible: "Douglas, Ricardo" },
+  { branchId: "b16", year: 2025, month: 0, status: "realizado", responsible: "Douglas, Ricardo" },
+  { branchId: "b17", year: 2025, month: 0, status: "programado", responsible: "Douglas, Ricardo" },
+  { branchId: "b18", year: 2025, month: 0, status: "realizado", responsible: "Douglas, Ricardo" },
+  { branchId: "b19", year: 2025, month: 0, status: "programado", responsible: "Ricardo" },
+  { branchId: "b20", year: 2025, month: 0, status: "realizado", responsible: "Douglas, Ricardo" },
+  { branchId: "b21", year: 2025, month: 0, status: "programado", responsible: "Douglas" },
   
-  // b2
-  { branchId: "b2", year: 2025, month: 1, status: "realizado", responsible: "Douglas, Ricardo" },
-  { branchId: "b2", year: 2025, month: 2, status: "pendiente", responsible: "" },
-  
-  // b3
-  { branchId: "b3", year: 2025, month: 1, status: "realizado", responsible: "Douglas, Ricardo" },
-  { branchId: "b3", year: 2025, month: 2, status: "pendiente", responsible: "" },
-  
-  // b4
-  { branchId: "b4", year: 2025, month: 1, status: "programado", responsible: "Douglas" },
-  { branchId: "b4", year: 2025, month: 2, status: "pendiente", responsible: "" },
-  
-  // b5
-  { branchId: "b5", year: 2025, month: 1, status: "realizado", responsible: "Ricardo" },
-  { branchId: "b5", year: 2025, month: 2, status: "pendiente", responsible: "" },
-  
-  // b6
-  { branchId: "b6", year: 2025, month: 1, status: "programado", responsible: "Douglas" },
-  { branchId: "b6", year: 2025, month: 2, status: "pendiente", responsible: "" },
-  
-  // b7
-  { branchId: "b7", year: 2025, month: 1, status: "realizado", responsible: "Ricardo" },
-  { branchId: "b7", year: 2025, month: 2, status: "pendiente", responsible: "" },
-  
-  // b8
-  { branchId: "b8", year: 2025, month: 1, status: "programado", responsible: "Douglas" },
-  { branchId: "b8", year: 2025, month: 2, status: "pendiente", responsible: "" },
-  
-  // b9
-  { branchId: "b9", year: 2025, month: 1, status: "realizado", responsible: "Douglas" },
-  { branchId: "b9", year: 2025, month: 2, status: "pendiente", responsible: "" },
-  
-  // b10
-  { branchId: "b10", year: 2025, month: 1, status: "programado", responsible: "Douglas, Ricardo" },
-  { branchId: "b10", year: 2025, month: 2, status: "pendiente", responsible: "" },
-  
-  // b11
-  { branchId: "b11", year: 2025, month: 1, status: "realizado", responsible: "Ricardo" },
-  { branchId: "b11", year: 2025, month: 2, status: "pendiente", responsible: "" },
-  
-  // b12
-  { branchId: "b12", year: 2025, month: 1, status: "programado", responsible: "Douglas" },
-  { branchId: "b12", year: 2025, month: 2, status: "pendiente", responsible: "" },
-  
-  // b13
-  { branchId: "b13", year: 2025, month: 1, status: "realizado", responsible: "Douglas, Ricardo" },
-  { branchId: "b13", year: 2025, month: 2, status: "pendiente", responsible: "" },
-  
-  // b14
-  { branchId: "b14", year: 2025, month: 1, status: "programado", responsible: "Douglas, Ricardo" },
-  { branchId: "b14", year: 2025, month: 2, status: "pendiente", responsible: "" },
-  
-  // b15
-  { branchId: "b15", year: 2025, month: 1, status: "realizado", responsible: "Douglas, Ricardo" },
-  { branchId: "b15", year: 2025, month: 2, status: "pendiente", responsible: "" },
-  
-  // b16
-  { branchId: "b16", year: 2025, month: 1, status: "realizado", responsible: "Douglas, Ricardo" },
-  { branchId: "b16", year: 2025, month: 2, status: "pendiente", responsible: "" },
-  
-  // b17
-  { branchId: "b17", year: 2025, month: 1, status: "programado", responsible: "Douglas, Ricardo" },
-  { branchId: "b17", year: 2025, month: 2, status: "pendiente", responsible: "" },
-  
-  // b18
-  { branchId: "b18", year: 2025, month: 1, status: "realizado", responsible: "Douglas, Ricardo" },
-  { branchId: "b18", year: 2025, month: 2, status: "pendiente", responsible: "" },
-  
-  // b19 ELÁN
-  { branchId: "b19", year: 2025, month: 2, status: "programado", responsible: "Ricardo" },
+  // Q2 (Apr) - b1 to b28
+  { branchId: "b1", year: 2025, month: 3, status: "pendiente", responsible: "" },
+  { branchId: "b2", year: 2025, month: 3, status: "pendiente", responsible: "" },
+  { branchId: "b3", year: 2025, month: 3, status: "pendiente", responsible: "" },
+  { branchId: "b4", year: 2025, month: 3, status: "pendiente", responsible: "" },
+  { branchId: "b5", year: 2025, month: 3, status: "pendiente", responsible: "" },
+  { branchId: "b6", year: 2025, month: 3, status: "pendiente", responsible: "" },
+  { branchId: "b7", year: 2025, month: 3, status: "pendiente", responsible: "" },
+  { branchId: "b8", year: 2025, month: 3, status: "pendiente", responsible: "" },
+  { branchId: "b9", year: 2025, month: 3, status: "pendiente", responsible: "" },
+  { branchId: "b10", year: 2025, month: 3, status: "pendiente", responsible: "" },
+  { branchId: "b11", year: 2025, month: 3, status: "pendiente", responsible: "" },
+  { branchId: "b12", year: 2025, month: 3, status: "pendiente", responsible: "" },
+  { branchId: "b13", year: 2025, month: 3, status: "pendiente", responsible: "" },
+  { branchId: "b14", year: 2025, month: 3, status: "pendiente", responsible: "" },
+  { branchId: "b15", year: 2025, month: 3, status: "pendiente", responsible: "" },
+  { branchId: "b16", year: 2025, month: 3, status: "pendiente", responsible: "" },
+  { branchId: "b17", year: 2025, month: 3, status: "pendiente", responsible: "" },
+  { branchId: "b18", year: 2025, month: 3, status: "pendiente", responsible: "" },
   { branchId: "b19", year: 2025, month: 3, status: "pendiente", responsible: "" },
-  
-  // b20
-  { branchId: "b20", year: 2025, month: 2, status: "realizado", responsible: "Douglas, Ricardo" },
   { branchId: "b20", year: 2025, month: 3, status: "pendiente", responsible: "" },
-  
-  // b21
-  { branchId: "b21", year: 2025, month: 2, status: "programado", responsible: "Douglas" },
   { branchId: "b21", year: 2025, month: 3, status: "pendiente", responsible: "" },
+  { branchId: "b22", year: 2025, month: 3, status: "pendiente", responsible: "" },
+  { branchId: "b23", year: 2025, month: 3, status: "pendiente", responsible: "" },
+  { branchId: "b24", year: 2025, month: 3, status: "pendiente", responsible: "" },
+  { branchId: "b25", year: 2025, month: 3, status: "pendiente", responsible: "" },
+  { branchId: "b26", year: 2025, month: 3, status: "pendiente", responsible: "" },
+  { branchId: "b27", year: 2025, month: 3, status: "pendiente", responsible: "" },
+  { branchId: "b28", year: 2025, month: 3, status: "pendiente", responsible: "" },
   
-  // b22 Beauty Hub
-  { branchId: "b22", year: 2025, month: 0, status: "realizado", responsible: "Douglas, Ricardo" },
-  { branchId: "b22", year: 2025, month: 1, status: "pendiente", responsible: "" },
+  // Q3 (Jul)
+  { branchId: "b1", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b2", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b3", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b4", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b5", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b6", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b7", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b8", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b9", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b10", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b11", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b12", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b13", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b14", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b15", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b16", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b17", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b18", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b19", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b20", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b21", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b22", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b23", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b24", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b25", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b26", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b27", year: 2025, month: 6, status: "pendiente", responsible: "" },
+  { branchId: "b28", year: 2025, month: 6, status: "pendiente", responsible: "" },
   
-  // b23
-  { branchId: "b23", year: 2025, month: 0, status: "programado", responsible: "Douglas, Ricardo" },
-  { branchId: "b23", year: 2025, month: 1, status: "pendiente", responsible: "" },
-  
-  // b24
-  { branchId: "b24", year: 2025, month: 0, status: "realizado", responsible: "Douglas, Ricardo" },
-  { branchId: "b24", year: 2025, month: 1, status: "pendiente", responsible: "" },
-  
-  // b25
-  { branchId: "b25", year: 2025, month: 0, status: "pendiente", responsible: "" },
-  { branchId: "b25", year: 2025, month: 1, status: "pendiente", responsible: "" },
-  
-  // b26
-  { branchId: "b26", year: 2025, month: 0, status: "programado", responsible: "Douglas, Ricardo" },
-  { branchId: "b26", year: 2025, month: 1, status: "pendiente", responsible: "" },
-  
-  // b27
-  { branchId: "b27", year: 2025, month: 0, status: "realizado", responsible: "Douglas, Ricardo" },
-  { branchId: "b27", year: 2025, month: 1, status: "pendiente", responsible: "" },
-  
-  // b28
-  { branchId: "b28", year: 2025, month: 0, status: "pendiente", responsible: "" },
-  { branchId: "b28", year: 2025, month: 1, status: "pendiente", responsible: "" },
+  // Q4 (Oct)
+  { branchId: "b1", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b2", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b3", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b4", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b5", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b6", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b7", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b8", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b9", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b10", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b11", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b12", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b13", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b14", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b15", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b16", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b17", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b18", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b19", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b20", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b21", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b22", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b23", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b24", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b25", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b26", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b27", year: 2025, month: 9, status: "pendiente", responsible: "" },
+  { branchId: "b28", year: 2025, month: 9, status: "pendiente", responsible: "" },
 ];
 
 export const samplePlanningEntries: PlanningEntry[] = [
