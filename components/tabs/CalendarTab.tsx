@@ -24,36 +24,36 @@ export function CalendarTab() {
         </Button>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm overflow-x-auto">
+      <div className="bg-white rounded-lg shadow-md overflow-x-auto border border-gray-300">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-200 bg-gray-50 sticky top-0">
-              <th className="px-4 py-3 text-left font-semibold text-gray-700 sticky left-0 bg-gray-50 z-10">
+            <tr className="border-b border-gray-300 bg-gray-100 sticky top-0">
+              <th className="px-4 py-3 text-left font-bold text-gray-900 sticky left-0 bg-gray-100 z-10">
                 Sucursal
               </th>
-              {Array.from({ length: 12 }).map((_, month) => (
-                <th key={month} className="px-3 py-3 text-center font-semibold text-gray-700 whitespace-nowrap">
-                  {getMonthName(month).substring(0, 3)}
+              {[0, 3, 6, 9].map((month) => (
+                <th key={month} className="px-3 py-3 text-center font-bold text-gray-900 whitespace-nowrap">
+                  {getMonthName(month)}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
             {state.branches.map((branch) => (
-              <tr key={branch.id} className="border-b border-gray-200 hover:bg-gray-50">
+              <tr key={branch.id} className="border-b border-gray-200 hover:bg-gray-100">
                 <td className="px-4 py-3 font-medium text-gray-900 sticky left-0 bg-white z-10">
                   {branch.name}
                 </td>
-                {Array.from({ length: 12 }).map((_, month) => {
+                {[0, 3, 6, 9].map((month) => {
                   const entry = state.calendarEntries.find(
                     (e) => e.branchId === branch.id && e.month === month && e.year === state.currentYear
                   );
 
                   const statusColors: Record<string, string> = {
-                    realizado: "bg-green-100 text-green-800",
-                    programado: "bg-blue-100 text-blue-800",
-                    pendiente: "bg-red-100 text-red-800",
-                    "": "bg-gray-50 text-gray-400",
+                    realizado: "bg-green-100 text-green-900 font-bold border-green-300",
+                    programado: "bg-blue-100 text-blue-900 font-bold border-blue-300",
+                    pendiente: "bg-red-100 text-red-900 font-bold border-red-300",
+                    "": "bg-white text-gray-900 border-gray-400",
                   };
 
                   return (
@@ -72,8 +72,8 @@ export function CalendarTab() {
                             },
                           });
                         }}
-                        className={`text-xs px-2 py-1 rounded font-bold cursor-pointer border-2 border-gray-400 ${
-                          statusColors[entry?.status || ""] || "bg-white text-gray-900"
+                        className={`text-sm px-2 py-1 rounded font-bold cursor-pointer border-2 w-full ${
+                          statusColors[entry?.status || ""] || "bg-white text-gray-900 border-gray-400"
                         }`}
                       >
                         <option value="">-</option>
