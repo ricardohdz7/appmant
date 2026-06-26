@@ -4,10 +4,10 @@ import { KPI } from "@/lib/kpiCalculations";
 
 export function KPICard({ kpi }: { kpi: KPI }) {
   const colorMap: Record<string, string> = {
-    green: "#10b981",
+    green: "#059669",
     blue: "#0b4f9e",
-    red: "#ef4444",
-    gray: "#9ca3af",
+    red: "#dc2626",
+    gray: "#374151",
   };
 
   const bgColorMap: Record<string, string> = {
@@ -21,24 +21,24 @@ export function KPICard({ kpi }: { kpi: KPI }) {
   const bgColor = bgColorMap[kpi.color || "gray"];
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+    <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-300">
       <div className="flex justify-between items-start mb-2">
-        <p className="text-xs font-medium text-gray-600">{kpi.label}</p>
+        <p className="text-xs font-semibold text-gray-700">{kpi.label}</p>
       </div>
 
       <div className="mb-2">
-        <p className="text-2xl font-bold" style={{ color }}>
+        <p className="text-3xl font-bold" style={{ color }}>
           {kpi.value}
         </p>
         {kpi.total && (
-          <p className="text-xs text-gray-500">
+          <p className="text-sm font-medium text-gray-700">
             de {kpi.total}
           </p>
         )}
       </div>
 
       {kpi.percentage !== undefined && (
-        <div className="w-full bg-gray-200 rounded-full h-2">
+        <div className="w-full bg-gray-300 rounded-full h-2">
           <div
             className="h-2 rounded-full transition-all"
             style={{
@@ -50,7 +50,7 @@ export function KPICard({ kpi }: { kpi: KPI }) {
       )}
 
       {kpi.percentage !== undefined && (
-        <p className="text-xs text-gray-600 mt-2">
+        <p className="text-sm font-semibold text-gray-700 mt-2">
           {kpi.percentage}%
         </p>
       )}

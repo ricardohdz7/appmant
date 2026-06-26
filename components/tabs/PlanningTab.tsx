@@ -53,7 +53,7 @@ export function PlanningTab() {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-lg font-semibold">Planeación</h2>
+        <h2 className="text-2xl font-bold text-gray-900">Planeación</h2>
         <Button 
           onClick={() => downloadCSV(state)} 
           variant="outline" 
@@ -67,13 +67,13 @@ export function PlanningTab() {
 
       <KPIDashboard kpis={planningKPIs} />
 
-      <div className="bg-white rounded-lg shadow-sm p-4 space-y-3">
-        <h3 className="font-semibold text-sm">Agregar Planeación</h3>
+      <div className="bg-white rounded-lg shadow-md p-6 space-y-3 border border-gray-300">
+        <h3 className="font-bold text-base text-gray-900">Agregar Planeación</h3>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <select
             value={selectedBranch}
             onChange={(e) => setSelectedBranch(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded text-sm"
+            className="px-3 py-2 border-2 border-gray-400 rounded text-sm text-gray-900 font-medium bg-white"
           >
             {state.branches.map((branch) => (
               <option key={branch.id} value={branch.id}>
@@ -85,14 +85,14 @@ export function PlanningTab() {
             type="date"
             value={newDate}
             onChange={(e) => setNewDate(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded text-sm"
+            className="px-3 py-2 border-2 border-gray-400 rounded text-sm text-gray-900 font-medium bg-white"
           />
           <input
             type="text"
             placeholder="Responsable"
             value={newResponsible}
             onChange={(e) => setNewResponsible(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded text-sm"
+            className="px-3 py-2 border-2 border-gray-400 rounded text-sm text-gray-900 font-medium bg-white placeholder-gray-500"
           />
           <Button onClick={handleAddPlanning} size="sm" className="flex items-center gap-2">
             <Plus className="w-4 h-4" />
@@ -103,19 +103,19 @@ export function PlanningTab() {
 
       <div className="space-y-4">
         {Object.entries(grouped).map(([group, branches]) => (
-          <div key={group} className="bg-white rounded-lg shadow-sm overflow-hidden">
-            <div className="bg-blue-50 px-4 py-2 border-l-4 border-blue-500">
-              <h3 className="font-semibold text-sm text-blue-900">{group}</h3>
+          <div key={group} className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-300">
+            <div className="bg-blue-600 px-4 py-3 border-l-4 border-blue-800">
+              <h3 className="font-bold text-base text-white">{group}</h3>
             </div>
 
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-200 bg-gray-50">
-                  <th className="px-4 py-3 text-left font-semibold text-gray-700">Sucursal</th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-700">Fecha</th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-700">Responsable</th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-700">Estado</th>
-                  <th className="px-4 py-3 text-center font-semibold text-gray-700">Acciones</th>
+                <tr className="border-b border-gray-300 bg-gray-100">
+                  <th className="px-4 py-3 text-left font-bold text-gray-900">Sucursal</th>
+                  <th className="px-4 py-3 text-left font-bold text-gray-900">Fecha</th>
+                  <th className="px-4 py-3 text-left font-bold text-gray-900">Responsable</th>
+                  <th className="px-4 py-3 text-left font-bold text-gray-900">Estado</th>
+                  <th className="px-4 py-3 text-center font-bold text-gray-900">Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -124,12 +124,12 @@ export function PlanningTab() {
                     state.planningEntries
                       .filter((p) => p.branchId === branch.id)
                       .map((entry) => (
-                        <tr key={entry.id} className="border-b border-gray-200 hover:bg-gray-50">
-                          <td className="px-4 py-3 text-gray-900">{branch.name}</td>
-                          <td className="px-4 py-3 text-gray-600">
+                        <tr key={entry.id} className="border-b border-gray-200 hover:bg-gray-100">
+                          <td className="px-4 py-3 text-gray-900 font-medium">{branch.name}</td>
+                          <td className="px-4 py-3 text-gray-900 font-medium">
                             {formatDate(entry.scheduledDate)}
                           </td>
-                          <td className="px-4 py-3 text-gray-600">{entry.technicalResponsible}</td>
+                          <td className="px-4 py-3 text-gray-900 font-medium">{entry.technicalResponsible}</td>
                           <td className="px-4 py-3">
                             <select
                               value={entry.advanceStatus}
@@ -139,7 +139,7 @@ export function PlanningTab() {
                                   payload: { ...entry, advanceStatus: e.target.value as any },
                                 });
                               }}
-                              className="px-2 py-1 border border-gray-300 rounded text-xs"
+                              className="px-2 py-1 border-2 border-gray-400 rounded text-xs text-gray-900 font-medium bg-white"
                             >
                               <option value="pendiente">Pendiente</option>
                               <option value="en_proceso">En Proceso</option>

@@ -51,7 +51,7 @@ export function CostsTab() {
           <select
             value={selectedBranch}
             onChange={(e) => setSelectedBranch(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded text-sm col-span-2"
+            className="px-3 py-2 border-2 border-gray-400 rounded text-sm col-span-2 text-gray-900 font-medium bg-white"
           >
             {state.branches.map((branch) => (
               <option key={branch.id} value={branch.id}>
@@ -64,7 +64,7 @@ export function CostsTab() {
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded text-sm"
+            className="px-3 py-2 border-2 border-gray-400 rounded text-sm text-gray-900 font-medium bg-white"
           />
 
           <input
@@ -72,7 +72,7 @@ export function CostsTab() {
             placeholder="Material"
             value={material}
             onChange={(e) => setMaterial(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded text-sm"
+            className="px-3 py-2 border-2 border-gray-400 rounded text-sm text-gray-900 font-medium bg-white placeholder-gray-500"
           />
 
           <input
@@ -80,7 +80,7 @@ export function CostsTab() {
             placeholder="Cantidad"
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded text-sm"
+            className="px-3 py-2 border-2 border-gray-400 rounded text-sm text-gray-900 font-medium bg-white placeholder-gray-500"
           />
 
           <input
@@ -88,7 +88,7 @@ export function CostsTab() {
             placeholder="Costo Unitario"
             value={unitCost}
             onChange={(e) => setUnitCost(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded text-sm"
+            className="px-3 py-2 border-2 border-gray-400 rounded text-sm text-gray-900 font-medium bg-white placeholder-gray-500"
           />
 
           <input
@@ -96,7 +96,7 @@ export function CostsTab() {
             placeholder="Asignado a"
             value={assignedTo}
             onChange={(e) => setAssignedTo(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded text-sm"
+            className="px-3 py-2 border-2 border-gray-400 rounded text-sm text-gray-900 font-medium bg-white placeholder-gray-500"
           />
 
           <Button onClick={handleAddCost} className="col-span-2 md:col-span-1 flex items-center gap-2">
@@ -106,30 +106,30 @@ export function CostsTab() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm overflow-x-auto">
+      <div className="bg-white rounded-lg shadow-md overflow-x-auto border border-gray-300">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-200 bg-gray-50">
-              <th className="px-4 py-3 text-left font-semibold text-gray-700">Fecha</th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-700">Material</th>
-              <th className="px-4 py-3 text-center font-semibold text-gray-700">Cantidad</th>
-              <th className="px-4 py-3 text-center font-semibold text-gray-700">Costo Unitario</th>
-              <th className="px-4 py-3 text-center font-semibold text-gray-700">Total</th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-700">Asignado a</th>
-              <th className="px-4 py-3 text-center font-semibold text-gray-700">Acción</th>
+            <tr className="border-b border-gray-300 bg-gray-100">
+              <th className="px-4 py-3 text-left font-bold text-gray-900">Fecha</th>
+              <th className="px-4 py-3 text-left font-bold text-gray-900">Material</th>
+              <th className="px-4 py-3 text-center font-bold text-gray-900">Cantidad</th>
+              <th className="px-4 py-3 text-center font-bold text-gray-900">Costo Unitario</th>
+              <th className="px-4 py-3 text-center font-bold text-gray-900">Total</th>
+              <th className="px-4 py-3 text-left font-bold text-gray-900">Asignado a</th>
+              <th className="px-4 py-3 text-center font-bold text-gray-900">Acción</th>
             </tr>
           </thead>
           <tbody>
             {branchCosts.map((cost) => (
-              <tr key={cost.id} className="border-b border-gray-200 hover:bg-gray-50">
-                <td className="px-4 py-3 text-gray-600">{formatDate(cost.date)}</td>
+              <tr key={cost.id} className="border-b border-gray-200 hover:bg-gray-100">
+                <td className="px-4 py-3 text-gray-900 font-medium">{formatDate(cost.date)}</td>
                 <td className="px-4 py-3 text-gray-900 font-medium">{cost.material}</td>
-                <td className="px-4 py-3 text-center text-gray-600">{cost.quantity}</td>
-                <td className="px-4 py-3 text-center text-gray-600">${cost.unitCost.toFixed(2)}</td>
-                <td className="px-4 py-3 text-center font-semibold text-blue-600">
+                <td className="px-4 py-3 text-center text-gray-900 font-medium">{cost.quantity}</td>
+                <td className="px-4 py-3 text-center text-gray-900 font-medium">${cost.unitCost.toFixed(2)}</td>
+                <td className="px-4 py-3 text-center font-bold text-blue-700">
                   ${(cost.quantity * cost.unitCost).toFixed(2)}
                 </td>
-                <td className="px-4 py-3 text-gray-600">{cost.assignedTo}</td>
+                <td className="px-4 py-3 text-gray-900 font-medium">{cost.assignedTo}</td>
                 <td className="px-4 py-3 text-center">
                   <button
                     onClick={() => dispatch({ type: "DELETE_COST_ENTRY", payload: cost.id })}
