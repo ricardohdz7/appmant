@@ -8,9 +8,26 @@ export function GanttTab() {
   const { state } = useMaintenanceContext();
   const kpis = calculateKPIs(state);
 
+  // Calculate overall compliance
+  const totalMaintenances = state.branches.length * 4;
+  const completedMaintenances = state.calendarEntries.filter(
+    (e) =>
+      e.year === state.currentYear &&
+      e.status === "realizado" &&
+      [0, 3, 6, 9].includes(e.month)
+  ).length;
+  const overallCompliancePercent = Math.round((completedMaintenances / totalMaintenances) * 100);
+
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-semibold">Dashboard de Cumplimiento</h2>
+      <div className="flex justify-between items-center">
+        <h2 className="text-lg font-semibold">Dashboard de Cumplimiento</h2>
+        <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg p-4 shadow-md">
+          <div className="text-sm font-semibold">Cumplimiento General</div>
+          <div className="text-3xl font-bold">{overallCompliancePercent}%</div>
+          <div className="text-xs mt-1">{completedMaintenances} de {totalMaintenances} mantenimientos realizados</div>
+        </div>
+      </div>
 
       <KPIDashboard kpis={kpis} />
 
