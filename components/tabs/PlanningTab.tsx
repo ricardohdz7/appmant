@@ -104,8 +104,8 @@ export function PlanningTab() {
       <div className="space-y-4">
         {Object.entries(grouped).map(([group, branches]) => (
           <div key={group} className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-300">
-            <div className="bg-blue-600 px-4 py-3 border-l-4 border-blue-800">
-              <h3 className="font-bold text-base text-white">{group}</h3>
+            <div className="bg-blue-100 px-4 py-3 border-l-4 border-blue-600">
+              <h3 className="font-bold text-base text-blue-900">{group}</h3>
             </div>
 
             <table className="w-full text-sm">
