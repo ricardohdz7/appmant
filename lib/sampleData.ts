@@ -17,20 +17,23 @@ export const sampleBranches: Branch[] = [
   { id: "b13", name: "Casa Muñoz | Las Ramblas", enterprise: "CASA MUÑOZ S.A DE C.V", brand: "Casa Muñoz" },
   { id: "b14", name: "Casa Muñoz | Sensuntepeque", enterprise: "CASA MUÑOZ S.A DE C.V", brand: "Casa Muñoz" },
   { id: "b15", name: "Casa Muñoz | Plaza Mundo Usulután", enterprise: "CASA MUÑOZ S.A DE C.V", brand: "Casa Muñoz" },
-  { id: "b16", name: "Casa Muñoz | Galerías", enterprise: "CASA MUÑOZ S.A DE C.V", brand: "Casa Muñoz" },
-  { id: "b17", name: "Casa Muñoz | Paseo Venecia", enterprise: "CASA MUÑOZ S.A DE C.V", brand: "Casa Muñoz" },
-  { id: "b18", name: "Casa Muñoz | Surft City", enterprise: "CASA MUÑOZ S.A DE C.V", brand: "Casa Muñoz" },
+  { id: "b16", name: "Kiosco | Kiosco Soyapango", enterprise: "CASA MUÑOZ S.A DE C.V", brand: "Casa Muñoz" },
+  { id: "b17", name: "Casa Muñoz | eCommerce", enterprise: "CASA MUÑOZ S.A DE C.V", brand: "Casa Muñoz" },
+  { id: "b18", name: "Casa Muñoz | Galerias", enterprise: "CASA MUÑOZ S.A DE C.V", brand: "Casa Muñoz" },
+  { id: "b19", name: "Casa Muñoz | Paseo Venecia", enterprise: "CASA MUÑOZ S.A DE C.V", brand: "Casa Muñoz" },
+  { id: "b20", name: "Casa Muñoz | Surft City", enterprise: "CASA MUÑOZ S.A DE C.V", brand: "Casa Muñoz" },
+  { id: "b21", name: "Casa Muñoz | Colonia Medica", enterprise: "CASA MUÑOZ S.A DE C.V", brand: "Casa Muñoz" },
   
   // ELÁN branches
-  { id: "b19", name: "ELÁN | Plaza Madero", enterprise: "CASA MUÑOZ S.A DE C.V", brand: "ELÁN" },
-  { id: "b20", name: "ELÁN | Millennium Plaza", enterprise: "CASA MUÑOZ S.A DE C.V", brand: "ELÁN" },
-  { id: "b21", name: "ELÁN | Espacio San Benito", enterprise: "CASA MUÑOZ S.A DE C.V", brand: "ELÁN" },
+  { id: "b22", name: "ELÁN | Plaza Madero", enterprise: "CASA MUÑOZ S.A DE C.V", brand: "ELÁN" },
+  { id: "b23", name: "ELÁN | Millennium Plaza", enterprise: "CASA MUÑOZ S.A DE C.V", brand: "ELÁN" },
+  { id: "b24", name: "ELÁN | Espacio San Benito", enterprise: "CASA MUÑOZ S.A DE C.V", brand: "ELÁN" },
   
   // Beauty Hub S.A. branches
-  { id: "b22", name: "Beauty Hub | ESLAB UCA", enterprise: "BEAUTY HUB S.A. DE C.V.", brand: "Beauty Hub" },
-  { id: "b23", name: "Beauty Hub | ESLAB San Benito", enterprise: "BEAUTY HUB S.A. DE C.V.", brand: "Beauty Hub" },
-  { id: "b24", name: "Beauty Hub | ESLAB Galerías", enterprise: "BEAUTY HUB S.A. DE C.V.", brand: "Beauty Hub" },
-  { id: "b25", name: "Beauty Hub | ESLAB PMS", enterprise: "BEAUTY HUB S.A. DE C.V.", brand: "Beauty Hub" },
+  { id: "b25", name: "Beauty Hub | ESLAB UCA", enterprise: "BEAUTY HUB S.A. DE C.V.", brand: "Beauty Hub" },
+  { id: "b26", name: "Beauty Hub | ESLAB San Benito", enterprise: "BEAUTY HUB S.A. DE C.V.", brand: "Beauty Hub" },
+  { id: "b27", name: "Beauty Hub | ESLAB Galerias", enterprise: "BEAUTY HUB S.A. DE C.V.", brand: "Beauty Hub" },
+  { id: "b28", name: "Beauty Hub | ESLAB PMS", enterprise: "BEAUTY HUB S.A. DE C.V.", brand: "Beauty Hub" },
 ];
 
 export const sampleCalendarEntries: CalendarEntry[] = [

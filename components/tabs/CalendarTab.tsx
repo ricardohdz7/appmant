@@ -72,8 +72,8 @@ export function CalendarTab() {
                             },
                           });
                         }}
-                        className={`text-xs px-2 py-1 rounded font-medium cursor-pointer ${
-                          statusColors[entry?.status || ""] || "bg-gray-100 text-gray-700"
+                        className={`text-xs px-2 py-1 rounded font-bold cursor-pointer border-2 border-gray-400 ${
+                          statusColors[entry?.status || ""] || "bg-white text-gray-900"
                         }`}
                       >
                         <option value="">-</option>
