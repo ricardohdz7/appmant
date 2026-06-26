@@ -2,10 +2,36 @@
 
 import { useMaintenanceContext } from "@/lib/MaintenanceContext";
 import { Button } from "@/components/ui/button";
-import { Download, Upload, Plus, Trash2 } from "lucide-react";
+import { Download, Upload, Plus, Trash2, FileDown } from "lucide-react";
 import { downloadJSON } from "@/lib/exportUtils";
 import { formatDate } from "@/lib/dateUtils";
 import { useState, useRef } from "react";
+
+async function exportBranchesToExcel(branches: any[]) {
+  const { utils, write } = await import("xlsx");
+  const ws = utils.json_to_sheet(branches.map((b) => ({
+    "Nombre": b.name,
+    "Empresa": b.enterprise,
+    "Marca": b.brand,
+  })));
+  const wb = utils.book_new();
+  utils.book_append_sheet(wb, ws, "Sucursales");
+  write(wb, { bookType: "xlsx", type: "file", filename: "sucursales.xlsx" });
+}
+
+async function importBranchesFromExcel(file: File): Promise<any[]> {
+  const { read, utils } = await import("xlsx");
+  const buffer = await file.arrayBuffer();
+  const workbook = read(buffer, { cellDates: true });
+  const sheet = workbook.Sheets[workbook.SheetNames[0]];
+  const data = utils.sheet_to_json(sheet);
+  return data.map((row: any, idx: number) => ({
+    id: `b${Date.now()}-${idx}`,
+    name: row["Nombre"] || row["name"] || "",
+    enterprise: row["Empresa"] || row["enterprise"] || "CASA MUÑOZ S.A DE C.V",
+    brand: row["Marca"] || row["brand"] || "Casa Muñoz",
+  })).filter((b: any) => b.name.trim() !== "");
+}
 
 export function BranchesTab() {
   const { state, dispatch } = useMaintenanceContext();
@@ -15,6 +41,7 @@ export function BranchesTab() {
   );
   const [newBrand, setNewBrand] = useState<"Casa Muñoz" | "ELÁN" | "Beauty Hub">("Casa Muñoz");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const excelInputRef = useRef<HTMLInputElement>(null);
 
   const handleAddBranch = () => {
     if (!newName) return;
@@ -33,7 +60,7 @@ export function BranchesTab() {
     setNewName("");
   };
 
-  const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImportJSON = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -48,6 +75,23 @@ export function BranchesTab() {
       }
     };
     reader.readAsText(file);
+  };
+
+  const handleImportExcel = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const newBranches = await importBranchesFromExcel(file);
+      newBranches.forEach((branch) => {
+        dispatch({ type: "ADD_BRANCH", payload: branch });
+      });
+      alert(`${newBranches.length} sucursales importadas exitosamente`);
+      event.target.value = "";
+    } catch (error) {
+      alert("Error al importar Excel");
+      console.error(error);
+    }
   };
 
   // Group branches by enterprise and brand
@@ -65,7 +109,7 @@ export function BranchesTab() {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-900">Gestión de Sucursales</h2>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <Button
             onClick={() => downloadJSON(state)}
             variant="outline"
@@ -73,17 +117,39 @@ export function BranchesTab() {
             className="flex items-center gap-2"
           >
             <Download className="w-4 h-4" />
-            Descargar Respaldo
+            Respaldo
           </Button>
           <Button onClick={() => fileInputRef.current?.click()} variant="outline" size="sm" className="flex items-center gap-2">
             <Upload className="w-4 h-4" />
             Restaurar
           </Button>
+          <Button 
+            onClick={async () => {
+              await exportBranchesToExcel(state.branches);
+            }}
+            variant="outline"
+            size="sm"
+            className="flex items-center gap-2"
+          >
+            <FileDown className="w-4 h-4" />
+            Exportar Excel
+          </Button>
+          <Button onClick={() => excelInputRef.current?.click()} variant="outline" size="sm" className="flex items-center gap-2">
+            <Upload className="w-4 h-4" />
+            Cargar Excel
+          </Button>
           <input
             ref={fileInputRef}
             type="file"
             accept=".json"
-            onChange={handleImport}
+            onChange={handleImportJSON}
+            className="hidden"
+          />
+          <input
+            ref={excelInputRef}
+            type="file"
+            accept=".xlsx"
+            onChange={handleImportExcel}
             className="hidden"
           />
         </div>
@@ -146,7 +212,7 @@ export function BranchesTab() {
                 <tbody>
                   {branches.map((branch) => {
                     const calendarEntry = state.calendarEntries.find(
-                      (e) => e.branchId === branch.id
+                      (e) => e.branchId === branch.id && e.year === state.currentYear
                     );
                     const latestPlanning = state.planningEntries
                       .filter((p) => p.branchId === branch.id)
@@ -171,12 +237,13 @@ export function BranchesTab() {
                           <select
                             value={calendarEntry?.status || ""}
                             onChange={(e) => {
+                              const currentMonth = new Date().getMonth();
                               dispatch({
                                 type: "UPDATE_CALENDAR_ENTRY",
                                 payload: {
                                   branchId: branch.id,
                                   year: state.currentYear,
-                                  month: new Date().getMonth(),
+                                  month: currentMonth,
                                   status: e.target.value as any,
                                   responsible: calendarEntry?.responsible || "",
                                 },

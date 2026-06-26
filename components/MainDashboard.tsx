@@ -47,14 +47,11 @@ export function MainDashboard() {
                   }
                   className="ml-2 px-3 py-1 rounded bg-primary-foreground text-primary text-sm font-medium"
                 >
-                  {Array.from({ length: 5 }).map((_, i) => {
-                    const year = new Date().getFullYear() - 2 + i;
-                    return (
-                      <option key={year} value={year}>
-                        {year}
-                      </option>
-                    );
-                  })}
+                  {[2023, 2024, 2025, 2026, 2027].map((year) => (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  ))}
                 </select>
               </div>
 

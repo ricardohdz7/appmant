@@ -21,7 +21,7 @@ const initialState: MaintenanceState = {
   calendarEntries: sampleCalendarEntries,
   planningEntries: samplePlanningEntries,
   costEntries: sampleCostEntries,
-  currentYear: new Date().getFullYear(),
+  currentYear: 2025,
 };
 
 function maintenanceReducer(state: MaintenanceState, action: MaintenanceAction): MaintenanceState {
@@ -47,11 +47,18 @@ function maintenanceReducer(state: MaintenanceState, action: MaintenanceAction):
         ],
       };
     case "UPDATE_CALENDAR_ENTRY":
+      const existing = state.calendarEntries.find(
+        (c) => c.branchId === action.payload.branchId && c.month === action.payload.month && c.year === action.payload.year
+      );
       return {
         ...state,
-        calendarEntries: state.calendarEntries.map((c) =>
-          c.branchId === action.payload.branchId && c.month === action.payload.month ? action.payload : c
-        ),
+        calendarEntries: existing
+          ? state.calendarEntries.map((c) =>
+              c.branchId === action.payload.branchId && c.month === action.payload.month && c.year === action.payload.year
+                ? action.payload
+                : c
+            )
+          : [...state.calendarEntries, action.payload],
       };
     case "ADD_PLANNING_ENTRY":
       return { ...state, planningEntries: [...state.planningEntries, action.payload] };
