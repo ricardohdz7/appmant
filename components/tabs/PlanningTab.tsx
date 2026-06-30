@@ -2,7 +2,7 @@
 
 import { useMaintenanceContext } from "@/lib/MaintenanceContext";
 import { Button } from "@/components/ui/button";
-import { Download, Plus, Trash2, Upload, FileText, Calendar } from "lucide-react";
+import { Download, Plus, Trash2, Upload, FileText, Calendar, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { downloadCSV } from "@/lib/exportUtils";
 import { exportPlanningToExcel, importPlanningFromExcel, downloadPlanningTemplate } from "@/lib/excelUtils";
 import { calculateKPIs } from "@/lib/kpiCalculations";
@@ -19,7 +19,16 @@ export function PlanningTab() {
   const [importError, setImportError] = useState("");
   const [editingDateId, setEditingDateId] = useState<string | null>(null);
   const [editingDateValue, setEditingDateValue] = useState("");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const toggleSort = () => {
+    setSortOrder((prev) => {
+      if (prev === null) return "asc";
+      if (prev === "asc") return "desc";
+      return null;
+    });
+  };
 
   const kpis = calculateKPIs(state);
   const planningKPIs = kpis.filter((k) =>
@@ -251,7 +260,21 @@ export function PlanningTab() {
               <thead>
                 <tr className="border-b border-gray-300 bg-gray-100">
                   <th className="px-4 py-3 text-left font-bold text-gray-900">Sucursal</th>
-                  <th className="px-4 py-3 text-left font-bold text-gray-900">Fecha</th>
+                  <th 
+                    className="px-4 py-3 text-left font-bold text-gray-900 cursor-pointer select-none hover:bg-gray-200 transition-colors"
+                    onClick={toggleSort}
+                  >
+                    <div className="flex items-center gap-1">
+                      Fecha
+                      {sortOrder === "asc" ? (
+                        <ArrowUp className="w-4 h-4 text-blue-600" />
+                      ) : sortOrder === "desc" ? (
+                        <ArrowDown className="w-4 h-4 text-blue-600" />
+                      ) : (
+                        <ArrowUpDown className="w-4 h-4 text-gray-400 opacity-50" />
+                      )}
+                    </div>
+                  </th>
                   <th className="px-4 py-3 text-left font-bold text-gray-900">Responsable</th>
                   <th className="px-4 py-3 text-left font-bold text-gray-900">Estado</th>
                   <th className="px-4 py-3 text-center font-bold text-gray-900">Acciones</th>
@@ -262,77 +285,84 @@ export function PlanningTab() {
                   .flatMap((branch) =>
                     state.planningEntries
                       .filter((p) => p.branchId === branch.id)
-                      .map((entry) => (
-                        <tr key={entry.id} className="border-b border-gray-200 hover:bg-gray-100">
-                          <td className="px-4 py-3 text-gray-900 font-medium">{branch.name}</td>
-                          <td className="px-4 py-3 text-gray-900 font-medium">
-                            {editingDateId === entry.id ? (
-                              <div className="flex gap-2 items-center flex-wrap">
-                                <input
-                                  type="date"
-                                  value={editingDateValue}
-                                  onChange={(e) => {
-                                    setEditingDateValue(e.target.value);
-                                  }}
-                                  className="px-2 py-1 border-2 border-blue-400 rounded text-xs text-gray-900 font-medium bg-white"
-                                />
-                                <button
-                                  onClick={() => handleSaveDate(entry.id)}
-                                  className="text-green-600 hover:text-green-800 font-bold text-sm"
-                                >
-                                  Guardar
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    setEditingDateId(null);
-                                    setEditingDateValue("");
-                                  }}
-                                  className="text-gray-600 hover:text-gray-800 font-bold text-sm"
-                                >
-                                  Cancelar
-                                </button>
-                              </div>
-                            ) : (
-                              <div className="flex gap-2 items-center">
-                                <span>{formatDate(entry.scheduledDate)}</span>
-                                <button
-                                  onClick={() => handleEditDate(entry.id, entry.scheduledDate)}
-                                  className="text-blue-600 hover:text-blue-800"
-                                  title="Editar fecha"
-                                >
-                                  <Calendar className="w-4 h-4" />
-                                </button>
-                              </div>
-                            )}
-                          </td>
-                          <td className="px-4 py-3 text-gray-900 font-medium">{entry.technicalResponsible}</td>
-                          <td className="px-4 py-3">
-                            <select
-                              value={entry.advanceStatus}
+                      .map((entry) => ({ branch, entry }))
+                  )
+                  .sort((a, b) => {
+                    if (!sortOrder) return 0;
+                    const dateA = new Date(a.entry.scheduledDate).getTime();
+                    const dateB = new Date(b.entry.scheduledDate).getTime();
+                    return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+                  })
+                  .map(({ branch, entry }) => (
+                    <tr key={entry.id} className="border-b border-gray-200 hover:bg-gray-100">
+                      <td className="px-4 py-3 text-gray-900 font-medium">{branch.name}</td>
+                      <td className="px-4 py-3 text-gray-900 font-medium">
+                        {editingDateId === entry.id ? (
+                          <div className="flex gap-2 items-center flex-wrap">
+                            <input
+                              type="date"
+                              value={editingDateValue}
                               onChange={(e) => {
-                                dispatch({
-                                  type: "UPDATE_PLANNING_ENTRY",
-                                  payload: { ...entry, advanceStatus: e.target.value as any },
-                                });
+                                setEditingDateValue(e.target.value);
                               }}
-                              className="px-2 py-1 border-2 border-gray-400 rounded text-xs text-gray-900 font-medium bg-white"
-                            >
-                              <option value="pendiente">Pendiente</option>
-                              <option value="en_proceso">En Proceso</option>
-                              <option value="listo">Listo</option>
-                            </select>
-                          </td>
-                          <td className="px-4 py-3 text-center">
+                              className="px-2 py-1 border-2 border-blue-400 rounded text-xs text-gray-900 font-medium bg-white"
+                            />
                             <button
-                              onClick={() => dispatch({ type: "DELETE_PLANNING_ENTRY", payload: entry.id })}
-                              className="text-red-600 hover:text-red-800"
+                              onClick={() => handleSaveDate(entry.id)}
+                              className="text-green-600 hover:text-green-800 font-bold text-sm"
                             >
-                              <Trash2 className="w-4 h-4" />
+                              Guardar
                             </button>
-                          </td>
-                        </tr>
-                      ))
-                  )}
+                            <button
+                              onClick={() => {
+                                setEditingDateId(null);
+                                setEditingDateValue("");
+                              }}
+                              className="text-gray-600 hover:text-gray-800 font-bold text-sm"
+                            >
+                              Cancelar
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="flex gap-2 items-center">
+                            <span>{formatDate(entry.scheduledDate)}</span>
+                            <button
+                              onClick={() => handleEditDate(entry.id, entry.scheduledDate)}
+                              className="text-blue-600 hover:text-blue-800"
+                              title="Editar fecha"
+                            >
+                              <Calendar className="w-4 h-4" />
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-gray-900 font-medium">{entry.technicalResponsible}</td>
+                      <td className="px-4 py-3">
+                        <select
+                          value={entry.advanceStatus}
+                          onChange={(e) => {
+                            dispatch({
+                              type: "UPDATE_PLANNING_ENTRY",
+                              payload: { ...entry, advanceStatus: e.target.value as any },
+                            });
+                          }}
+                          className="px-2 py-1 border-2 border-gray-400 rounded text-xs text-gray-900 font-medium bg-white"
+                        >
+                          <option value="pendiente">Pendiente</option>
+                          <option value="en_proceso">En Proceso</option>
+                          <option value="listo">Listo</option>
+                        </select>
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <button
+                          onClick={() => dispatch({ type: "DELETE_PLANNING_ENTRY", payload: entry.id })}
+                          className="text-red-600 hover:text-red-800"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
