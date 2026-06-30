@@ -9,7 +9,6 @@ export function downloadPlanningTemplate(branchNames: string[]): void {
   const templateData = [
     {
       'Sucursal': branchNames[0] || 'Ejemplo Sucursal',
-      'Fecha Programada': '01/01/2026',
       'Responsable Técnico': 'Nombre Responsable',
       'Estado': 'Pendiente',
     },
@@ -20,8 +19,7 @@ export function downloadPlanningTemplate(branchNames: string[]): void {
   // Ajustar ancho de columnas
   ws['!cols'] = [
     { wch: 30 }, // Sucursal
-    { wch: 15 }, // Fecha
-    { wch: 20 }, // Responsable
+    { wch: 25 }, // Responsable
     { wch: 15 }, // Estado
   ];
 
@@ -34,13 +32,12 @@ export function downloadPlanningTemplate(branchNames: string[]): void {
 
 /**
  * Exporta las entradas de planeación a un archivo Excel
- * Las fechas se formatean en formato corto (dd/mm/yyyy)
+ * No incluye fechas, estas se editan directamente en la app
  */
 export function exportPlanningToExcel(planningEntries: PlanningEntry[], branchesMap: Record<string, string>): void {
   // Preparar datos para Excel
   const data = planningEntries.map((entry) => ({
     'Sucursal': branchesMap[entry.branchId] || entry.branchId,
-    'Fecha Programada': formatDateShort(entry.scheduledDate),
     'Responsable Técnico': entry.technicalResponsible,
     'Estado': getStatusLabel(entry.advanceStatus),
   }));
@@ -51,8 +48,7 @@ export function exportPlanningToExcel(planningEntries: PlanningEntry[], branches
   // Ajustar ancho de columnas
   ws['!cols'] = [
     { wch: 30 }, // Sucursal
-    { wch: 15 }, // Fecha
-    { wch: 20 }, // Responsable
+    { wch: 25 }, // Responsable
     { wch: 15 }, // Estado
   ];
 
@@ -65,7 +61,8 @@ export function exportPlanningToExcel(planningEntries: PlanningEntry[], branches
 
 /**
  * Importa entradas de planeación desde un archivo Excel
- * Espera columnas: Sucursal, Fecha Programada, Responsable Técnico, Estado
+ * Espera columnas: Sucursal, Responsable Técnico, Estado
+ * La fecha se establece al crear la entrada en la app
  */
 export function importPlanningFromExcel(
   file: File,
@@ -96,21 +93,21 @@ export function importPlanningFromExcel(
             throw new Error(`Fila ${index + 2}: No se encontró la sucursal "${row['Sucursal']}"`);
           }
 
-          const scheduledDate = parseShortDate(row['Fecha Programada']);
-          if (!scheduledDate) {
-            throw new Error(`Fila ${index + 2}: Fecha inválida "${row['Fecha Programada']}". Use formato dd/mm/yyyy`);
-          }
-
           const status = parseStatusFromLabel(row['Estado']);
           if (!status) {
             throw new Error(`Fila ${index + 2}: Estado inválido "${row['Estado']}". Use: Pendiente, En Proceso o Listo`);
           }
 
+          const responsible = row['Responsable Técnico']?.toString().trim();
+          if (!responsible) {
+            throw new Error(`Fila ${index + 2}: Responsable Técnico es requerido`);
+          }
+
           return {
             id: `p${Date.now()}_${index}`,
             branchId,
-            scheduledDate,
-            technicalResponsible: row['Responsable Técnico'] || '',
+            scheduledDate: new Date(), // Fecha por defecto, se edita en la app
+            technicalResponsible: responsible,
             advanceStatus: status,
           };
         });

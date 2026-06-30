@@ -2,7 +2,7 @@
 
 import { useMaintenanceContext } from "@/lib/MaintenanceContext";
 import { Button } from "@/components/ui/button";
-import { Download, Plus, Trash2, Upload, FileText } from "lucide-react";
+import { Download, Plus, Trash2, Upload, FileText, Calendar } from "lucide-react";
 import { downloadCSV } from "@/lib/exportUtils";
 import { exportPlanningToExcel, importPlanningFromExcel, downloadPlanningTemplate } from "@/lib/excelUtils";
 import { calculateKPIs } from "@/lib/kpiCalculations";
@@ -17,6 +17,8 @@ export function PlanningTab() {
   const [selectedBranch, setSelectedBranch] = useState(state.branches[0]?.id || "");
   const [isImporting, setIsImporting] = useState(false);
   const [importError, setImportError] = useState("");
+  const [editingDateId, setEditingDateId] = useState<string | null>(null);
+  const [editingDateValue, setEditingDateValue] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const kpis = calculateKPIs(state);
@@ -69,6 +71,29 @@ export function PlanningTab() {
 
   const handleImportClick = () => {
     fileInputRef.current?.click();
+  };
+
+  const handleEditDate = (entryId: string, currentDate: Date) => {
+    setEditingDateId(entryId);
+    // Convertir Date a formato YYYY-MM-DD para el input
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    setEditingDateValue(`${year}-${month}-${day}`);
+  };
+
+  const handleSaveDate = (entryId: string) => {
+    if (!editingDateValue) return;
+    
+    const entry = state.planningEntries.find(p => p.id === entryId);
+    if (entry) {
+      dispatch({
+        type: "UPDATE_PLANNING_ENTRY",
+        payload: { ...entry, scheduledDate: new Date(editingDateValue) },
+      });
+    }
+    setEditingDateId(null);
+    setEditingDateValue("");
   };
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -230,7 +255,42 @@ export function PlanningTab() {
                         <tr key={entry.id} className="border-b border-gray-200 hover:bg-gray-100">
                           <td className="px-4 py-3 text-gray-900 font-medium">{branch.name}</td>
                           <td className="px-4 py-3 text-gray-900 font-medium">
-                            {formatDate(entry.scheduledDate)}
+                            {editingDateId === entry.id ? (
+                              <div className="flex gap-2 items-center">
+                                <input
+                                  type="date"
+                                  value={editingDateValue}
+                                  onChange={(e) => setEditingDateValue(e.target.value)}
+                                  className="px-2 py-1 border-2 border-blue-400 rounded text-xs text-gray-900 font-medium bg-white"
+                                />
+                                <button
+                                  onClick={() => handleSaveDate(entry.id)}
+                                  className="text-green-600 hover:text-green-800 font-bold text-sm"
+                                >
+                                  Guardar
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    setEditingDateId(null);
+                                    setEditingDateValue("");
+                                  }}
+                                  className="text-gray-600 hover:text-gray-800 font-bold text-sm"
+                                >
+                                  Cancelar
+                                </button>
+                              </div>
+                            ) : (
+                              <div className="flex gap-2 items-center">
+                                <span>{formatDate(entry.scheduledDate)}</span>
+                                <button
+                                  onClick={() => handleEditDate(entry.id, entry.scheduledDate)}
+                                  className="text-blue-600 hover:text-blue-800"
+                                  title="Editar fecha"
+                                >
+                                  <Calendar className="w-4 h-4" />
+                                </button>
+                              </div>
+                            )}
                           </td>
                           <td className="px-4 py-3 text-gray-900 font-medium">{entry.technicalResponsible}</td>
                           <td className="px-4 py-3">
