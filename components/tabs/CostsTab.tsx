@@ -47,6 +47,19 @@ export function CostsTab() {
     alert(`Costo agregado a todas las ${state.branches.length} sucursales`);
   };
 
+  const handleClearBranchCosts = () => {
+    const branchName = state.branches.find((b) => b.id === selectedBranch)?.name || "esta sucursal";
+    if (confirm(`¿Estás seguro de que deseas borrar todos los insumos de ${branchName}?`)) {
+      dispatch({ type: "CLEAR_BRANCH_COSTS", payload: selectedBranch });
+    }
+  };
+
+  const handleClearAllCosts = () => {
+    if (confirm("¿Estás seguro de que deseas borrar ABSOLUTAMENTE TODOS los insumos de todas las sucursales? Esta acción no se puede deshacer.")) {
+      dispatch({ type: "CLEAR_ALL_COSTS" });
+    }
+  };
+
   const branchCosts = state.costEntries.filter((c) => c.branchId === selectedBranch);
   const total = branchCosts.reduce((sum, c) => sum + c.quantity * c.unitCost, 0);
 
@@ -175,7 +188,18 @@ export function CostsTab() {
         <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
           <div className="flex justify-between items-center">
             <span className="font-semibold text-blue-900">Total de Costos (Sucursal Actual):</span>
-            <span className="text-2xl font-bold text-blue-600">${total.toFixed(2)}</span>
+            <div className="flex items-center gap-4">
+              <span className="text-2xl font-bold text-blue-600">${total.toFixed(2)}</span>
+              <Button 
+                onClick={handleClearBranchCosts} 
+                variant="destructive"
+                size="sm"
+                className="flex items-center gap-1 bg-red-600 hover:bg-red-700"
+              >
+                <Trash2 className="w-4 h-4" />
+                Vaciar Sucursal
+              </Button>
+            </div>
           </div>
         </div>
       )}
@@ -208,7 +232,20 @@ export function CostsTab() {
           </tbody>
           <tfoot>
             <tr className="bg-gray-100 border-t-2 border-gray-300">
-              <td className="px-4 py-3 font-bold text-gray-900">TOTAL GENERAL</td>
+              <td className="px-4 py-3 font-bold text-gray-900 flex justify-between items-center">
+                <span>TOTAL GENERAL</span>
+                {state.costEntries.length > 0 && (
+                  <Button 
+                    onClick={handleClearAllCosts} 
+                    variant="destructive"
+                    size="sm"
+                    className="h-8 text-xs px-3 bg-red-600 hover:bg-red-700 flex items-center gap-1"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    Vaciar Todo
+                  </Button>
+                )}
+              </td>
               <td className="px-4 py-3 text-center">
                 <span className="font-bold text-lg text-blue-600">
                   ${state.costEntries.reduce((sum, c) => sum + c.quantity * c.unitCost, 0).toFixed(2)}

@@ -54,5 +54,7 @@ export type MaintenanceAction =
   | { type: "DELETE_PLANNING_ENTRY"; payload: string }
   | { type: "ADD_COST_ENTRY"; payload: CostEntry }
   | { type: "DELETE_COST_ENTRY"; payload: string }
+  | { type: "CLEAR_BRANCH_COSTS"; payload: string }
+  | { type: "CLEAR_ALL_COSTS" }
   | { type: "SET_YEAR"; payload: number }
   | { type: "LOAD_STATE"; payload: MaintenanceState };

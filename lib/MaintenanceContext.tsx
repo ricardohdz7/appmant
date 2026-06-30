@@ -76,6 +76,10 @@ function maintenanceReducer(state: MaintenanceState, action: MaintenanceAction):
       return { ...state, costEntries: [...state.costEntries, action.payload] };
     case "DELETE_COST_ENTRY":
       return { ...state, costEntries: state.costEntries.filter((c) => c.id !== action.payload) };
+    case "CLEAR_BRANCH_COSTS":
+      return { ...state, costEntries: state.costEntries.filter((c) => c.branchId !== action.payload) };
+    case "CLEAR_ALL_COSTS":
+      return { ...state, costEntries: [] };
     case "SET_YEAR":
       return { ...state, currentYear: action.payload };
     case "LOAD_STATE":
