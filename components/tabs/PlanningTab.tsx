@@ -83,13 +83,24 @@ export function PlanningTab() {
   };
 
   const handleSaveDate = (entryId: string) => {
-    if (!editingDateValue) return;
+    if (!editingDateValue) {
+      return;
+    }
     
     const entry = state.planningEntries.find(p => p.id === entryId);
     if (entry) {
+      const newDate = new Date(editingDateValue + 'T00:00:00');
+      const updatedPayload = { 
+        ...entry, 
+        scheduledDate: newDate,
+        id: entry.id,
+        branchId: entry.branchId,
+        technicalResponsible: entry.technicalResponsible,
+        advanceStatus: entry.advanceStatus,
+      };
       dispatch({
         type: "UPDATE_PLANNING_ENTRY",
-        payload: { ...entry, scheduledDate: new Date(editingDateValue) },
+        payload: updatedPayload,
       });
     }
     setEditingDateId(null);
@@ -256,11 +267,13 @@ export function PlanningTab() {
                           <td className="px-4 py-3 text-gray-900 font-medium">{branch.name}</td>
                           <td className="px-4 py-3 text-gray-900 font-medium">
                             {editingDateId === entry.id ? (
-                              <div className="flex gap-2 items-center">
+                              <div className="flex gap-2 items-center flex-wrap">
                                 <input
                                   type="date"
                                   value={editingDateValue}
-                                  onChange={(e) => setEditingDateValue(e.target.value)}
+                                  onChange={(e) => {
+                                    setEditingDateValue(e.target.value);
+                                  }}
                                   className="px-2 py-1 border-2 border-blue-400 rounded text-xs text-gray-900 font-medium bg-white"
                                 />
                                 <button
