@@ -10,6 +10,24 @@ import { KPIDashboard } from "@/components/KPIDashboard";
 import { formatDate } from "@/lib/dateUtils";
 import { useState, useRef } from "react";
 
+function parseDateSafely(dateVal: any): Date {
+  if (!dateVal) return new Date(0);
+  if (dateVal instanceof Date) return dateVal;
+  
+  const str = String(dateVal).trim();
+  const d = new Date(str);
+  if (!isNaN(d.getTime())) return d;
+  
+  const match = str.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  if (match) {
+    const [, day, month, year] = match;
+    const parsed = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    if (!isNaN(parsed.getTime())) return parsed;
+  }
+  
+  return new Date(0);
+}
+
 export function PlanningTab() {
   const { state, dispatch } = useMaintenanceContext();
   const [newDate, setNewDate] = useState("");
@@ -313,8 +331,8 @@ export function PlanningTab() {
                   )
                   .sort((a, b) => {
                     if (!sortOrder) return 0;
-                    const dateA = new Date(a.entry.scheduledDate).getTime();
-                    const dateB = new Date(b.entry.scheduledDate).getTime();
+                    const dateA = parseDateSafely(a.entry.scheduledDate).getTime();
+                    const dateB = parseDateSafely(b.entry.scheduledDate).getTime();
                     return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
                   })
                   .map(({ branch, entry }, idx) => (

@@ -174,10 +174,10 @@ function parseShortDate(dateString: string): Date | null {
   try {
     // Soporta múltiples formatos
     const formats = [
-      // dd/mm/yyyy
-      /^(\d{2})\/(\d{2})\/(\d{4})$/,
-      // dd-mm-yyyy
-      /^(\d{2})-(\d{2})-(\d{4})$/,
+      // d/m/yyyy or dd/mm/yyyy
+      /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/,
+      // d-m-yyyy or dd-mm-yyyy
+      /^(\d{1,2})-(\d{1,2})-(\d{4})$/,
     ];
 
     for (const format of formats) {
