@@ -126,19 +126,33 @@ export function PlanningTab() {
     try {
       const entries = await importPlanningFromExcel(file, branchesMap);
       
-      // Agregar cada entrada
+      // Agregar o actualizar cada entrada
       entries.forEach((entry) => {
         if (entry.id && entry.branchId && entry.scheduledDate && entry.technicalResponsible && entry.advanceStatus) {
-          dispatch({
-            type: "ADD_PLANNING_ENTRY",
-            payload: {
-              id: entry.id,
-              branchId: entry.branchId,
-              scheduledDate: entry.scheduledDate,
-              technicalResponsible: entry.technicalResponsible,
-              advanceStatus: entry.advanceStatus,
-            },
-          });
+          const exists = state.planningEntries.some(p => p.id === entry.id);
+          if (exists) {
+            dispatch({
+              type: "UPDATE_PLANNING_ENTRY",
+              payload: {
+                id: entry.id,
+                branchId: entry.branchId,
+                scheduledDate: entry.scheduledDate,
+                technicalResponsible: entry.technicalResponsible,
+                advanceStatus: entry.advanceStatus,
+              },
+            });
+          } else {
+            dispatch({
+              type: "ADD_PLANNING_ENTRY",
+              payload: {
+                id: entry.id,
+                branchId: entry.branchId,
+                scheduledDate: entry.scheduledDate,
+                technicalResponsible: entry.technicalResponsible,
+                advanceStatus: entry.advanceStatus,
+              },
+            });
+          }
         }
       });
 
@@ -146,6 +160,7 @@ export function PlanningTab() {
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
+      alert("Planeaciones importadas y actualizadas exitosamente");
     } catch (error) {
       setImportError(error instanceof Error ? error.message : "Error al importar el archivo");
     } finally {
@@ -162,7 +177,7 @@ export function PlanningTab() {
         <h2 className="text-2xl font-bold text-gray-900">Planeación</h2>
         <div className="flex gap-2 flex-wrap">
           <Button 
-            onClick={() => downloadPlanningTemplate(state.branches.map(b => b.name))}
+            onClick={() => downloadPlanningTemplate(state.branches, state.planningEntries)}
             variant="outline" 
             size="sm"
             className={btnOutlineClass}

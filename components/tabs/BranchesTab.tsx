@@ -9,7 +9,7 @@ import { formatDate } from "@/lib/dateUtils";
 import { useState, useRef } from "react";
 
 async function exportBranchesToExcel(branches: any[]) {
-  const { utils, write } = await import("xlsx");
+  const { utils, writeFile } = await import("xlsx");
   const ws = utils.json_to_sheet(branches.map((b) => ({
     "Nombre": b.name,
     "Empresa": b.enterprise,
@@ -17,7 +17,7 @@ async function exportBranchesToExcel(branches: any[]) {
   })));
   const wb = utils.book_new();
   utils.book_append_sheet(wb, ws, "Sucursales");
-  write(wb, { bookType: "xlsx", type: "file", filename: "sucursales.xlsx" });
+  writeFile(wb, "sucursales.xlsx");
 }
 
 async function importBranchesFromExcel(file: File): Promise<any[]> {

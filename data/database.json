@@ -987,7 +987,7 @@
     {
       "id": "p10",
       "branchId": "b10",
-      "scheduledDate": "2026-06-15T06:00:00.000Z",
+      "scheduledDate": "2026-07-01T06:00:00.000Z",
       "technicalResponsible": "Douglas, Ricardo",
       "advanceStatus": "listo"
     },
@@ -1227,6 +1227,363 @@
   ],
   "currentYear": 2026,
   "historyLog": [
+    {
+      "id": "hist-1782855465894-t45boe3dv",
+      "timestamp": "2026-06-30T21:37:45.894Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"Oficina CM Matriz\" programada para el 1/6/2026 con responsable \"Douglas, Ricardo\""
+    },
+    {
+      "id": "hist-1782855465894-67cyl1ec4",
+      "timestamp": "2026-06-30T21:37:45.894Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"Casa Muñoz | Las Cascadas\" programada para el 3/6/2026 con responsable \"Douglas, Ricardo\""
+    },
+    {
+      "id": "hist-1782855465894-qgza2lnl3",
+      "timestamp": "2026-06-30T21:37:45.894Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"Casa Muñoz | La Joya\" programada para el 5/6/2026 con responsable \"Douglas, Ricardo\""
+    },
+    {
+      "id": "hist-1782855465894-tsiekmxfc",
+      "timestamp": "2026-06-30T21:37:45.894Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"Casa Muñoz | Plaza Merliot\" programada para el 9/6/2026 con responsable \"Douglas\""
+    },
+    {
+      "id": "hist-1782855465894-hny1zt6k2",
+      "timestamp": "2026-06-30T21:37:45.894Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"Casa Muñoz | Metrocentro SS\" programada para el 7/6/2026 con responsable \"Ricardo\""
+    },
+    {
+      "id": "hist-1782855465894-hxsyydrps",
+      "timestamp": "2026-06-30T21:37:45.894Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"Casa Muñoz | Metrosur\" programada para el 7/6/2026 con responsable \"Douglas\""
+    },
+    {
+      "id": "hist-1782855465894-lu9sfouob",
+      "timestamp": "2026-06-30T21:37:45.894Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"Casa Muñoz | Plaza Mundo Soyapango\" programada para el 9/6/2026 con responsable \"Ricardo\""
+    },
+    {
+      "id": "hist-1782855465894-9ru87xnh0",
+      "timestamp": "2026-06-30T21:37:45.894Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"Casa Muñoz | Plaza Mundo Apopa\" programada para el 11/6/2026 con responsable \"Douglas\""
+    },
+    {
+      "id": "hist-1782855465894-592nyyw2k",
+      "timestamp": "2026-06-30T21:37:45.894Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"Casa Muñoz | El Encuentro Lourdes\" programada para el 13/6/2026 con responsable \"Douglas\""
+    },
+    {
+      "id": "hist-1782855465894-gbbjioko0",
+      "timestamp": "2026-06-30T21:37:45.894Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"Casa Muñoz | El Encuentro Sonsonate\" programada para el 1/7/2026 con responsable \"Douglas, Ricardo\""
+    },
+    {
+      "id": "hist-1782855465894-3nd49xi6z",
+      "timestamp": "2026-06-30T21:37:45.894Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"Casa Muñoz | Metrocentro Santa Ana\" programada para el 11/6/2026 con responsable \"Ricardo\""
+    },
+    {
+      "id": "hist-1782855465894-4kxj58hci",
+      "timestamp": "2026-06-30T21:37:45.894Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"Centro de Formación Autopista Sur\" programada para el 17/6/2026 con responsable \"Douglas\""
+    },
+    {
+      "id": "hist-1782855465894-4o4mks4ap",
+      "timestamp": "2026-06-30T21:37:45.894Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"Casa Muñoz | Las Ramblas\" programada para el 19/6/2026 con responsable \"Douglas, Ricardo\""
+    },
+    {
+      "id": "hist-1782855465894-soxv8mfbr",
+      "timestamp": "2026-06-30T21:37:45.894Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"Casa Muñoz | Sensuntepeque\" programada para el 21/6/2026 con responsable \"Douglas, Ricardo\""
+    },
+    {
+      "id": "hist-1782855465894-d8nq33dzd",
+      "timestamp": "2026-06-30T21:37:45.894Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"Casa Muñoz | Plaza Mundo Usulután\" programada para el 23/6/2026 con responsable \"Douglas, Ricardo\""
+    },
+    {
+      "id": "hist-1782855465895-a13hzqq5u",
+      "timestamp": "2026-06-30T21:37:45.895Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"Kiosco | Kiosco Soyapango\" programada para el 25/6/2026 con responsable \"Douglas, Ricardo\""
+    },
+    {
+      "id": "hist-1782855465895-1tbchmxz1",
+      "timestamp": "2026-06-30T21:37:45.895Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"Casa Muñoz | eCommerce\" programada para el 27/6/2026 con responsable \"Douglas, Ricardo\""
+    },
+    {
+      "id": "hist-1782855465895-rrqqnwjtv",
+      "timestamp": "2026-06-30T21:37:45.895Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"Casa Muñoz | Galerias\" programada para el 29/6/2026 con responsable \"Douglas, Ricardo\""
+    },
+    {
+      "id": "hist-1782855465895-r746t4qj2",
+      "timestamp": "2026-06-30T21:37:45.895Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"Casa Muñoz | Paseo Venecia\" programada para el 31/7/2026 con responsable \"Ricardo\""
+    },
+    {
+      "id": "hist-1782855465895-a044fx2hc",
+      "timestamp": "2026-06-30T21:37:45.895Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"Casa Muñoz | Surft City\" programada para el 2/8/2026 con responsable \"Douglas, Ricardo\""
+    },
+    {
+      "id": "hist-1782855465895-7vyy1blxb",
+      "timestamp": "2026-06-30T21:37:45.895Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"Casa Muñoz | Colonia Medica\" programada para el 31/7/2026 con responsable \"Douglas\""
+    },
+    {
+      "id": "hist-1782855465895-xjrmqpimv",
+      "timestamp": "2026-06-30T21:37:45.895Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"ELÁN | Plaza Madero\" programada para el 25/5/2026 con responsable \"Douglas, Ricardo\""
+    },
+    {
+      "id": "hist-1782855465895-1hlnx8gni",
+      "timestamp": "2026-06-30T21:37:45.895Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"ELÁN | Millennium Plaza\" programada para el 26/5/2026 con responsable \"Douglas, Ricardo\""
+    },
+    {
+      "id": "hist-1782855465895-aarsi495o",
+      "timestamp": "2026-06-30T21:37:45.895Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"ELÁN | Espacio San Benito\" programada para el 27/5/2026 con responsable \"Douglas, Ricardo\""
+    },
+    {
+      "id": "hist-1782855465895-bdxvu5u1q",
+      "timestamp": "2026-06-30T21:37:45.895Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"Beauty Hub | ESLAB UCA\" programada para el 28/5/2026 con responsable \"Douglas\""
+    },
+    {
+      "id": "hist-1782855450330-46zz64d2q",
+      "timestamp": "2026-06-30T21:37:30.330Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"Beauty Hub | ESLAB UCA\" del 28/5/2026"
+    },
+    {
+      "id": "hist-1782855449311-akwrxjtwd",
+      "timestamp": "2026-06-30T21:37:29.311Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"ELÁN | Plaza Madero\" del 25/5/2026"
+    },
+    {
+      "id": "hist-1782855449311-tpmv6svkw",
+      "timestamp": "2026-06-30T21:37:29.311Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"ELÁN | Millennium Plaza\" del 26/5/2026"
+    },
+    {
+      "id": "hist-1782855449311-xxz09uyxy",
+      "timestamp": "2026-06-30T21:37:29.311Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"ELÁN | Espacio San Benito\" del 27/5/2026"
+    },
+    {
+      "id": "hist-1782855447953-gdl7662as",
+      "timestamp": "2026-06-30T21:37:27.953Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"Oficina CM Matriz\" del 1/6/2026"
+    },
+    {
+      "id": "hist-1782855447953-4zcveipbw",
+      "timestamp": "2026-06-30T21:37:27.953Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"Casa Muñoz | Las Cascadas\" del 3/6/2026"
+    },
+    {
+      "id": "hist-1782855447953-dc8lsbiwz",
+      "timestamp": "2026-06-30T21:37:27.953Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"Casa Muñoz | La Joya\" del 5/6/2026"
+    },
+    {
+      "id": "hist-1782855447953-jkrbcwm19",
+      "timestamp": "2026-06-30T21:37:27.953Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"Casa Muñoz | Plaza Merliot\" del 9/6/2026"
+    },
+    {
+      "id": "hist-1782855447953-a5i7e5tou",
+      "timestamp": "2026-06-30T21:37:27.953Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"Casa Muñoz | Metrocentro SS\" del 7/6/2026"
+    },
+    {
+      "id": "hist-1782855447953-pgo00cwoj",
+      "timestamp": "2026-06-30T21:37:27.953Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"Casa Muñoz | Metrosur\" del 7/6/2026"
+    },
+    {
+      "id": "hist-1782855447953-giqe1lyk6",
+      "timestamp": "2026-06-30T21:37:27.953Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"Casa Muñoz | Plaza Mundo Soyapango\" del 9/6/2026"
+    },
+    {
+      "id": "hist-1782855447953-7kf5zx7n7",
+      "timestamp": "2026-06-30T21:37:27.953Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"Casa Muñoz | Plaza Mundo Apopa\" del 11/6/2026"
+    },
+    {
+      "id": "hist-1782855447954-vz90jkb4q",
+      "timestamp": "2026-06-30T21:37:27.954Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"Casa Muñoz | El Encuentro Lourdes\" del 13/6/2026"
+    },
+    {
+      "id": "hist-1782855447954-6zlhy3o7a",
+      "timestamp": "2026-06-30T21:37:27.954Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"Casa Muñoz | El Encuentro Sonsonate\" del 1/7/2026"
+    },
+    {
+      "id": "hist-1782855447954-40l53wnd4",
+      "timestamp": "2026-06-30T21:37:27.954Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"Casa Muñoz | Metrocentro Santa Ana\" del 11/6/2026"
+    },
+    {
+      "id": "hist-1782855447954-iyruypp65",
+      "timestamp": "2026-06-30T21:37:27.954Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"Centro de Formación Autopista Sur\" del 17/6/2026"
+    },
+    {
+      "id": "hist-1782855447954-u0blzzzyu",
+      "timestamp": "2026-06-30T21:37:27.954Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"Casa Muñoz | Las Ramblas\" del 19/6/2026"
+    },
+    {
+      "id": "hist-1782855447954-an0ja65wf",
+      "timestamp": "2026-06-30T21:37:27.954Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"Casa Muñoz | Sensuntepeque\" del 21/6/2026"
+    },
+    {
+      "id": "hist-1782855447954-pxewfeh0e",
+      "timestamp": "2026-06-30T21:37:27.954Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"Casa Muñoz | Plaza Mundo Usulután\" del 23/6/2026"
+    },
+    {
+      "id": "hist-1782855447954-jpanapp82",
+      "timestamp": "2026-06-30T21:37:27.954Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"Kiosco | Kiosco Soyapango\" del 25/6/2026"
+    },
+    {
+      "id": "hist-1782855447954-1cgfofk2y",
+      "timestamp": "2026-06-30T21:37:27.954Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"Casa Muñoz | eCommerce\" del 27/6/2026"
+    },
+    {
+      "id": "hist-1782855447954-pq3qjvx7k",
+      "timestamp": "2026-06-30T21:37:27.954Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"Casa Muñoz | Galerias\" del 29/6/2026"
+    },
+    {
+      "id": "hist-1782855447954-r5zxnzoud",
+      "timestamp": "2026-06-30T21:37:27.954Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"Casa Muñoz | Paseo Venecia\" del 31/7/2026"
+    },
+    {
+      "id": "hist-1782855447954-7oyn3esfi",
+      "timestamp": "2026-06-30T21:37:27.954Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"Casa Muñoz | Surft City\" del 2/8/2026"
+    },
+    {
+      "id": "hist-1782855447954-rqvjq4e2z",
+      "timestamp": "2026-06-30T21:37:27.955Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"Casa Muñoz | Colonia Medica\" del 31/7/2026"
+    },
+    {
+      "id": "hist-1782855437535-hvblbzftc",
+      "timestamp": "2026-06-30T21:37:17.535Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se reprogramó mantenimiento de \"Casa Muñoz | El Encuentro Sonsonate\" del 15/6/2026 al 1/7/2026"
+    },
     {
       "id": "hist-1782853171209-tr934ados",
       "timestamp": "2026-06-30T20:59:31.209Z",

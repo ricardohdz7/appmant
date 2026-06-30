@@ -1,43 +1,49 @@
 import * as XLSX from 'xlsx';
-import { PlanningEntry } from './types';
+import { PlanningEntry, Branch, AdvanceStatus } from './types';
 
 /**
- * Exporta una plantilla Excel vacía para importar planeación
- * Incluye instrucciones y ejemplos
+ * Exporta una plantilla Excel para importar planeación precargada con datos actuales
  */
-export function downloadPlanningTemplate(branchNames: string[]): void {
-  const templateData = [
-    {
-      'Sucursal': branchNames[0] || 'Ejemplo Sucursal',
-      'Responsable Técnico': 'Nombre Responsable',
-      'Estado': 'Pendiente',
-    },
-  ];
+export function downloadPlanningTemplate(branches: Branch[], planningEntries: PlanningEntry[]): void {
+  // Generar datos para Excel precargando lo que se tiene actualmente
+  const templateData = branches.map((branch) => {
+    const entry = planningEntries.find((p) => p.branchId === branch.id);
+    return {
+      'ID': entry?.id || '',
+      'Sucursal': branch.name,
+      'Fecha': entry ? formatDateShort(entry.scheduledDate) : '',
+      'Responsable Técnico': entry?.technicalResponsible || '',
+      'Estado': entry ? getStatusLabel(entry.advanceStatus) : '',
+    };
+  });
 
   const ws = XLSX.utils.json_to_sheet(templateData);
   
   // Ajustar ancho de columnas
   ws['!cols'] = [
+    { wch: 15 }, // ID
     { wch: 30 }, // Sucursal
-    { wch: 25 }, // Responsable
+    { wch: 15 }, // Fecha
+    { wch: 25 }, // Responsable Técnico
     { wch: 15 }, // Estado
   ];
 
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Planeación');
+  XLSX.utils.book_append_sheet(wb, ws, 'Plantilla de Planeación');
 
   // Descargar archivo
-  XLSX.writeFile(wb, 'planeacion-template.xlsx');
+  XLSX.writeFile(wb, 'plantilla-planeacion.xlsx');
 }
 
 /**
- * Exporta las entradas de planeación a un archivo Excel
- * No incluye fechas, estas se editan directamente en la app
+ * Exporta las entradas de planeación a un archivo Excel incluyendo ID y Fecha
  */
 export function exportPlanningToExcel(planningEntries: PlanningEntry[], branchesMap: Record<string, string>): void {
   // Preparar datos para Excel
   const data = planningEntries.map((entry) => ({
+    'ID': entry.id,
     'Sucursal': branchesMap[entry.branchId] || entry.branchId,
+    'Fecha': formatDateShort(entry.scheduledDate),
     'Responsable Técnico': entry.technicalResponsible,
     'Estado': getStatusLabel(entry.advanceStatus),
   }));
@@ -47,8 +53,10 @@ export function exportPlanningToExcel(planningEntries: PlanningEntry[], branches
   
   // Ajustar ancho de columnas
   ws['!cols'] = [
+    { wch: 15 }, // ID
     { wch: 30 }, // Sucursal
-    { wch: 25 }, // Responsable
+    { wch: 15 }, // Fecha
+    { wch: 25 }, // Responsable Técnico
     { wch: 15 }, // Estado
   ];
 
@@ -60,9 +68,7 @@ export function exportPlanningToExcel(planningEntries: PlanningEntry[], branches
 }
 
 /**
- * Importa entradas de planeación desde un archivo Excel
- * Espera columnas: Sucursal, Responsable Técnico, Estado
- * La fecha se establece al crear la entrada en la app
+ * Importa entradas de planeación desde un archivo Excel soportando IDs y Fechas
  */
 export function importPlanningFromExcel(
   file: File,
@@ -79,7 +85,8 @@ export function importPlanningFromExcel(
           return;
         }
 
-        const workbook = XLSX.read(data, { type: 'array' });
+        // Habilitar cellDates para leer correctamente fechas nativas de Excel
+        const workbook = XLSX.read(data, { type: 'array', cellDates: true });
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
         const jsonData = XLSX.utils.sheet_to_json<any>(worksheet);
 
@@ -103,10 +110,25 @@ export function importPlanningFromExcel(
             throw new Error(`Fila ${index + 2}: Responsable Técnico es requerido`);
           }
 
+          // Parsear fecha
+          let scheduledDate = new Date();
+          if (row['Fecha']) {
+            if (row['Fecha'] instanceof Date) {
+              scheduledDate = row['Fecha'];
+            } else {
+              const parsedDate = parseShortDate(row['Fecha'].toString());
+              if (parsedDate) {
+                scheduledDate = parsedDate;
+              } else {
+                throw new Error(`Fila ${index + 2}: Fecha inválida "${row['Fecha']}". Use el formato DD/MM/YYYY o una celda con formato de fecha.`);
+              }
+            }
+          }
+
           return {
-            id: `p${Date.now()}_${index}`,
+            id: row['ID']?.toString().trim() || `p${Date.now()}_${index}`,
             branchId,
-            scheduledDate: new Date(), // Fecha por defecto, se edita en la app
+            scheduledDate,
             technicalResponsible: responsible,
             advanceStatus: status,
           };
@@ -212,8 +234,8 @@ export function exportBranchNamesToExcel(branches: Array<{ name: string }>): voi
 /**
  * Parsea una etiqueta de estado a estado interno
  */
-function parseStatusFromLabel(label: string): string | null {
-  const statusMap: Record<string, string> = {
+function parseStatusFromLabel(label: string): AdvanceStatus | null {
+  const statusMap: Record<string, AdvanceStatus> = {
     'pendiente': 'pendiente',
     'en proceso': 'en_proceso',
     'en_proceso': 'en_proceso',

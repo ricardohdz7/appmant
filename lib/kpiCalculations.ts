@@ -14,7 +14,10 @@ export function calculateKPIs(state: MaintenanceState): KPI[] {
   // Filter entries for current year
   const yearCalendarEntries = calendarEntries.filter((e) => e.year === currentYear);
   const yearPlanningEntries = planningEntries;
-  const yearCostEntries = costEntries.filter((e) => e.getFullYear?.() === currentYear || e.year === currentYear);
+  const yearCostEntries = costEntries.filter((e) => {
+    const d = e.date instanceof Date ? e.date : new Date(e.date);
+    return d.getFullYear() === currentYear;
+  });
 
   // Total branches
   const totalBranches = branches.length;
