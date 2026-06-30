@@ -167,3 +167,65 @@
     @apply font-sans;
   }
 }
+
+@media print {
+  /* Ocultar elementos interactivos y de navegación */
+  .no-print,
+  header,
+  nav,
+  footer,
+  [role="tablist"],
+  button,
+  .no-print-important {
+    display: none !important;
+  }
+
+  /* Resetear fondos y colores para impresión limpia */
+  body, html, main {
+    background: #ffffff !important;
+    color: #000000 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Quitar sombras y bordes redondeados complejos */
+  .shadow-lg, .shadow-md {
+    box-shadow: none !important;
+  }
+
+  .rounded-2xl {
+    border-radius: 8px !important;
+  }
+
+  /* Asegurar que las tablas utilicen todo el ancho */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  th, td {
+    padding: 6px 10px !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+  }
+
+  /* Aplanar el diseño del select de estado para que no parezca un combo */
+  select {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    font-weight: bold !important;
+    color: #000000 !important;
+    cursor: default !important;
+    font-size: 11px !important;
+  }
+
+  /* Forzar impresión de colores de fondo en navegadores modernos */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

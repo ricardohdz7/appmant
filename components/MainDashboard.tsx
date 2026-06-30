@@ -29,7 +29,7 @@ export function MainDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-100">
       {/* Header */}
-      <header className="sticky top-0 z-40 shadow-lg" style={{
+      <header className="sticky top-0 z-40 shadow-lg print:hidden" style={{
         background: "linear-gradient(135deg, #0b3d91 0%, #1e56a0 50%, #2563eb 100%)",
       }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
@@ -75,7 +75,7 @@ export function MainDashboard() {
       </header>
 
       {/* Navigation Tabs */}
-      <div className="bg-white/80 backdrop-blur-md border-b border-gray-200/80 sticky top-[76px] z-30 shadow-sm">
+      <div className="bg-white/80 backdrop-blur-md border-b border-gray-200/80 sticky top-[76px] z-30 shadow-sm print:hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex overflow-x-auto gap-1">
             {tabs.map((tab) => (
@@ -107,7 +107,7 @@ export function MainDashboard() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white/60 backdrop-blur-sm border-t border-gray-200/60 mt-8 py-5">
+      <footer className="bg-white/60 backdrop-blur-sm border-t border-gray-200/60 mt-8 py-5 print:hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-sm text-gray-500 text-center font-medium">
             © 2025 Control de Mantenimiento Preventivo • Casa Muñoz S.A. • Beauty Hub S.A.

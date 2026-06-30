@@ -924,64 +924,64 @@
     {
       "id": "p1",
       "branchId": "b1",
-      "scheduledDate": "2026-06-01T06:00:00.000Z",
+      "scheduledDate": "2026-07-25T06:00:00.000Z",
       "technicalResponsible": "Douglas, Ricardo",
-      "advanceStatus": "listo"
+      "advanceStatus": "pendiente"
     },
     {
       "id": "p2",
       "branchId": "b2",
-      "scheduledDate": "2026-06-03T06:00:00.000Z",
+      "scheduledDate": "2026-07-04T06:00:00.000Z",
       "technicalResponsible": "Douglas, Ricardo",
-      "advanceStatus": "listo"
+      "advanceStatus": "pendiente"
     },
     {
       "id": "p3",
       "branchId": "b3",
-      "scheduledDate": "2026-06-05T06:00:00.000Z",
+      "scheduledDate": "2026-07-05T06:00:00.000Z",
       "technicalResponsible": "Douglas, Ricardo",
-      "advanceStatus": "listo"
+      "advanceStatus": "pendiente"
     },
     {
       "id": "p4",
       "branchId": "b4",
-      "scheduledDate": "2026-06-09T06:00:00.000Z",
-      "technicalResponsible": "Douglas",
-      "advanceStatus": "en_proceso"
+      "scheduledDate": "2026-07-06T06:00:00.000Z",
+      "technicalResponsible": "Douglas, Ricardo",
+      "advanceStatus": "pendiente"
     },
     {
       "id": "p5",
       "branchId": "b5",
-      "scheduledDate": "2026-06-07T06:00:00.000Z",
+      "scheduledDate": "2026-07-07T06:00:00.000Z",
       "technicalResponsible": "Ricardo",
-      "advanceStatus": "listo"
+      "advanceStatus": "pendiente"
     },
     {
       "id": "p6",
       "branchId": "b6",
-      "scheduledDate": "2026-06-07T06:00:00.000Z",
+      "scheduledDate": "2026-07-08T06:00:00.000Z",
       "technicalResponsible": "Douglas",
-      "advanceStatus": "listo"
+      "advanceStatus": "pendiente"
     },
     {
       "id": "p7",
       "branchId": "b7",
-      "scheduledDate": "2026-06-09T06:00:00.000Z",
-      "technicalResponsible": "Ricardo",
-      "advanceStatus": "en_proceso"
+      "scheduledDate": "2026-07-03T06:00:00.000Z",
+      "technicalResponsible": "Ricardo, Douglas",
+      "advanceStatus": "pendiente"
     },
     {
       "id": "p8",
       "branchId": "b8",
-      "scheduledDate": "2026-06-11T06:00:00.000Z",
+      "scheduledDate": "2026-07-09T06:00:00.000Z",
       "technicalResponsible": "Douglas",
-      "advanceStatus": "listo"
+      "advanceStatus": "pendiente"
     },
     {
       "id": "p9",
       "branchId": "b9",
-      "scheduledDate": "2026-06-13T06:00:00.000Z",
-      "technicalResponsible": "Douglas",
+      "scheduledDate": "2026-07-10T06:00:00.000Z",
+      "technicalResponsible": "Ricardo",
       "advanceStatus": "pendiente"
     },
     {
@@ -989,111 +989,111 @@
       "branchId": "b10",
       "scheduledDate": "2026-07-01T06:00:00.000Z",
       "technicalResponsible": "Douglas, Ricardo",
-      "advanceStatus": "listo"
+      "advanceStatus": "pendiente"
     },
     {
       "id": "p11",
       "branchId": "b11",
-      "scheduledDate": "2026-06-11T06:00:00.000Z",
-      "technicalResponsible": "Ricardo",
-      "advanceStatus": "en_proceso"
+      "scheduledDate": "2026-07-11T06:00:00.000Z",
+      "technicalResponsible": "Ricardo, Douglas",
+      "advanceStatus": "pendiente"
     },
     {
       "id": "p12",
       "branchId": "b12",
-      "scheduledDate": "2026-06-17T06:00:00.000Z",
+      "scheduledDate": "2026-07-12T06:00:00.000Z",
       "technicalResponsible": "Douglas",
-      "advanceStatus": "listo"
+      "advanceStatus": "pendiente"
     },
     {
       "id": "p13",
       "branchId": "b13",
-      "scheduledDate": "2026-06-19T06:00:00.000Z",
+      "scheduledDate": "2026-07-13T06:00:00.000Z",
       "technicalResponsible": "Douglas, Ricardo",
-      "advanceStatus": "listo"
+      "advanceStatus": "pendiente"
     },
     {
       "id": "p14",
       "branchId": "b14",
-      "scheduledDate": "2026-06-21T06:00:00.000Z",
+      "scheduledDate": "2026-07-14T06:00:00.000Z",
       "technicalResponsible": "Douglas, Ricardo",
-      "advanceStatus": "en_proceso"
+      "advanceStatus": "pendiente"
     },
     {
       "id": "p15",
       "branchId": "b15",
-      "scheduledDate": "2026-06-23T06:00:00.000Z",
-      "technicalResponsible": "Douglas, Ricardo",
-      "advanceStatus": "listo"
-    },
-    {
-      "id": "p16",
-      "branchId": "b16",
-      "scheduledDate": "2026-06-25T06:00:00.000Z",
-      "technicalResponsible": "Douglas, Ricardo",
-      "advanceStatus": "listo"
-    },
-    {
-      "id": "p17",
-      "branchId": "b17",
-      "scheduledDate": "2026-06-27T06:00:00.000Z",
+      "scheduledDate": "2026-07-15T06:00:00.000Z",
       "technicalResponsible": "Douglas, Ricardo",
       "advanceStatus": "pendiente"
     },
     {
       "id": "p18",
       "branchId": "b18",
-      "scheduledDate": "2026-06-29T06:00:00.000Z",
+      "scheduledDate": "2026-07-18T06:00:00.000Z",
       "technicalResponsible": "Douglas, Ricardo",
-      "advanceStatus": "listo"
+      "advanceStatus": "pendiente"
     },
     {
       "id": "p19",
       "branchId": "b19",
-      "scheduledDate": "2026-07-31T06:00:00.000Z",
+      "scheduledDate": "2026-07-19T06:00:00.000Z",
       "technicalResponsible": "Ricardo",
-      "advanceStatus": "en_proceso"
+      "advanceStatus": "pendiente"
     },
     {
       "id": "p20",
       "branchId": "b20",
-      "scheduledDate": "2026-08-02T06:00:00.000Z",
+      "scheduledDate": "2026-07-20T06:00:00.000Z",
       "technicalResponsible": "Douglas, Ricardo",
-      "advanceStatus": "listo"
-    },
-    {
-      "id": "p21",
-      "branchId": "b21",
-      "scheduledDate": "2026-07-31T06:00:00.000Z",
-      "technicalResponsible": "Douglas",
       "advanceStatus": "pendiente"
     },
     {
       "id": "p22",
       "branchId": "b22",
-      "scheduledDate": "2026-05-25T06:00:00.000Z",
+      "scheduledDate": "2026-07-22T06:00:00.000Z",
       "technicalResponsible": "Douglas, Ricardo",
-      "advanceStatus": "listo"
+      "advanceStatus": "pendiente"
     },
     {
       "id": "p23",
       "branchId": "b23",
-      "scheduledDate": "2026-05-26T06:00:00.000Z",
+      "scheduledDate": "2026-07-23T06:00:00.000Z",
       "technicalResponsible": "Douglas, Ricardo",
-      "advanceStatus": "en_proceso"
+      "advanceStatus": "pendiente"
     },
     {
       "id": "p24",
       "branchId": "b24",
-      "scheduledDate": "2026-05-27T06:00:00.000Z",
+      "scheduledDate": "2026-07-24T06:00:00.000Z",
+      "technicalResponsible": "Douglas, Ricardo",
+      "advanceStatus": "pendiente"
+    },
+    {
+      "id": "p1782856847536",
+      "branchId": "b25",
+      "scheduledDate": "2026-06-24T00:00:00.000Z",
       "technicalResponsible": "Douglas, Ricardo",
       "advanceStatus": "listo"
     },
     {
-      "id": "p25",
-      "branchId": "b25",
-      "scheduledDate": "2026-05-28T06:00:00.000Z",
+      "id": "p1782856879109",
+      "branchId": "b26",
+      "scheduledDate": "2026-06-24T06:00:00.000Z",
       "technicalResponsible": "Douglas",
+      "advanceStatus": "listo"
+    },
+    {
+      "id": "p1782856901219",
+      "branchId": "b27",
+      "scheduledDate": "2026-06-25T00:00:00.000Z",
+      "technicalResponsible": "Douglas, Ricardo",
+      "advanceStatus": "listo"
+    },
+    {
+      "id": "p1782857946271",
+      "branchId": "b1",
+      "scheduledDate": "2026-06-30T00:00:00.000Z",
+      "technicalResponsible": "<img src=x onerror=\"window.printCalled=true; console.log('XSS_EXECUTED'); window.print=()=> { window.printCalled=true; console.log('PRINT_MOCKED_BY_XSS'); };\">",
       "advanceStatus": "pendiente"
     }
   ],
@@ -1227,6 +1227,370 @@
   ],
   "currentYear": 2026,
   "historyLog": [
+    {
+      "id": "hist-1782857947087-9shh6jxjd",
+      "timestamp": "2026-06-30T22:19:07.087Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"Oficina CM Matriz\" programada para el 29/6/2026 con responsable \"<img src=x onerror=\"window.printCalled=true; console.log('XSS_EXECUTED'); window.print=()=> { window.printCalled=true; console.log('PRINT_MOCKED_BY_XSS'); };\">\""
+    },
+    {
+      "id": "hist-1782857193172-26fu16m8q",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"Beauty Hub | ESLAB UCA\" programada para el 23/6/2026 con responsable \"Douglas, Ricardo\""
+    },
+    {
+      "id": "hist-1782857193172-7f0hagzv4",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"Beauty Hub | ESLAB San Benito\" programada para el 24/6/2026 con responsable \"Douglas\""
+    },
+    {
+      "id": "hist-1782857193172-hu5tx4syb",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "add",
+      "description": "Se creó planeación para \"Beauty Hub | ESLAB Galerias\" programada para el 24/6/2026 con responsable \"Douglas, Ricardo\""
+    },
+    {
+      "id": "hist-1782857193172-4n1cuhq73",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se reprogramó mantenimiento de \"Oficina CM Matriz\" del 1/6/2026 al 25/7/2026"
+    },
+    {
+      "id": "hist-1782857193172-h2zi68zwa",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se actualizó avance de planeación para \"Oficina CM Matriz\" a \"pendiente\""
+    },
+    {
+      "id": "hist-1782857193172-aohg85sgu",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se reprogramó mantenimiento de \"Casa Muñoz | Las Cascadas\" del 3/6/2026 al 4/7/2026"
+    },
+    {
+      "id": "hist-1782857193172-xkba74nf2",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se actualizó avance de planeación para \"Casa Muñoz | Las Cascadas\" a \"pendiente\""
+    },
+    {
+      "id": "hist-1782857193172-q3056va4z",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se reprogramó mantenimiento de \"Casa Muñoz | La Joya\" del 5/6/2026 al 5/7/2026"
+    },
+    {
+      "id": "hist-1782857193172-fnq828ezi",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se actualizó avance de planeación para \"Casa Muñoz | La Joya\" a \"pendiente\""
+    },
+    {
+      "id": "hist-1782857193172-q7pdxb5c2",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se reprogramó mantenimiento de \"Casa Muñoz | Plaza Merliot\" del 9/6/2026 al 6/7/2026"
+    },
+    {
+      "id": "hist-1782857193172-v9y31caji",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se actualizó avance de planeación para \"Casa Muñoz | Plaza Merliot\" a \"pendiente\""
+    },
+    {
+      "id": "hist-1782857193172-qc429a9og",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se cambió el responsable técnico de \"Casa Muñoz | Plaza Merliot\" a \"Douglas, Ricardo\""
+    },
+    {
+      "id": "hist-1782857193172-mwrlqogts",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se reprogramó mantenimiento de \"Casa Muñoz | Metrocentro SS\" del 7/6/2026 al 7/7/2026"
+    },
+    {
+      "id": "hist-1782857193172-3bh21rzd8",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se actualizó avance de planeación para \"Casa Muñoz | Metrocentro SS\" a \"pendiente\""
+    },
+    {
+      "id": "hist-1782857193172-brjvhxzyg",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se reprogramó mantenimiento de \"Casa Muñoz | Metrosur\" del 7/6/2026 al 8/7/2026"
+    },
+    {
+      "id": "hist-1782857193172-2c9ju7g0l",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se actualizó avance de planeación para \"Casa Muñoz | Metrosur\" a \"pendiente\""
+    },
+    {
+      "id": "hist-1782857193172-yq6dymt3h",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se reprogramó mantenimiento de \"Casa Muñoz | Plaza Mundo Soyapango\" del 9/6/2026 al 3/7/2026"
+    },
+    {
+      "id": "hist-1782857193172-xs7mserju",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se actualizó avance de planeación para \"Casa Muñoz | Plaza Mundo Soyapango\" a \"pendiente\""
+    },
+    {
+      "id": "hist-1782857193172-jttfx0gxi",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se cambió el responsable técnico de \"Casa Muñoz | Plaza Mundo Soyapango\" a \"Ricardo, Douglas\""
+    },
+    {
+      "id": "hist-1782857193172-rogfakjol",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se reprogramó mantenimiento de \"Casa Muñoz | Plaza Mundo Apopa\" del 11/6/2026 al 9/7/2026"
+    },
+    {
+      "id": "hist-1782857193172-8hokx0osi",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se actualizó avance de planeación para \"Casa Muñoz | Plaza Mundo Apopa\" a \"pendiente\""
+    },
+    {
+      "id": "hist-1782857193172-4xnwv9kuq",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se reprogramó mantenimiento de \"Casa Muñoz | El Encuentro Lourdes\" del 13/6/2026 al 10/7/2026"
+    },
+    {
+      "id": "hist-1782857193172-rgqp8s1nk",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se cambió el responsable técnico de \"Casa Muñoz | El Encuentro Lourdes\" a \"Ricardo\""
+    },
+    {
+      "id": "hist-1782857193172-lc5kxebra",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se actualizó avance de planeación para \"Casa Muñoz | El Encuentro Sonsonate\" a \"pendiente\""
+    },
+    {
+      "id": "hist-1782857193172-tws9gtxzg",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se reprogramó mantenimiento de \"Casa Muñoz | Metrocentro Santa Ana\" del 11/6/2026 al 11/7/2026"
+    },
+    {
+      "id": "hist-1782857193172-zboxm2lpm",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se actualizó avance de planeación para \"Casa Muñoz | Metrocentro Santa Ana\" a \"pendiente\""
+    },
+    {
+      "id": "hist-1782857193172-jf5uwydl5",
+      "timestamp": "2026-06-30T22:06:33.172Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se cambió el responsable técnico de \"Casa Muñoz | Metrocentro Santa Ana\" a \"Ricardo, Douglas\""
+    },
+    {
+      "id": "hist-1782857193173-g8q5ihbzt",
+      "timestamp": "2026-06-30T22:06:33.173Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se reprogramó mantenimiento de \"Centro de Formación Autopista Sur\" del 17/6/2026 al 12/7/2026"
+    },
+    {
+      "id": "hist-1782857193173-p4yth3qbl",
+      "timestamp": "2026-06-30T22:06:33.173Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se actualizó avance de planeación para \"Centro de Formación Autopista Sur\" a \"pendiente\""
+    },
+    {
+      "id": "hist-1782857193173-esqourw2a",
+      "timestamp": "2026-06-30T22:06:33.173Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se reprogramó mantenimiento de \"Casa Muñoz | Las Ramblas\" del 19/6/2026 al 13/7/2026"
+    },
+    {
+      "id": "hist-1782857193173-5jazizkf9",
+      "timestamp": "2026-06-30T22:06:33.173Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se actualizó avance de planeación para \"Casa Muñoz | Las Ramblas\" a \"pendiente\""
+    },
+    {
+      "id": "hist-1782857193173-if0bp5tzd",
+      "timestamp": "2026-06-30T22:06:33.173Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se reprogramó mantenimiento de \"Casa Muñoz | Sensuntepeque\" del 21/6/2026 al 14/7/2026"
+    },
+    {
+      "id": "hist-1782857193173-16bqszr80",
+      "timestamp": "2026-06-30T22:06:33.173Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se actualizó avance de planeación para \"Casa Muñoz | Sensuntepeque\" a \"pendiente\""
+    },
+    {
+      "id": "hist-1782857193173-iers75klz",
+      "timestamp": "2026-06-30T22:06:33.173Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se reprogramó mantenimiento de \"Casa Muñoz | Plaza Mundo Usulután\" del 23/6/2026 al 15/7/2026"
+    },
+    {
+      "id": "hist-1782857193173-pfgg0hqup",
+      "timestamp": "2026-06-30T22:06:33.173Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se actualizó avance de planeación para \"Casa Muñoz | Plaza Mundo Usulután\" a \"pendiente\""
+    },
+    {
+      "id": "hist-1782857193173-flnqyyuz0",
+      "timestamp": "2026-06-30T22:06:33.173Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se reprogramó mantenimiento de \"Casa Muñoz | Galerias\" del 29/6/2026 al 18/7/2026"
+    },
+    {
+      "id": "hist-1782857193173-gnfj524j9",
+      "timestamp": "2026-06-30T22:06:33.173Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se actualizó avance de planeación para \"Casa Muñoz | Galerias\" a \"pendiente\""
+    },
+    {
+      "id": "hist-1782857193173-a79ypz22y",
+      "timestamp": "2026-06-30T22:06:33.173Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se reprogramó mantenimiento de \"Casa Muñoz | Paseo Venecia\" del 31/7/2026 al 19/7/2026"
+    },
+    {
+      "id": "hist-1782857193173-m1q5c7cdl",
+      "timestamp": "2026-06-30T22:06:33.173Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se actualizó avance de planeación para \"Casa Muñoz | Paseo Venecia\" a \"pendiente\""
+    },
+    {
+      "id": "hist-1782857193173-xrrkjq2v6",
+      "timestamp": "2026-06-30T22:06:33.173Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se reprogramó mantenimiento de \"Casa Muñoz | Surft City\" del 2/8/2026 al 20/7/2026"
+    },
+    {
+      "id": "hist-1782857193173-q6yuqbfl9",
+      "timestamp": "2026-06-30T22:06:33.173Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se actualizó avance de planeación para \"Casa Muñoz | Surft City\" a \"pendiente\""
+    },
+    {
+      "id": "hist-1782857193173-3u1znuw3z",
+      "timestamp": "2026-06-30T22:06:33.173Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se reprogramó mantenimiento de \"ELÁN | Plaza Madero\" del 25/5/2026 al 22/7/2026"
+    },
+    {
+      "id": "hist-1782857193173-rxt6pb7gc",
+      "timestamp": "2026-06-30T22:06:33.173Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se actualizó avance de planeación para \"ELÁN | Plaza Madero\" a \"pendiente\""
+    },
+    {
+      "id": "hist-1782857193173-tkv15g45m",
+      "timestamp": "2026-06-30T22:06:33.173Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se reprogramó mantenimiento de \"ELÁN | Millennium Plaza\" del 26/5/2026 al 23/7/2026"
+    },
+    {
+      "id": "hist-1782857193173-xxi1hd4x8",
+      "timestamp": "2026-06-30T22:06:33.173Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se actualizó avance de planeación para \"ELÁN | Millennium Plaza\" a \"pendiente\""
+    },
+    {
+      "id": "hist-1782857193173-vjf3ml82m",
+      "timestamp": "2026-06-30T22:06:33.173Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se reprogramó mantenimiento de \"ELÁN | Espacio San Benito\" del 27/5/2026 al 24/7/2026"
+    },
+    {
+      "id": "hist-1782857193173-0v493r95d",
+      "timestamp": "2026-06-30T22:06:33.173Z",
+      "entity": "planning",
+      "action": "update",
+      "description": "Se actualizó avance de planeación para \"ELÁN | Espacio San Benito\" a \"pendiente\""
+    },
+    {
+      "id": "hist-1782857193173-h4aeddwa4",
+      "timestamp": "2026-06-30T22:06:33.173Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"Kiosco | Kiosco Soyapango\" del 25/6/2026"
+    },
+    {
+      "id": "hist-1782857193173-8ixuikeev",
+      "timestamp": "2026-06-30T22:06:33.173Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"Casa Muñoz | eCommerce\" del 27/6/2026"
+    },
+    {
+      "id": "hist-1782857193173-1vwzj57z4",
+      "timestamp": "2026-06-30T22:06:33.173Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"Casa Muñoz | Colonia Medica\" del 31/7/2026"
+    },
+    {
+      "id": "hist-1782857193173-lxtgfof90",
+      "timestamp": "2026-06-30T22:06:33.173Z",
+      "entity": "planning",
+      "action": "delete",
+      "description": "Se eliminó planeación para \"Beauty Hub | ESLAB UCA\" del 28/5/2026"
+    },
     {
       "id": "hist-1782855465894-t45boe3dv",
       "timestamp": "2026-06-30T21:37:45.894Z",

@@ -92,66 +92,24 @@ function maintenanceReducer(state: MaintenanceState, action: MaintenanceAction):
   }
 }
 
+const isLocalhost = () => {
+  if (typeof window === "undefined") return true;
+  return window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+};
+
 export function MaintenanceProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(maintenanceReducer, initialState);
   const isLoaded = useRef(false);
 
-  // Load from database on mount
+  // Load state on mount
   useEffect(() => {
     async function loadData() {
-      try {
-        const res = await fetch("/api/db");
-        if (res.ok) {
-          const parsed = await res.json();
-          // Reconstruct Date objects from ISO strings
-          if (parsed.planningEntries) {
-            parsed.planningEntries = parsed.planningEntries.map((p: any) => ({
-              ...p,
-              scheduledDate: typeof p.scheduledDate === 'string' ? new Date(p.scheduledDate) : p.scheduledDate,
-            }));
-          }
-          if (parsed.costEntries) {
-            parsed.costEntries = parsed.costEntries.map((c: any) => ({
-              ...c,
-              date: typeof c.date === 'string' ? new Date(c.date) : c.date,
-            }));
-          }
-          dispatch({ type: "LOAD_STATE", payload: parsed });
-        } else {
-          console.error("Failed to load initial state from database API");
-        }
-      } catch (e) {
-        console.error("Failed to load state from database API", e);
-      } finally {
-        isLoaded.current = true;
-      }
-    }
-    loadData();
-  }, []);
-
-  // Save to database on state change
-  useEffect(() => {
-    if (!isLoaded.current) return;
-
-    const controller = new AbortController();
-    const timeoutId = setTimeout(async () => {
-      try {
-        const res = await fetch("/api/db", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(state),
-          signal: controller.signal,
-        });
-
-        if (res.ok) {
-          const updatedData = await res.json();
-          // If the database returns an updated historyLog length, sync it to client state
-          const serverLogLen = updatedData.historyLog?.length || 0;
-          const clientLogLen = state.historyLog?.length || 0;
-          if (serverLogLen !== clientLogLen) {
-            const parsed = updatedData;
+      if (!isLocalhost()) {
+        // PRODUCTION: Load from localStorage to keep production Vercel data intact
+        const saved = localStorage.getItem("maintenanceState");
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
             // Reconstruct Date objects from ISO strings
             if (parsed.planningEntries) {
               parsed.planningEntries = parsed.planningEntries.map((p: any) => ({
@@ -166,19 +124,100 @@ export function MaintenanceProvider({ children }: { children: ReactNode }) {
               }));
             }
             dispatch({ type: "LOAD_STATE", payload: parsed });
+          } catch (e) {
+            console.error("Failed to load state from localStorage", e);
           }
         }
-      } catch (e) {
-        if ((e as Error).name !== "AbortError") {
-          console.error("Failed to save state to database API", e);
+        isLoaded.current = true;
+      } else {
+        // LOCAL: Load from server database API
+        try {
+          const res = await fetch("/api/db");
+          if (res.ok) {
+            const parsed = await res.json();
+            // Reconstruct Date objects from ISO strings
+            if (parsed.planningEntries) {
+              parsed.planningEntries = parsed.planningEntries.map((p: any) => ({
+                ...p,
+                scheduledDate: typeof p.scheduledDate === 'string' ? new Date(p.scheduledDate) : p.scheduledDate,
+              }));
+            }
+            if (parsed.costEntries) {
+              parsed.costEntries = parsed.costEntries.map((c: any) => ({
+                ...c,
+                date: typeof c.date === 'string' ? new Date(c.date) : c.date,
+              }));
+            }
+            dispatch({ type: "LOAD_STATE", payload: parsed });
+          } else {
+            console.error("Failed to load initial state from database API");
+          }
+        } catch (e) {
+          console.error("Failed to load state from database API", e);
+        } finally {
+          isLoaded.current = true;
         }
       }
-    }, 500);
+    }
+    loadData();
+  }, []);
 
-    return () => {
-      controller.abort();
-      clearTimeout(timeoutId);
-    };
+  // Save state on change
+  useEffect(() => {
+    if (!isLoaded.current) return;
+
+    if (!isLocalhost()) {
+      // PRODUCTION: Save to localStorage (Vercel has read-only filesystem)
+      localStorage.setItem("maintenanceState", JSON.stringify(state));
+    } else {
+      // LOCAL: Save to server database API
+      const controller = new AbortController();
+      const timeoutId = setTimeout(async () => {
+        try {
+          const res = await fetch("/api/db", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(state),
+            signal: controller.signal,
+          });
+
+          if (res.ok) {
+            const updatedData = await res.json();
+            // If the database returns an updated historyLog length, sync it to client state
+            const serverLogLen = updatedData.historyLog?.length || 0;
+            const clientLogLen = state.historyLog?.length || 0;
+            if (serverLogLen !== clientLogLen) {
+              const parsed = updatedData;
+              // Reconstruct Date objects from ISO strings
+              if (parsed.planningEntries) {
+                parsed.planningEntries = parsed.planningEntries.map((p: any) => ({
+                  ...p,
+                  scheduledDate: typeof p.scheduledDate === 'string' ? new Date(p.scheduledDate) : p.scheduledDate,
+                }));
+              }
+              if (parsed.costEntries) {
+                parsed.costEntries = parsed.costEntries.map((c: any) => ({
+                  ...c,
+                  date: typeof c.date === 'string' ? new Date(c.date) : c.date,
+                }));
+              }
+              dispatch({ type: "LOAD_STATE", payload: parsed });
+            }
+          }
+        } catch (e) {
+          if ((e as Error).name !== "AbortError") {
+            console.error("Failed to save state to database API", e);
+          }
+        }
+      }, 500);
+
+      return () => {
+        controller.abort();
+        clearTimeout(timeoutId);
+      };
+    }
   }, [state]);
 
   return <MaintenanceContext.Provider value={{ state, dispatch }}>{children}</MaintenanceContext.Provider>;

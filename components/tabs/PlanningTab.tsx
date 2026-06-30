@@ -187,18 +187,84 @@ export function PlanningTab() {
   };
 
   const inputClass = "px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-900 font-medium bg-white placeholder-gray-400 focus:ring-2 focus:ring-blue-300 focus:border-blue-300 focus:outline-none transition-all";
-  const btnOutlineClass = "flex items-center gap-2 rounded-xl border-gray-300 hover:bg-blue-50 hover:border-blue-300 transition-all";
+  const handlePrintPlanning = () => {
+    // Build rows grouped by enterprise-brand
+    let tableRows = "";
+    Object.entries(grouped).forEach(([group, branches]) => {
+      tableRows += `<tr><td colspan="3" style="background:#eff6ff;border-left:4px solid #2563eb;padding:10px 14px;font-weight:bold;font-size:14px;color:#1e3a5f;">${group}</td></tr>`;
+      tableRows += `<tr style="background:#f8fafc;"><th style="padding:8px 14px;text-align:left;font-size:11px;text-transform:uppercase;color:#475569;border-bottom:2px solid #e2e8f0;">Sucursal</th><th style="padding:8px 14px;text-align:left;font-size:11px;text-transform:uppercase;color:#475569;border-bottom:2px solid #e2e8f0;">Fecha</th><th style="padding:8px 14px;text-align:left;font-size:11px;text-transform:uppercase;color:#475569;border-bottom:2px solid #e2e8f0;">Responsable</th></tr>`;
+      
+      const rows = branches.flatMap((branch) =>
+        state.planningEntries
+          .filter((p) => p.branchId === branch.id)
+          .map((entry) => ({ branch, entry }))
+      ).sort((a, b) => {
+        const dateA = parseDateSafely(a.entry.scheduledDate).getTime();
+        const dateB = parseDateSafely(b.entry.scheduledDate).getTime();
+        return dateA - dateB;
+      });
+
+      rows.forEach(({ branch, entry }, idx) => {
+        const bg = idx % 2 === 0 ? "#ffffff" : "#f8fafc";
+        const dateStr = formatDate(entry.scheduledDate);
+        tableRows += `<tr style="background:${bg};border-bottom:1px solid #f1f5f9;"><td style="padding:8px 14px;font-size:13px;color:#1e293b;">${branch.name}</td><td style="padding:8px 14px;font-size:13px;color:#1e293b;">${dateStr}</td><td style="padding:8px 14px;font-size:13px;color:#1e293b;">${entry.technicalResponsible}</td></tr>`;
+      });
+    });
+
+    const printContent = `<!DOCTYPE html>
+<html><head><title>Planeación de Mantenimiento ${state.currentYear}</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1e293b; padding: 30px; }
+  .header { text-align: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid #2563eb; }
+  .header h1 { font-size: 20px; color: #1e3a5f; margin-bottom: 4px; }
+  .header p { font-size: 12px; color: #64748b; }
+  .header h2 { font-size: 16px; color: #334155; margin-top: 8px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  @media print { body { padding: 15px; } }
+</style></head><body>
+<div class="header">
+  <h1>Control de Mantenimiento Preventivo</h1>
+  <p>Casa Muñoz S.A. • Beauty Hub S.A.</p>
+  <h2>Planeación de Mantenimiento (${state.currentYear})</h2>
+</div>
+<table>${tableRows}</table>
+<script>window.onload = function() { window.print(); }</script>
+</body></html>`;
+
+    const printWindow = window.open("", "_blank", "width=900,height=700");
+    if (printWindow) {
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+    }
+  };
 
   return (
     <div className="space-y-5">
+      {/* Cabecera exclusiva para impresión PDF */}
+      <div className="hidden print:block text-center pb-4 border-b border-gray-300">
+        <h1 className="text-2xl font-bold text-blue-900">Control de Mantenimiento Preventivo</h1>
+        <p className="text-xs text-gray-500 font-medium">Casa Muñoz S.A. • Beauty Hub S.A.</p>
+        <h2 className="text-lg font-bold text-gray-800 mt-2">Planeación de Mantenimiento ({state.currentYear})</h2>
+      </div>
+
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-900">Planeación</h2>
-        <div className="flex gap-2 flex-wrap">
+        <h2 className="text-2xl font-bold text-gray-900 print:hidden">Planeación</h2>
+        <div className="flex gap-2 flex-wrap print:hidden">
+          <Button 
+            onClick={handlePrintPlanning} 
+            variant="outline" 
+            size="sm"
+            className="flex items-center gap-2 rounded-xl border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 transition-all font-semibold"
+          >
+            <FileText className="w-4 h-4" />
+            Imprimir / PDF
+          </Button>
           <Button 
             onClick={() => downloadPlanningTemplate(state.branches, state.planningEntries)}
             variant="outline" 
             size="sm"
-            className={btnOutlineClass}
+            className={"flex items-center gap-2 rounded-xl border-gray-300 hover:bg-blue-50 hover:border-blue-300 transition-all"}
           >
             <FileText className="w-4 h-4" />
             Descargar Plantilla
@@ -208,7 +274,7 @@ export function PlanningTab() {
             disabled={isImporting}
             variant="outline" 
             size="sm"
-            className={btnOutlineClass}
+            className={"flex items-center gap-2 rounded-xl border-gray-300 hover:bg-blue-50 hover:border-blue-300 transition-all"}
           >
             <Upload className="w-4 h-4" />
             {isImporting ? "Importando..." : "Importar Excel"}
@@ -217,7 +283,7 @@ export function PlanningTab() {
             onClick={handleExportExcel}
             variant="outline" 
             size="sm"
-            className={btnOutlineClass}
+            className={"flex items-center gap-2 rounded-xl border-gray-300 hover:bg-blue-50 hover:border-blue-300 transition-all"}
           >
             <Download className="w-4 h-4" />
             Exportar Excel
@@ -226,7 +292,7 @@ export function PlanningTab() {
             onClick={() => downloadCSV(state)} 
             variant="outline" 
             size="sm"
-            className={btnOutlineClass}
+            className={"flex items-center gap-2 rounded-xl border-gray-300 hover:bg-blue-50 hover:border-blue-300 transition-all"}
           >
             <Download className="w-4 h-4" />
             Exportar CSV
@@ -249,9 +315,11 @@ export function PlanningTab() {
         </div>
       )}
 
-      <KPIDashboard kpis={planningKPIs} />
+      <div className="print:hidden">
+        <KPIDashboard kpis={planningKPIs} />
+      </div>
 
-      <div className="rounded-2xl shadow-lg p-6 space-y-4 bg-white border border-gray-200/80">
+      <div className="rounded-2xl shadow-lg p-6 space-y-4 bg-white border border-gray-200/80 print:hidden">
         <h3 className="font-bold text-base text-gray-900 flex items-center gap-2">
           <span className="w-1.5 h-5 rounded-full bg-blue-500 inline-block" />
           Agregar Planeación
@@ -318,8 +386,8 @@ export function PlanningTab() {
                     </div>
                   </th>
                   <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider">Responsable</th>
-                  <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider">Estado</th>
-                  <th className="px-4 py-3.5 text-center font-bold text-gray-700 uppercase text-[11px] tracking-wider">Acciones</th>
+                  <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider print:hidden">Estado</th>
+                  <th className="px-4 py-3.5 text-center font-bold text-gray-700 uppercase text-[11px] tracking-wider print:hidden">Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -375,7 +443,7 @@ export function PlanningTab() {
                             <span>{formatDate(entry.scheduledDate)}</span>
                             <button
                               onClick={() => handleEditDate(entry.id, entry.scheduledDate)}
-                              className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 p-1 rounded-lg transition-colors"
+                              className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 p-1 rounded-lg transition-colors print:hidden"
                               title="Editar fecha"
                             >
                               <Calendar className="w-4 h-4" />
@@ -384,7 +452,7 @@ export function PlanningTab() {
                         )}
                       </td>
                       <td className="px-4 py-3 text-gray-900 font-medium">{entry.technicalResponsible}</td>
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-3 print:hidden">
                         <select
                           value={entry.advanceStatus}
                           onChange={(e) => {
@@ -406,7 +474,7 @@ export function PlanningTab() {
                           <option value="listo">Listo</option>
                         </select>
                       </td>
-                      <td className="px-4 py-3 text-center">
+                      <td className="px-4 py-3 text-center print:hidden">
                         <button
                           onClick={() => dispatch({ type: "DELETE_PLANNING_ENTRY", payload: entry.id })}
                           className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-lg transition-colors"
