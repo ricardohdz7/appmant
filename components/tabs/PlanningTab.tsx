@@ -153,8 +153,11 @@ export function PlanningTab() {
     }
   };
 
+  const inputClass = "px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-900 font-medium bg-white placeholder-gray-400 focus:ring-2 focus:ring-blue-300 focus:border-blue-300 focus:outline-none transition-all";
+  const btnOutlineClass = "flex items-center gap-2 rounded-xl border-gray-300 hover:bg-blue-50 hover:border-blue-300 transition-all";
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-900">Planeación</h2>
         <div className="flex gap-2 flex-wrap">
@@ -162,7 +165,7 @@ export function PlanningTab() {
             onClick={() => downloadPlanningTemplate(state.branches.map(b => b.name))}
             variant="outline" 
             size="sm"
-            className="flex items-center gap-2"
+            className={btnOutlineClass}
           >
             <FileText className="w-4 h-4" />
             Descargar Plantilla
@@ -172,7 +175,7 @@ export function PlanningTab() {
             disabled={isImporting}
             variant="outline" 
             size="sm"
-            className="flex items-center gap-2"
+            className={btnOutlineClass}
           >
             <Upload className="w-4 h-4" />
             {isImporting ? "Importando..." : "Importar Excel"}
@@ -181,7 +184,7 @@ export function PlanningTab() {
             onClick={handleExportExcel}
             variant="outline" 
             size="sm"
-            className="flex items-center gap-2"
+            className={btnOutlineClass}
           >
             <Download className="w-4 h-4" />
             Exportar Excel
@@ -190,7 +193,7 @@ export function PlanningTab() {
             onClick={() => downloadCSV(state)} 
             variant="outline" 
             size="sm"
-            className="flex items-center gap-2"
+            className={btnOutlineClass}
           >
             <Download className="w-4 h-4" />
             Exportar CSV
@@ -207,21 +210,24 @@ export function PlanningTab() {
       </div>
 
       {importError && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <p className="text-red-800 font-medium">Error al importar:</p>
+        <div className="rounded-2xl p-4 border border-red-200" style={{ background: "linear-gradient(135deg, #fef2f2 0%, #fecaca 100%)" }}>
+          <p className="text-red-800 font-bold">Error al importar:</p>
           <p className="text-red-700 text-sm mt-1">{importError}</p>
         </div>
       )}
 
       <KPIDashboard kpis={planningKPIs} />
 
-      <div className="bg-white rounded-lg shadow-md p-6 space-y-3 border border-gray-300">
-        <h3 className="font-bold text-base text-gray-900">Agregar Planeación</h3>
+      <div className="rounded-2xl shadow-lg p-6 space-y-4 bg-white border border-gray-200/80">
+        <h3 className="font-bold text-base text-gray-900 flex items-center gap-2">
+          <span className="w-1.5 h-5 rounded-full bg-blue-500 inline-block" />
+          Agregar Planeación
+        </h3>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <select
             value={selectedBranch}
             onChange={(e) => setSelectedBranch(e.target.value)}
-            className="px-3 py-2 border-2 border-gray-400 rounded text-sm text-gray-900 font-medium bg-white"
+            className={inputClass}
           >
             {state.branches.map((branch) => (
               <option key={branch.id} value={branch.id}>
@@ -233,51 +239,54 @@ export function PlanningTab() {
             type="date"
             value={newDate}
             onChange={(e) => setNewDate(e.target.value)}
-            className="px-3 py-2 border-2 border-gray-400 rounded text-sm text-gray-900 font-medium bg-white"
+            className={inputClass}
           />
           <input
             type="text"
             placeholder="Responsable"
             value={newResponsible}
             onChange={(e) => setNewResponsible(e.target.value)}
-            className="px-3 py-2 border-2 border-gray-400 rounded text-sm text-gray-900 font-medium bg-white placeholder-gray-500"
+            className={inputClass}
           />
-          <Button onClick={handleAddPlanning} size="sm" className="flex items-center gap-2">
+          <Button onClick={handleAddPlanning} size="sm" className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-200 transition-all">
             <Plus className="w-4 h-4" />
             Agregar
           </Button>
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-5">
         {Object.entries(grouped).map(([group, branches]) => (
-          <div key={group} className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-300">
-            <div className="bg-blue-100 px-4 py-3 border-l-4 border-blue-600">
+          <div key={group} className="rounded-2xl shadow-lg overflow-hidden border border-gray-200/80 bg-white">
+            <div
+              className="px-5 py-3.5 border-l-4 border-blue-600"
+              style={{ background: "linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)" }}
+            >
               <h3 className="font-bold text-base text-blue-900">{group}</h3>
             </div>
 
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-300 bg-gray-100">
-                  <th className="px-4 py-3 text-left font-bold text-gray-900">Sucursal</th>
+                <tr className="border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100/60">
+                  <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider">Sucursal</th>
                   <th 
-                    className="px-4 py-3 text-left font-bold text-gray-900 cursor-pointer select-none hover:bg-gray-200 transition-colors"
+                    className="px-4 py-3.5 text-left font-bold text-gray-700 cursor-pointer select-none hover:bg-gray-100 transition-colors uppercase text-[11px] tracking-wider"
                     onClick={toggleSort}
                   >
                     <div className="flex items-center gap-1">
                       Fecha
                       {sortOrder === "asc" ? (
-                        <ArrowUp className="w-4 h-4 text-blue-600" />
+                        <ArrowUp className="w-3.5 h-3.5 text-blue-600" />
                       ) : sortOrder === "desc" ? (
-                        <ArrowDown className="w-4 h-4 text-blue-600" />
+                        <ArrowDown className="w-3.5 h-3.5 text-blue-600" />
                       ) : (
-                        <ArrowUpDown className="w-4 h-4 text-gray-400 opacity-50" />
+                        <ArrowUpDown className="w-3.5 h-3.5 text-gray-400 opacity-50" />
                       )}
                     </div>
                   </th>
-                  <th className="px-4 py-3 text-left font-bold text-gray-900">Responsable</th>
-                  <th className="px-4 py-3 text-left font-bold text-gray-900">Estado</th>
-                  <th className="px-4 py-3 text-center font-bold text-gray-900">Acciones</th>
+                  <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider">Responsable</th>
+                  <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider">Estado</th>
+                  <th className="px-4 py-3.5 text-center font-bold text-gray-700 uppercase text-[11px] tracking-wider">Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -293,9 +302,14 @@ export function PlanningTab() {
                     const dateB = new Date(b.entry.scheduledDate).getTime();
                     return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
                   })
-                  .map(({ branch, entry }) => (
-                    <tr key={entry.id} className="border-b border-gray-200 hover:bg-gray-100">
-                      <td className="px-4 py-3 text-gray-900 font-medium">{branch.name}</td>
+                  .map(({ branch, entry }, idx) => (
+                    <tr
+                      key={entry.id}
+                      className={`border-b border-gray-100 hover:bg-blue-50/40 transition-colors ${
+                        idx % 2 === 0 ? "bg-white" : "bg-gray-50/30"
+                      }`}
+                    >
+                      <td className="px-4 py-3 text-gray-900 font-semibold">{branch.name}</td>
                       <td className="px-4 py-3 text-gray-900 font-medium">
                         {editingDateId === entry.id ? (
                           <div className="flex gap-2 items-center flex-wrap">
@@ -305,11 +319,11 @@ export function PlanningTab() {
                               onChange={(e) => {
                                 setEditingDateValue(e.target.value);
                               }}
-                              className="px-2 py-1 border-2 border-blue-400 rounded text-xs text-gray-900 font-medium bg-white"
+                              className="px-2 py-1.5 border border-blue-300 rounded-lg text-xs text-gray-900 font-medium bg-white focus:ring-2 focus:ring-blue-300 focus:outline-none"
                             />
                             <button
                               onClick={() => handleSaveDate(entry.id)}
-                              className="text-green-600 hover:text-green-800 font-bold text-sm"
+                              className="text-emerald-600 hover:text-emerald-800 hover:bg-emerald-50 font-bold text-sm px-2 py-1 rounded-lg transition-colors"
                             >
                               Guardar
                             </button>
@@ -318,7 +332,7 @@ export function PlanningTab() {
                                 setEditingDateId(null);
                                 setEditingDateValue("");
                               }}
-                              className="text-gray-600 hover:text-gray-800 font-bold text-sm"
+                              className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 font-bold text-sm px-2 py-1 rounded-lg transition-colors"
                             >
                               Cancelar
                             </button>
@@ -328,7 +342,7 @@ export function PlanningTab() {
                             <span>{formatDate(entry.scheduledDate)}</span>
                             <button
                               onClick={() => handleEditDate(entry.id, entry.scheduledDate)}
-                              className="text-blue-600 hover:text-blue-800"
+                              className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 p-1 rounded-lg transition-colors"
                               title="Editar fecha"
                             >
                               <Calendar className="w-4 h-4" />
@@ -346,7 +360,13 @@ export function PlanningTab() {
                               payload: { ...entry, advanceStatus: e.target.value as any },
                             });
                           }}
-                          className="px-2 py-1 border-2 border-gray-400 rounded text-xs text-gray-900 font-medium bg-white"
+                          className={`px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer border transition-all focus:ring-2 focus:ring-blue-300 focus:outline-none ${
+                            entry.advanceStatus === "listo"
+                              ? "bg-emerald-50 text-emerald-800 border-emerald-300"
+                              : entry.advanceStatus === "en_proceso"
+                              ? "bg-blue-50 text-blue-800 border-blue-300"
+                              : "bg-red-50 text-red-800 border-red-300"
+                          }`}
                         >
                           <option value="pendiente">Pendiente</option>
                           <option value="en_proceso">En Proceso</option>
@@ -356,7 +376,7 @@ export function PlanningTab() {
                       <td className="px-4 py-3 text-center">
                         <button
                           onClick={() => dispatch({ type: "DELETE_PLANNING_ENTRY", payload: entry.id })}
-                          className="text-red-600 hover:text-red-800"
+                          className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-lg transition-colors"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>

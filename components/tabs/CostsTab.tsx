@@ -63,17 +63,22 @@ export function CostsTab() {
   const branchCosts = state.costEntries.filter((c) => c.branchId === selectedBranch);
   const total = branchCosts.reduce((sum, c) => sum + c.quantity * c.unitCost, 0);
 
-  return (
-    <div className="space-y-4">
-      <h2 className="text-lg font-semibold">Costos de Insumos</h2>
+  const inputClass = "px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-900 font-medium bg-white placeholder-gray-400 focus:ring-2 focus:ring-blue-300 focus:border-blue-300 focus:outline-none transition-all";
 
-      <div className="bg-white rounded-lg shadow-md p-6 space-y-3 border border-gray-300">
-        <h3 className="font-bold text-base text-gray-900">Agregar Costo</h3>
+  return (
+    <div className="space-y-5">
+      <h2 className="text-2xl font-bold text-gray-900">Costos de Insumos</h2>
+
+      <div className="rounded-2xl shadow-lg p-6 space-y-4 bg-white border border-gray-200/80">
+        <h3 className="font-bold text-base text-gray-900 flex items-center gap-2">
+          <span className="w-1.5 h-5 rounded-full bg-blue-500 inline-block" />
+          Agregar Costo
+        </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <select
             value={selectedBranch}
             onChange={(e) => setSelectedBranch(e.target.value)}
-            className="px-3 py-2 border-2 border-gray-400 rounded text-sm col-span-2 text-gray-900 font-medium bg-white"
+            className={`${inputClass} col-span-2`}
           >
             {state.branches.map((branch) => (
               <option key={branch.id} value={branch.id}>
@@ -86,7 +91,7 @@ export function CostsTab() {
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="px-3 py-2 border-2 border-gray-400 rounded text-sm text-gray-900 font-medium bg-white"
+            className={inputClass}
           />
 
           <input
@@ -94,7 +99,7 @@ export function CostsTab() {
             placeholder="Material"
             value={material}
             onChange={(e) => setMaterial(e.target.value)}
-            className="px-3 py-2 border-2 border-gray-400 rounded text-sm text-gray-900 font-medium bg-white placeholder-gray-500"
+            className={inputClass}
           />
 
           <input
@@ -102,7 +107,7 @@ export function CostsTab() {
             placeholder="Cantidad"
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
-            className="px-3 py-2 border-2 border-gray-400 rounded text-sm text-gray-900 font-medium bg-white placeholder-gray-500"
+            className={inputClass}
           />
 
           <input
@@ -110,7 +115,7 @@ export function CostsTab() {
             placeholder="Costo Unitario"
             value={unitCost}
             onChange={(e) => setUnitCost(e.target.value)}
-            className="px-3 py-2 border-2 border-gray-400 rounded text-sm text-gray-900 font-medium bg-white placeholder-gray-500"
+            className={inputClass}
           />
 
           <input
@@ -118,62 +123,71 @@ export function CostsTab() {
             placeholder="Asignado a"
             value={assignedTo}
             onChange={(e) => setAssignedTo(e.target.value)}
-            className="px-3 py-2 border-2 border-gray-400 rounded text-sm text-gray-900 font-medium bg-white placeholder-gray-500"
+            className={inputClass}
           />
 
-          <Button 
-            onClick={() => {
-              handleAddCost();
-              setMaterial("");
-              setQuantity("");
-              setUnitCost("");
-              setAssignedTo("");
-            }} 
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
-          >
-            <Plus className="w-4 h-4" />
-            Agregar a Sucursal
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              onClick={() => {
+                handleAddCost();
+                setMaterial("");
+                setQuantity("");
+                setUnitCost("");
+                setAssignedTo("");
+              }} 
+              className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-200 transition-all"
+            >
+              <Plus className="w-4 h-4" />
+              Agregar a Sucursal
+            </Button>
 
-          <Button 
-            onClick={handleAddToAllBranches}
-            variant="outline"
-            className="flex items-center gap-2 border-2 border-green-600 text-green-600 hover:bg-green-50"
-          >
-            <Copy className="w-4 h-4" />
-            Agregar a Todas
-          </Button>
+            <Button 
+              onClick={handleAddToAllBranches}
+              variant="outline"
+              className="flex items-center gap-2 rounded-xl border-emerald-300 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-400 transition-all"
+            >
+              <Copy className="w-4 h-4" />
+              Agregar a Todas
+            </Button>
+          </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md overflow-x-auto border border-gray-300">
+      <div className="rounded-2xl shadow-lg overflow-x-auto border border-gray-200/80 bg-white">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-300 bg-gray-100">
-              <th className="px-4 py-3 text-left font-bold text-gray-900">Fecha</th>
-              <th className="px-4 py-3 text-left font-bold text-gray-900">Material</th>
-              <th className="px-4 py-3 text-center font-bold text-gray-900">Cantidad</th>
-              <th className="px-4 py-3 text-center font-bold text-gray-900">Costo Unitario</th>
-              <th className="px-4 py-3 text-center font-bold text-gray-900">Total</th>
-              <th className="px-4 py-3 text-left font-bold text-gray-900">Asignado a</th>
-              <th className="px-4 py-3 text-center font-bold text-gray-900">Acción</th>
+            <tr className="border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100/60">
+              <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider">Fecha</th>
+              <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider">Material</th>
+              <th className="px-4 py-3.5 text-center font-bold text-gray-700 uppercase text-[11px] tracking-wider">Cantidad</th>
+              <th className="px-4 py-3.5 text-center font-bold text-gray-700 uppercase text-[11px] tracking-wider">Costo Unitario</th>
+              <th className="px-4 py-3.5 text-center font-bold text-gray-700 uppercase text-[11px] tracking-wider">Total</th>
+              <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider">Asignado a</th>
+              <th className="px-4 py-3.5 text-center font-bold text-gray-700 uppercase text-[11px] tracking-wider">Acción</th>
             </tr>
           </thead>
           <tbody>
-            {branchCosts.map((cost) => (
-              <tr key={cost.id} className="border-b border-gray-200 hover:bg-gray-100">
+            {branchCosts.map((cost, idx) => (
+              <tr
+                key={cost.id}
+                className={`border-b border-gray-100 hover:bg-blue-50/40 transition-colors ${
+                  idx % 2 === 0 ? "bg-white" : "bg-gray-50/30"
+                }`}
+              >
                 <td className="px-4 py-3 text-gray-900 font-medium">{formatDate(cost.date)}</td>
                 <td className="px-4 py-3 text-gray-900 font-medium">{cost.material}</td>
                 <td className="px-4 py-3 text-center text-gray-900 font-medium">{cost.quantity}</td>
                 <td className="px-4 py-3 text-center text-gray-900 font-medium">${cost.unitCost.toFixed(2)}</td>
-                <td className="px-4 py-3 text-center font-bold text-blue-700">
-                  ${(cost.quantity * cost.unitCost).toFixed(2)}
+                <td className="px-4 py-3 text-center">
+                  <span className="font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded-lg">
+                    ${(cost.quantity * cost.unitCost).toFixed(2)}
+                  </span>
                 </td>
                 <td className="px-4 py-3 text-gray-900 font-medium">{cost.assignedTo}</td>
                 <td className="px-4 py-3 text-center">
                   <button
                     onClick={() => dispatch({ type: "DELETE_COST_ENTRY", payload: cost.id })}
-                    className="text-red-600 hover:text-red-800"
+                    className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-lg transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -185,16 +199,19 @@ export function CostsTab() {
       </div>
 
       {branchCosts.length > 0 && (
-        <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+        <div
+          className="rounded-2xl p-5 border border-blue-200/80"
+          style={{ background: "linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)" }}
+        >
           <div className="flex justify-between items-center">
-            <span className="font-semibold text-blue-900">Total de Costos (Sucursal Actual):</span>
+            <span className="font-bold text-blue-900">Total de Costos (Sucursal Actual):</span>
             <div className="flex items-center gap-4">
-              <span className="text-2xl font-bold text-blue-600">${total.toFixed(2)}</span>
+              <span className="text-3xl font-extrabold text-blue-700">${total.toFixed(2)}</span>
               <Button 
                 onClick={handleClearBranchCosts} 
                 variant="destructive"
                 size="sm"
-                className="flex items-center gap-1 bg-red-600 hover:bg-red-700"
+                className="flex items-center gap-1 rounded-xl bg-red-600 hover:bg-red-700 shadow-md shadow-red-200"
               >
                 <Trash2 className="w-4 h-4" />
                 Vaciar Sucursal
@@ -204,25 +221,30 @@ export function CostsTab() {
         </div>
       )}
 
-      <div className="bg-white rounded-lg shadow-md overflow-x-auto border border-gray-300">
+      <div className="rounded-2xl shadow-lg overflow-x-auto border border-gray-200/80 bg-white">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-300 bg-gray-100">
-              <th className="px-4 py-3 text-left font-bold text-gray-900">Sucursal</th>
-              <th className="px-4 py-3 text-center font-bold text-gray-900">Total de Insumos</th>
+            <tr className="border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100/60">
+              <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider">Sucursal</th>
+              <th className="px-4 py-3.5 text-center font-bold text-gray-700 uppercase text-[11px] tracking-wider">Total de Insumos</th>
             </tr>
           </thead>
           <tbody>
-            {state.branches.map((branch) => {
+            {state.branches.map((branch, idx) => {
               const branchTotal = state.costEntries
                 .filter((c) => c.branchId === branch.id)
                 .reduce((sum, c) => sum + c.quantity * c.unitCost, 0);
               
               return (
-                <tr key={branch.id} className="border-b border-gray-200 hover:bg-gray-100">
-                  <td className="px-4 py-3 text-gray-900 font-medium">{branch.name}</td>
+                <tr
+                  key={branch.id}
+                  className={`border-b border-gray-100 hover:bg-blue-50/40 transition-colors ${
+                    idx % 2 === 0 ? "bg-white" : "bg-gray-50/30"
+                  }`}
+                >
+                  <td className="px-4 py-3 text-gray-900 font-semibold">{branch.name}</td>
                   <td className="px-4 py-3 text-center">
-                    <span className="font-bold text-blue-700">
+                    <span className="font-bold text-blue-700 bg-blue-50 px-3 py-1 rounded-lg">
                       ${branchTotal > 0 ? branchTotal.toFixed(2) : "0.00"}
                     </span>
                   </td>
@@ -231,23 +253,23 @@ export function CostsTab() {
             })}
           </tbody>
           <tfoot>
-            <tr className="bg-gray-100 border-t-2 border-gray-300">
-              <td className="px-4 py-3 font-bold text-gray-900 flex justify-between items-center">
-                <span>TOTAL GENERAL</span>
+            <tr className="bg-gradient-to-r from-gray-50 to-blue-50/30 border-t-2 border-gray-200">
+              <td className="px-4 py-4 font-bold text-gray-900 flex justify-between items-center">
+                <span className="uppercase tracking-wider text-sm">Total General</span>
                 {state.costEntries.length > 0 && (
                   <Button 
                     onClick={handleClearAllCosts} 
                     variant="destructive"
                     size="sm"
-                    className="h-8 text-xs px-3 bg-red-600 hover:bg-red-700 flex items-center gap-1"
+                    className="h-8 text-xs px-3 rounded-lg bg-red-600 hover:bg-red-700 flex items-center gap-1 shadow-sm"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                     Vaciar Todo
                   </Button>
                 )}
               </td>
-              <td className="px-4 py-3 text-center">
-                <span className="font-bold text-lg text-blue-600">
+              <td className="px-4 py-4 text-center">
+                <span className="font-extrabold text-lg text-blue-700 bg-blue-100 px-4 py-1.5 rounded-xl">
                   ${state.costEntries.reduce((sum, c) => sum + c.quantity * c.unitCost, 0).toFixed(2)}
                 </span>
               </td>

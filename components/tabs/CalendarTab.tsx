@@ -10,38 +10,45 @@ export function CalendarTab() {
   const { state, dispatch } = useMaintenanceContext();
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <div className="flex justify-between items-center">
-        <h2 className="text-lg font-semibold">Calendario de Mantenimiento {state.currentYear}</h2>
+        <h2 className="text-2xl font-bold text-gray-900">Calendario de Mantenimiento {state.currentYear}</h2>
         <Button 
           onClick={() => downloadCSV(state)} 
           variant="outline" 
           size="sm"
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 rounded-xl border-gray-300 hover:bg-blue-50 hover:border-blue-300 transition-all"
         >
           <Download className="w-4 h-4" />
           Exportar CSV
         </Button>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md overflow-x-auto border border-gray-300">
+      <div className="rounded-2xl shadow-lg overflow-x-auto border border-gray-200/80 bg-white">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-300 bg-gray-100 sticky top-0">
-              <th className="px-4 py-3 text-left font-bold text-gray-900 sticky left-0 bg-gray-100 z-10">
+            <tr className="border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100/60 sticky top-0">
+              <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider sticky left-0 bg-gradient-to-r from-gray-50 to-gray-100/60 z-10">
                 Sucursal
               </th>
               {[0, 3, 6, 9].map((month) => (
-                <th key={month} className="px-3 py-3 text-center font-bold text-gray-900 whitespace-nowrap">
+                <th key={month} className="px-3 py-3.5 text-center font-bold text-gray-700 whitespace-nowrap uppercase text-[11px] tracking-wider">
                   {getMonthName(month)}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {state.branches.map((branch) => (
-              <tr key={branch.id} className="border-b border-gray-200 hover:bg-gray-100">
-                <td className="px-4 py-3 font-medium text-gray-900 sticky left-0 bg-white z-10">
+            {state.branches.map((branch, idx) => (
+              <tr
+                key={branch.id}
+                className={`border-b border-gray-100 hover:bg-blue-50/40 transition-colors ${
+                  idx % 2 === 0 ? "bg-white" : "bg-gray-50/30"
+                }`}
+              >
+                <td className={`px-4 py-3 font-semibold text-gray-900 sticky left-0 z-10 ${
+                  idx % 2 === 0 ? "bg-white" : "bg-gray-50/30"
+                }`}>
                   {branch.name}
                 </td>
                 {[0, 3, 6, 9].map((month) => {
@@ -49,11 +56,11 @@ export function CalendarTab() {
                     (e) => e.branchId === branch.id && e.month === month && e.year === state.currentYear
                   );
 
-                  const statusColors: Record<string, string> = {
-                    realizado: "bg-green-100 text-green-900 font-bold border-green-300",
-                    programado: "bg-blue-100 text-blue-900 font-bold border-blue-300",
-                    pendiente: "bg-red-100 text-red-900 font-bold border-red-300",
-                    "": "bg-white text-gray-900 border-gray-400",
+                  const statusStyles: Record<string, string> = {
+                    realizado: "bg-emerald-50 text-emerald-800 font-bold border-emerald-300 ring-1 ring-emerald-200",
+                    programado: "bg-blue-50 text-blue-800 font-bold border-blue-300 ring-1 ring-blue-200",
+                    pendiente: "bg-red-50 text-red-800 font-bold border-red-300 ring-1 ring-red-200",
+                    "": "bg-gray-50 text-gray-600 border-gray-300",
                   };
 
                   return (
@@ -72,8 +79,8 @@ export function CalendarTab() {
                             },
                           });
                         }}
-                        className={`text-sm px-2 py-1 rounded font-bold cursor-pointer border-2 w-full ${
-                          statusColors[entry?.status || ""] || "bg-white text-gray-900 border-gray-400"
+                        className={`text-sm px-2.5 py-1.5 rounded-lg font-bold cursor-pointer border w-full transition-all focus:ring-2 focus:ring-blue-300 ${
+                          statusStyles[entry?.status || ""] || "bg-gray-50 text-gray-600 border-gray-300"
                         }`}
                       >
                         <option value="">-</option>
@@ -90,31 +97,45 @@ export function CalendarTab() {
         </table>
       </div>
 
-      <div className="mt-4 p-4 bg-white rounded-lg border-2 border-gray-300 shadow-sm">
-        <h3 className="font-bold text-sm text-gray-900 mb-3">Leyenda de Estados</h3>
+      <div className="p-5 rounded-2xl bg-white border border-gray-200/80 shadow-sm">
+        <h3 className="font-bold text-sm text-gray-700 mb-3 uppercase tracking-wider flex items-center gap-2">
+          <span className="w-1.5 h-4 rounded-full bg-gray-400 inline-block" />
+          Leyenda de Estados
+        </h3>
         <div className="flex gap-6 text-sm flex-wrap">
           <div className="flex items-center gap-3">
-            <div className="w-6 h-6 rounded bg-green-100 border-2 border-green-600" />
-            <span className="font-semibold text-gray-900">Realizado</span>
+            <div className="w-7 h-7 rounded-lg bg-emerald-100 border border-emerald-400 flex items-center justify-center">
+              <span className="text-emerald-600 text-xs font-bold">R</span>
+            </div>
+            <span className="font-semibold text-gray-800">Realizado</span>
           </div>
           <div className="flex items-center gap-3">
-            <div className="w-6 h-6 rounded bg-blue-100 border-2 border-blue-600" />
-            <span className="font-semibold text-gray-900">Programado</span>
+            <div className="w-7 h-7 rounded-lg bg-blue-100 border border-blue-400 flex items-center justify-center">
+              <span className="text-blue-600 text-xs font-bold">P</span>
+            </div>
+            <span className="font-semibold text-gray-800">Programado</span>
           </div>
           <div className="flex items-center gap-3">
-            <div className="w-6 h-6 rounded bg-red-100 border-2 border-red-600" />
-            <span className="font-semibold text-gray-900">Pendiente</span>
+            <div className="w-7 h-7 rounded-lg bg-red-100 border border-red-400 flex items-center justify-center">
+              <span className="text-red-600 text-xs font-bold">!</span>
+            </div>
+            <span className="font-semibold text-gray-800">Pendiente</span>
           </div>
           <div className="flex items-center gap-3">
-            <div className="w-6 h-6 rounded bg-gray-100 border-2 border-gray-400" />
-            <span className="font-semibold text-gray-900">Sin Datos</span>
+            <div className="w-7 h-7 rounded-lg bg-gray-100 border border-gray-300 flex items-center justify-center">
+              <span className="text-gray-400 text-xs font-bold">-</span>
+            </div>
+            <span className="font-semibold text-gray-800">Sin Datos</span>
           </div>
         </div>
       </div>
 
-      <div className="mt-4 bg-white rounded-lg shadow-md overflow-x-auto border border-gray-300">
-        <div className="p-4">
-          <h3 className="font-bold text-base text-gray-900 mb-4">Sucursales sin Mantenimiento Atrasado</h3>
+      <div className="rounded-2xl shadow-lg overflow-hidden border border-gray-200/80 bg-white">
+        <div className="p-5">
+          <h3 className="font-bold text-base text-gray-900 mb-4 flex items-center gap-2">
+            <span className="w-1.5 h-5 rounded-full bg-emerald-500 inline-block" />
+            Sucursales sin Mantenimiento Atrasado
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {state.branches
               .filter((branch) => {
@@ -138,9 +159,12 @@ export function CalendarTab() {
                 return entry && (entry.status === "realizado" || entry.status === "programado");
               })
               .map((branch) => (
-                <div key={branch.id} className="flex items-center gap-2 p-2 bg-green-50 rounded border border-green-300">
-                  <div className="w-3 h-3 rounded-full bg-green-600" />
-                  <span className="text-sm font-medium text-green-900">{branch.name}</span>
+                <div
+                  key={branch.id}
+                  className="flex items-center gap-2.5 p-3 rounded-xl bg-gradient-to-r from-emerald-50 to-green-50/50 border border-emerald-200 hover:border-emerald-300 transition-all hover:shadow-sm"
+                >
+                  <div className="w-3 h-3 rounded-full bg-emerald-500 shadow-sm shadow-emerald-200" />
+                  <span className="text-sm font-semibold text-emerald-800">{branch.name}</span>
                 </div>
               ))}
           </div>
@@ -158,7 +182,7 @@ export function CalendarTab() {
             );
             return entry && (entry.status === "realizado" || entry.status === "programado");
           }).length === 0 && (
-            <p className="text-gray-500 text-sm">No hay sucursales sin mantenimiento atrasado en este período</p>
+            <p className="text-gray-400 text-sm italic">No hay sucursales sin mantenimiento atrasado en este período</p>
           )}
         </div>
       </div>

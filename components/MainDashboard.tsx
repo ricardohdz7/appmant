@@ -25,30 +25,34 @@ export function MainDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-100">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-primary text-primary-foreground shadow-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <header className="sticky top-0 z-40 shadow-lg" style={{
+        background: "linear-gradient(135deg, #0b3d91 0%, #1e56a0 50%, #2563eb 100%)",
+      }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
           <div className="flex justify-between items-center">
             <div className="flex-1">
-              <h1 className="text-2xl font-bold">Control de Mantenimiento Preventivo</h1>
-              <p className="text-sm text-primary-foreground/80 mt-1">
+              <h1 className="text-2xl font-extrabold text-white tracking-tight">
+                Control de Mantenimiento Preventivo
+              </h1>
+              <p className="text-sm text-blue-200 mt-1 font-medium">
                 Casa Muñoz S.A. • Beauty Hub S.A.
               </p>
             </div>
 
             <div className="flex items-center gap-4">
-              <div className="text-right">
-                <label className="text-sm font-medium text-white">Año:</label>
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-bold text-blue-200">Año:</label>
                 <select
                   value={state.currentYear}
                   onChange={(e) =>
                     dispatch({ type: "SET_YEAR", payload: parseInt(e.target.value) })
                   }
-                  className="ml-2 px-3 py-1 rounded bg-white text-gray-900 text-sm font-semibold"
+                  className="px-3 py-1.5 rounded-lg bg-white/15 text-white text-sm font-bold border border-white/20 backdrop-blur-sm focus:ring-2 focus:ring-white/30 focus:outline-none cursor-pointer hover:bg-white/25 transition-colors"
                 >
                   {[2023, 2024, 2025, 2026, 2027].map((year) => (
-                    <option key={year} value={year}>
+                    <option key={year} value={year} className="text-gray-900">
                       {year}
                     </option>
                   ))}
@@ -58,7 +62,7 @@ export function MainDashboard() {
               <Button
                 onClick={exportToPDF}
                 variant="outline"
-                className="text-primary-foreground border-primary-foreground hover:bg-primary-foreground/10"
+                className="text-white border-white/30 hover:bg-white/15 hover:border-white/50 rounded-lg transition-all backdrop-blur-sm font-semibold"
                 size="sm"
               >
                 Imprimir / PDF
@@ -69,17 +73,17 @@ export function MainDashboard() {
       </header>
 
       {/* Navigation Tabs */}
-      <div className="bg-white border-b border-gray-200 sticky top-16 z-30 shadow-sm">
+      <div className="bg-white/80 backdrop-blur-md border-b border-gray-200/80 sticky top-[76px] z-30 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex overflow-x-auto">
+          <div className="flex overflow-x-auto gap-1">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+                className={`flex items-center gap-2 px-5 py-3.5 text-sm font-bold whitespace-nowrap border-b-3 transition-all duration-200 rounded-t-lg ${
                   activeTab === tab.id
-                    ? "border-primary text-primary"
-                    : "border-transparent text-gray-600 hover:text-gray-900"
+                    ? "border-blue-600 text-blue-700 bg-blue-50/60"
+                    : "border-transparent text-gray-500 hover:text-gray-800 hover:bg-gray-50/80"
                 }`}
               >
                 <span className="text-base">{tab.icon}</span>
@@ -100,9 +104,9 @@ export function MainDashboard() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 mt-8 py-4">
+      <footer className="bg-white/60 backdrop-blur-sm border-t border-gray-200/60 mt-8 py-5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-sm text-gray-600 text-center">
+          <p className="text-sm text-gray-500 text-center font-medium">
             © 2025 Control de Mantenimiento Preventivo • Casa Muñoz S.A. • Beauty Hub S.A.
           </p>
         </div>
