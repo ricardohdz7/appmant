@@ -36,12 +36,21 @@ export interface CostEntry {
   assignedTo: string;
 }
 
+export interface HistoryEntry {
+  id: string;
+  timestamp: string; // ISO string
+  entity: "branch" | "calendar" | "planning" | "cost" | "system";
+  action: "add" | "update" | "delete" | "clear" | "sync";
+  description: string;
+}
+
 export interface MaintenanceState {
   branches: Branch[];
   calendarEntries: CalendarEntry[];
   planningEntries: PlanningEntry[];
   costEntries: CostEntry[];
   currentYear: number;
+  historyLog: HistoryEntry[];
 }
 
 export type MaintenanceAction =
@@ -57,4 +66,6 @@ export type MaintenanceAction =
   | { type: "CLEAR_BRANCH_COSTS"; payload: string }
   | { type: "CLEAR_ALL_COSTS" }
   | { type: "SET_YEAR"; payload: number }
-  | { type: "LOAD_STATE"; payload: MaintenanceState };
+  | { type: "LOAD_STATE"; payload: MaintenanceState }
+  | { type: "CLEAR_HISTORY" };
+

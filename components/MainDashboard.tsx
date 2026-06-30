@@ -7,12 +7,13 @@ import { PlanningTab } from "./tabs/PlanningTab";
 import { GanttTab } from "./tabs/GanttTab";
 import { CostsTab } from "./tabs/CostsTab";
 import { BranchesTab } from "./tabs/BranchesTab";
+import { HistoryTab } from "./tabs/HistoryTab";
 import { Button } from "@/components/ui/button";
 import { exportToPDF } from "@/lib/exportUtils";
 
 export function MainDashboard() {
   const { state, dispatch } = useMaintenanceContext();
-  const [activeTab, setActiveTab] = useState<"calendar" | "planning" | "gantt" | "costs" | "branches">(
+  const [activeTab, setActiveTab] = useState<"calendar" | "planning" | "gantt" | "costs" | "branches" | "history">(
     "calendar"
   );
 
@@ -22,6 +23,7 @@ export function MainDashboard() {
     { id: "gantt", label: "Cumplimiento", icon: "📊" },
     { id: "costs", label: "Costos", icon: "💰" },
     { id: "branches", label: "Sucursales", icon: "🏪" },
+    { id: "history", label: "Historial", icon: "📜" },
   ];
 
   return (
@@ -101,6 +103,7 @@ export function MainDashboard() {
         {activeTab === "gantt" && <GanttTab />}
         {activeTab === "costs" && <CostsTab />}
         {activeTab === "branches" && <BranchesTab />}
+        {activeTab === "history" && <HistoryTab />}
       </main>
 
       {/* Footer */}

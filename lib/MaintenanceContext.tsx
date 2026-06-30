@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useReducer, ReactNode, useEffect } from "react";
+import React, { createContext, useContext, useReducer, ReactNode, useEffect, useRef } from "react";
 import {
   MaintenanceState,
   MaintenanceAction,
@@ -17,11 +17,12 @@ const MaintenanceContext = createContext<{
 } | null>(null);
 
 const initialState: MaintenanceState = {
-  branches: sampleBranches,
-  calendarEntries: sampleCalendarEntries,
-  planningEntries: samplePlanningEntries,
-  costEntries: sampleCostEntries,
+  branches: [],
+  calendarEntries: [],
+  planningEntries: [],
+  costEntries: [],
   currentYear: 2025,
+  historyLog: [],
 };
 
 function maintenanceReducer(state: MaintenanceState, action: MaintenanceAction): MaintenanceState {
@@ -84,6 +85,8 @@ function maintenanceReducer(state: MaintenanceState, action: MaintenanceAction):
       return { ...state, currentYear: action.payload };
     case "LOAD_STATE":
       return action.payload;
+    case "CLEAR_HISTORY":
+      return { ...state, historyLog: [] };
     default:
       return state;
   }
@@ -91,36 +94,91 @@ function maintenanceReducer(state: MaintenanceState, action: MaintenanceAction):
 
 export function MaintenanceProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(maintenanceReducer, initialState);
+  const isLoaded = useRef(false);
 
-  // Load from localStorage on mount
+  // Load from database on mount
   useEffect(() => {
-    const saved = localStorage.getItem("maintenanceState");
-    if (saved) {
+    async function loadData() {
       try {
-        const parsed = JSON.parse(saved);
-        // Reconstruct Date objects from ISO strings
-        if (parsed.planningEntries) {
-          parsed.planningEntries = parsed.planningEntries.map((p: any) => ({
-            ...p,
-            scheduledDate: typeof p.scheduledDate === 'string' ? new Date(p.scheduledDate) : p.scheduledDate,
-          }));
+        const res = await fetch("/api/db");
+        if (res.ok) {
+          const parsed = await res.json();
+          // Reconstruct Date objects from ISO strings
+          if (parsed.planningEntries) {
+            parsed.planningEntries = parsed.planningEntries.map((p: any) => ({
+              ...p,
+              scheduledDate: typeof p.scheduledDate === 'string' ? new Date(p.scheduledDate) : p.scheduledDate,
+            }));
+          }
+          if (parsed.costEntries) {
+            parsed.costEntries = parsed.costEntries.map((c: any) => ({
+              ...c,
+              date: typeof c.date === 'string' ? new Date(c.date) : c.date,
+            }));
+          }
+          dispatch({ type: "LOAD_STATE", payload: parsed });
+        } else {
+          console.error("Failed to load initial state from database API");
         }
-        if (parsed.costEntries) {
-          parsed.costEntries = parsed.costEntries.map((c: any) => ({
-            ...c,
-            date: typeof c.date === 'string' ? new Date(c.date) : c.date,
-          }));
-        }
-        dispatch({ type: "LOAD_STATE", payload: parsed });
       } catch (e) {
-        console.error("Failed to load state from localStorage", e);
+        console.error("Failed to load state from database API", e);
+      } finally {
+        isLoaded.current = true;
       }
     }
+    loadData();
   }, []);
 
-  // Save to localStorage on state change
+  // Save to database on state change
   useEffect(() => {
-    localStorage.setItem("maintenanceState", JSON.stringify(state));
+    if (!isLoaded.current) return;
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(async () => {
+      try {
+        const res = await fetch("/api/db", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(state),
+          signal: controller.signal,
+        });
+
+        if (res.ok) {
+          const updatedData = await res.json();
+          // If the database returns an updated historyLog length, sync it to client state
+          const serverLogLen = updatedData.historyLog?.length || 0;
+          const clientLogLen = state.historyLog?.length || 0;
+          if (serverLogLen !== clientLogLen) {
+            const parsed = updatedData;
+            // Reconstruct Date objects from ISO strings
+            if (parsed.planningEntries) {
+              parsed.planningEntries = parsed.planningEntries.map((p: any) => ({
+                ...p,
+                scheduledDate: typeof p.scheduledDate === 'string' ? new Date(p.scheduledDate) : p.scheduledDate,
+              }));
+            }
+            if (parsed.costEntries) {
+              parsed.costEntries = parsed.costEntries.map((c: any) => ({
+                ...c,
+                date: typeof c.date === 'string' ? new Date(c.date) : c.date,
+              }));
+            }
+            dispatch({ type: "LOAD_STATE", payload: parsed });
+          }
+        }
+      } catch (e) {
+        if ((e as Error).name !== "AbortError") {
+          console.error("Failed to save state to database API", e);
+        }
+      }
+    }, 500);
+
+    return () => {
+      controller.abort();
+      clearTimeout(timeoutId);
+    };
   }, [state]);
 
   return <MaintenanceContext.Provider value={{ state, dispatch }}>{children}</MaintenanceContext.Provider>;
