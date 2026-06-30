@@ -2,8 +2,9 @@
 
 import { useMaintenanceContext } from "@/lib/MaintenanceContext";
 import { Button } from "@/components/ui/button";
-import { Download, Upload, Plus, Trash2, FileDown } from "lucide-react";
+import { Download, Upload, Plus, Trash2, FileDown, List } from "lucide-react";
 import { downloadJSON } from "@/lib/exportUtils";
+import { exportBranchNamesToExcel } from "@/lib/excelUtils";
 import { formatDate } from "@/lib/dateUtils";
 import { useState, useRef } from "react";
 
@@ -122,6 +123,15 @@ export function BranchesTab() {
           <Button onClick={() => fileInputRef.current?.click()} variant="outline" size="sm" className="flex items-center gap-2">
             <Upload className="w-4 h-4" />
             Restaurar
+          </Button>
+          <Button 
+            onClick={() => exportBranchNamesToExcel(state.branches)}
+            variant="outline"
+            size="sm"
+            className="flex items-center gap-2"
+          >
+            <List className="w-4 h-4" />
+            Descargar Nombres
           </Button>
           <Button 
             onClick={async () => {

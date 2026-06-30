@@ -188,6 +188,28 @@ function getStatusLabel(status: string): string {
 }
 
 /**
+ * Exporta solo los nombres de las sucursales a un archivo Excel
+ */
+export function exportBranchNamesToExcel(branches: Array<{ name: string }>): void {
+  const data = branches.map((branch) => ({
+    'Nombre de Sucursal': branch.name,
+  }));
+
+  const ws = XLSX.utils.json_to_sheet(data);
+  
+  // Ajustar ancho de columnas
+  ws['!cols'] = [
+    { wch: 40 }, // Nombre de Sucursal
+  ];
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Sucursales');
+
+  // Descargar archivo
+  XLSX.writeFile(wb, `sucursales-${new Date().toISOString().split('T')[0]}.xlsx`);
+}
+
+/**
  * Parsea una etiqueta de estado a estado interno
  */
 function parseStatusFromLabel(label: string): string | null {
