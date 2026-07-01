@@ -1,5 +1,5 @@
 import * as XLSX from 'xlsx';
-import { PlanningEntry, Branch, AdvanceStatus } from './types';
+import { PlanningEntry, Branch, AdvanceStatus, CostEntry } from './types';
 
 /**
  * Exporta una plantilla Excel para importar planeación precargada con datos actuales
@@ -244,4 +244,168 @@ function parseStatusFromLabel(label: string): AdvanceStatus | null {
   
   const normalized = label?.toLowerCase().trim();
   return statusMap[normalized] || null;
+}
+
+/**
+ * Exporta una plantilla Excel vacía para importar insumos/costos masivamente
+ */
+export function downloadCostsTemplate(branches: Branch[]): void {
+  // Crear plantilla con encabezados
+  const templateData = branches.map((branch) => {
+    return {
+      'Sucursal': branch.name,
+      'Fecha': formatDateShort(new Date()),
+      'Material': '',
+      'Cantidad': 0,
+      'Costo Unitario': 0.0,
+      'Asignado a': '',
+    };
+  });
+
+  const ws = XLSX.utils.json_to_sheet(templateData);
+  
+  // Ajustar ancho de columnas
+  ws['!cols'] = [
+    { wch: 30 }, // Sucursal
+    { wch: 15 }, // Fecha
+    { wch: 30 }, // Material
+    { wch: 15 }, // Cantidad
+    { wch: 20 }, // Costo Unitario
+    { wch: 25 }, // Asignado a
+  ];
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Plantilla Insumos');
+
+  // Descargar archivo
+  XLSX.writeFile(wb, 'plantilla-insumos.xlsx');
+}
+
+/**
+ * Exporta las entradas de costos/insumos a un archivo Excel
+ */
+export function exportCostsToExcel(costs: CostEntry[], branchesMap: Record<string, string>): void {
+  // Preparar datos para Excel
+  const data = costs.map((cost) => ({
+    'ID': cost.id,
+    'Sucursal': branchesMap[cost.branchId] || cost.branchId,
+    'Fecha': formatDateShort(cost.date),
+    'Material': cost.material,
+    'Cantidad': cost.quantity,
+    'Costo Unitario': cost.unitCost,
+    'Total': cost.quantity * cost.unitCost,
+    'Asignado a': cost.assignedTo,
+  }));
+
+  const ws = XLSX.utils.json_to_sheet(data);
+  
+  // Ajustar ancho de columnas
+  ws['!cols'] = [
+    { wch: 15 }, // ID
+    { wch: 30 }, // Sucursal
+    { wch: 15 }, // Fecha
+    { wch: 30 }, // Material
+    { wch: 15 }, // Cantidad
+    { wch: 20 }, // Costo Unitario
+    { wch: 15 }, // Total
+    { wch: 25 }, // Asignado a
+  ];
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Insumos');
+
+  XLSX.writeFile(wb, `insumos-${new Date().toISOString().split('T')[0]}.xlsx`);
+}
+
+/**
+ * Importa entradas de costos/insumos desde un archivo Excel
+ */
+export function importCostsFromExcel(
+  file: File,
+  branchesMap: Record<string, string>
+): Promise<CostEntry[]> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      try {
+        const data = e.target?.result;
+        if (!data) {
+          reject(new Error('No se pudo leer el archivo'));
+          return;
+        }
+
+        const workbook = XLSX.read(data, { type: 'array', cellDates: true });
+        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+        const jsonData = XLSX.utils.sheet_to_json<any>(worksheet);
+
+        // Validar y transformar datos
+        const entries: CostEntry[] = jsonData.map((row, index) => {
+          const rowNum = index + 2; // +1 for 0-index, +1 for header
+          
+          const branchId = Object.entries(branchesMap).find(
+            ([_, name]) => name.toLowerCase() === row['Sucursal']?.toLowerCase()
+          )?.[0];
+
+          if (!branchId) {
+            throw new Error(`Fila ${rowNum}: No se encontró la sucursal "${row['Sucursal']}"`);
+          }
+
+          const material = row['Material']?.toString().trim();
+          if (!material) {
+            throw new Error(`Fila ${rowNum}: El Material es requerido`);
+          }
+
+          const quantity = parseInt(row['Cantidad'], 10);
+          if (isNaN(quantity)) {
+            throw new Error(`Fila ${rowNum}: La Cantidad debe ser un número entero`);
+          }
+
+          const unitCost = parseFloat(row['Costo Unitario']);
+          if (isNaN(unitCost)) {
+            throw new Error(`Fila ${rowNum}: El Costo Unitario debe ser numérico`);
+          }
+
+          const assignedTo = row['Asignado a']?.toString().trim() || 'No asignado';
+
+          let costDate = new Date();
+          if (row['Fecha']) {
+            if (row['Fecha'] instanceof Date) {
+              costDate = row['Fecha'];
+            } else {
+              const parsedDate = parseShortDate(row['Fecha'].toString());
+              if (parsedDate) {
+                costDate = parsedDate;
+              } else {
+                throw new Error(`Fila ${rowNum}: Fecha inválida "${row['Fecha']}". Use formato DD/MM/YYYY.`);
+              }
+            }
+          }
+
+          return {
+            id: row['ID']?.toString().trim() || `c${Date.now()}_${index}`,
+            branchId,
+            date: costDate,
+            material,
+            quantity,
+            unitCost,
+            assignedTo,
+          };
+        });
+
+        // Filtrar filas que estén vacías o donde material="" o cantidad=0 intencionalmente
+        const validEntries = entries.filter(e => e.material && e.quantity && e.quantity > 0);
+
+        resolve(validEntries);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    reader.onerror = () => {
+      reject(new Error('Error al leer el archivo'));
+    };
+
+    reader.readAsArrayBuffer(file);
+  });
 }

@@ -2,49 +2,71 @@
 
 import { useMaintenanceContext } from "@/lib/MaintenanceContext";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, Copy } from "lucide-react";
+import { Plus, Trash2, Copy, Download, Upload, FileDown, PlusCircle } from "lucide-react";
 import { formatDate } from "@/lib/dateUtils";
-import { useState } from "react";
+import { downloadCostsTemplate, exportCostsToExcel, importCostsFromExcel } from "@/lib/excelUtils";
+import { useState, useRef } from "react";
 
 export function CostsTab() {
   const { state, dispatch } = useMaintenanceContext();
   const [selectedBranch, setSelectedBranch] = useState(state.branches[0]?.id || "");
-  const [material, setMaterial] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [unitCost, setUnitCost] = useState("");
+  const [items, setItems] = useState([{ material: "", quantity: "", unitCost: "" }]);
   const [assignedTo, setAssignedTo] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleAddCost = (branchId: string = selectedBranch) => {
-    if (!material || !quantity || !unitCost) return;
-
-    const id = `c${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    dispatch({
-      type: "ADD_COST_ENTRY",
-      payload: {
-        id,
-        branchId,
-        date: new Date(date),
-        material,
-        quantity: parseInt(quantity),
-        unitCost: parseFloat(unitCost),
-        assignedTo,
-      },
+    let addedCount = 0;
+    items.forEach((item) => {
+      if (!item.material || !item.quantity || !item.unitCost) return;
+      const id = `c${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      dispatch({
+        type: "ADD_COST_ENTRY",
+        payload: {
+          id,
+          branchId,
+          date: new Date(date),
+          material: item.material,
+          quantity: parseInt(item.quantity),
+          unitCost: parseFloat(item.unitCost),
+          assignedTo,
+        },
+      });
+      addedCount++;
     });
+    return addedCount;
   };
 
   const handleAddToAllBranches = () => {
-    if (!material || !quantity || !unitCost) return;
+    const validItems = items.filter(i => i.material && i.quantity && i.unitCost);
+    if (validItems.length === 0) return;
 
     state.branches.forEach((branch) => {
       handleAddCost(branch.id);
     });
 
-    setMaterial("");
-    setQuantity("");
-    setUnitCost("");
+    setItems([{ material: "", quantity: "", unitCost: "" }]);
     setAssignedTo("");
-    alert(`Costo agregado a todas las ${state.branches.length} sucursales`);
+    alert(`${validItems.length} insumos agregados a todas las ${state.branches.length} sucursales`);
+  };
+
+  const updateItem = (index: number, field: string, value: string) => {
+    const newItems = [...items];
+    newItems[index] = { ...newItems[index], [field]: value };
+    setItems(newItems);
+  };
+
+  const removeItem = (index: number) => {
+    const newItems = items.filter((_, i) => i !== index);
+    if (newItems.length === 0) {
+      setItems([{ material: "", quantity: "", unitCost: "" }]);
+    } else {
+      setItems(newItems);
+    }
+  };
+
+  const addItemRow = () => {
+    setItems([...items, { material: "", quantity: "", unitCost: "" }]);
   };
 
   const handleClearBranchCosts = () => {
@@ -60,96 +82,188 @@ export function CostsTab() {
     }
   };
 
+  const handleImportExcel = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const branchesMap = state.branches.reduce((acc, b) => {
+        acc[b.id] = b.name;
+        return acc;
+      }, {} as Record<string, string>);
+
+      const newCosts = await importCostsFromExcel(file, branchesMap);
+      
+      newCosts.forEach((cost) => {
+        dispatch({ type: "ADD_COST_ENTRY", payload: cost });
+      });
+      
+      alert(`${newCosts.length} insumos importados exitosamente`);
+      event.target.value = "";
+    } catch (error: any) {
+      alert(`Error al importar Excel: ${error.message}`);
+      console.error(error);
+    }
+  };
+
   const branchCosts = state.costEntries.filter((c) => c.branchId === selectedBranch);
   const total = branchCosts.reduce((sum, c) => sum + c.quantity * c.unitCost, 0);
 
   const inputClass = "px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-900 font-medium bg-white placeholder-gray-400 focus:ring-2 focus:ring-blue-300 focus:border-blue-300 focus:outline-none transition-all";
+  const btnOutlineClass = "flex items-center gap-2 rounded-xl border-gray-300 hover:bg-blue-50 hover:border-blue-300 transition-all";
 
   return (
     <div className="space-y-5">
-      <h2 className="text-2xl font-bold text-gray-900">Costos de Insumos</h2>
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold text-gray-900">Costos de Insumos</h2>
+        <div className="flex gap-2 flex-wrap">
+          <Button
+            onClick={() => downloadCostsTemplate(state.branches)}
+            variant="outline"
+            size="sm"
+            className={btnOutlineClass}
+          >
+            <Download className="w-4 h-4" />
+            Plantilla Excel
+          </Button>
+          <Button 
+            onClick={() => {
+              const branchesMap = state.branches.reduce((acc, b) => {
+                acc[b.id] = b.name;
+                return acc;
+              }, {} as Record<string, string>);
+              exportCostsToExcel(state.costEntries, branchesMap);
+            }}
+            variant="outline"
+            size="sm"
+            className={btnOutlineClass}
+          >
+            <FileDown className="w-4 h-4" />
+            Exportar Excel
+          </Button>
+          <Button onClick={() => fileInputRef.current?.click()} variant="outline" size="sm" className={btnOutlineClass}>
+            <Upload className="w-4 h-4" />
+            Cargar Excel
+          </Button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".xlsx,.xls"
+            onChange={handleImportExcel}
+            className="hidden"
+          />
+        </div>
+      </div>
 
       <div className="rounded-2xl shadow-lg p-6 space-y-4 bg-white border border-gray-200/80">
         <h3 className="font-bold text-base text-gray-900 flex items-center gap-2">
           <span className="w-1.5 h-5 rounded-full bg-blue-500 inline-block" />
-          Agregar Costo
+          Agregar Insumos Masivos
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <select
-            value={selectedBranch}
-            onChange={(e) => setSelectedBranch(e.target.value)}
-            className={`${inputClass} col-span-2`}
-          >
-            {state.branches.map((branch) => (
-              <option key={branch.id} value={branch.id}>
-                {branch.name}
-              </option>
-            ))}
-          </select>
-
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className={inputClass}
-          />
-
-          <input
-            type="text"
-            placeholder="Material"
-            value={material}
-            onChange={(e) => setMaterial(e.target.value)}
-            className={inputClass}
-          />
-
-          <input
-            type="number"
-            placeholder="Cantidad"
-            value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
-            className={inputClass}
-          />
-
-          <input
-            type="number"
-            placeholder="Costo Unitario"
-            value={unitCost}
-            onChange={(e) => setUnitCost(e.target.value)}
-            className={inputClass}
-          />
-
-          <input
-            type="text"
-            placeholder="Asignado a"
-            value={assignedTo}
-            onChange={(e) => setAssignedTo(e.target.value)}
-            className={inputClass}
-          />
-
-          <div className="flex gap-2">
-            <Button 
-              onClick={() => {
-                handleAddCost();
-                setMaterial("");
-                setQuantity("");
-                setUnitCost("");
-                setAssignedTo("");
-              }} 
-              className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-200 transition-all"
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pb-3 border-b border-gray-100">
+          <div className="flex flex-col gap-1">
+            <label className="text-xs font-semibold text-gray-500 uppercase">Sucursal Destino</label>
+            <select
+              value={selectedBranch}
+              onChange={(e) => setSelectedBranch(e.target.value)}
+              className={inputClass}
             >
-              <Plus className="w-4 h-4" />
-              Agregar a Sucursal
-            </Button>
+              {state.branches.map((branch) => (
+                <option key={branch.id} value={branch.id}>
+                  {branch.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-xs font-semibold text-gray-500 uppercase">Fecha</label>
+            <input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className={inputClass}
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-xs font-semibold text-gray-500 uppercase">Asignado a</label>
+            <input
+              type="text"
+              placeholder="Nombre del responsable"
+              value={assignedTo}
+              onChange={(e) => setAssignedTo(e.target.value)}
+              className={inputClass}
+            />
+          </div>
+        </div>
 
-            <Button 
-              onClick={handleAddToAllBranches}
-              variant="outline"
-              className="flex items-center gap-2 rounded-xl border-emerald-300 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-400 transition-all"
-            >
-              <Copy className="w-4 h-4" />
-              Agregar a Todas
+        <div className="space-y-3">
+          <div className="flex justify-between items-center">
+            <label className="text-xs font-semibold text-gray-500 uppercase">Lista de Materiales</label>
+            <Button onClick={addItemRow} variant="outline" size="sm" className="h-7 text-xs flex gap-1 items-center bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100">
+              <PlusCircle className="w-3.5 h-3.5" /> Agregar fila
             </Button>
           </div>
+          
+          {items.map((item, index) => (
+            <div key={index} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_auto] gap-2 items-center bg-gray-50/50 p-2 rounded-xl border border-gray-100">
+              <input
+                type="text"
+                placeholder="Nombre del Material"
+                value={item.material}
+                onChange={(e) => updateItem(index, 'material', e.target.value)}
+                className={inputClass}
+              />
+              <input
+                type="number"
+                placeholder="Cantidad"
+                value={item.quantity}
+                onChange={(e) => updateItem(index, 'quantity', e.target.value)}
+                className={inputClass}
+              />
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">$</span>
+                <input
+                  type="number"
+                  placeholder="Precio Unit."
+                  value={item.unitCost}
+                  onChange={(e) => updateItem(index, 'unitCost', e.target.value)}
+                  className={`${inputClass} pl-7 w-full`}
+                />
+              </div>
+              <button
+                onClick={() => removeItem(index)}
+                className="p-2.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"
+                title="Eliminar fila"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex gap-2 pt-2">
+          <Button 
+            onClick={() => {
+              const count = handleAddCost();
+              if (count > 0) {
+                setItems([{ material: "", quantity: "", unitCost: "" }]);
+                setAssignedTo("");
+              }
+            }} 
+            className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-200 transition-all flex-1 md:flex-none"
+          >
+            <Plus className="w-4 h-4" />
+            Agregar Lista a Sucursal
+          </Button>
+
+          <Button 
+            onClick={handleAddToAllBranches}
+            variant="outline"
+            className="flex items-center gap-2 rounded-xl border-emerald-300 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-400 transition-all flex-1 md:flex-none"
+          >
+            <Copy className="w-4 h-4" />
+            Agregar Lista a Todas
+          </Button>
         </div>
       </div>
 
