@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Branch {
+  id              String            @id @default(cuid())
+  name            String
+  enterprise      String
+  brand           String
+  calendarEntries CalendarEntry[]
+  planningEntries PlanningEntry[]
+  costEntries     CostEntry[]
+}
+
+model CalendarEntry {
+  id          String @id @default(cuid())
+  branchId    String
+  year        Int
+  month       Int
+  status      String
+  responsible String
+  branch      Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+}
+
+model PlanningEntry {
+  id                   String   @id @default(cuid())
+  branchId             String
+  scheduledDate        DateTime
+  technicalResponsible String
+  advanceStatus        String
+  branch               Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+}
+
+model CostEntry {
+  id         String   @id @default(cuid())
+  branchId   String
+  date       DateTime
+  material   String
+  quantity   Int
+  unitCost   Float
+  assignedTo String
+  branch     Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+}
+
+model HistoryEntry {
+  id          String   @id @default(cuid())
+  timestamp   DateTime @default(now())
+  entity      String
+  action      String
+  description String
+}
+
+model GlobalState {
+  id          String @id @default("global")
+  currentYear Int
+}
