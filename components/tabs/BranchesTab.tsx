@@ -222,78 +222,32 @@ export function BranchesTab() {
                 <thead>
                   <tr className="border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100/60">
                     <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider">Sucursal</th>
-                    <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider">Próximo Mantenimiento</th>
-                    <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider">Responsable</th>
-                    <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider">Estado</th>
+                    <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider">Empresa</th>
+                    <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider">Marca</th>
                     <th className="px-4 py-3.5 text-center font-bold text-gray-700 uppercase text-[11px] tracking-wider">Acción</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {branches.map((branch, idx) => {
-                    const calendarEntry = state.calendarEntries.find(
-                      (e) => e.branchId === branch.id && e.year === state.currentYear
-                    );
-                    const latestPlanning = state.planningEntries
-                      .filter((p) => p.branchId === branch.id)
-                      .sort((a, b) => new Date(b.scheduledDate).getTime() - new Date(a.scheduledDate).getTime())[0];
-
-                    const statusStyles: Record<string, string> = {
-                      realizado: "bg-emerald-50 text-emerald-800 font-bold border-emerald-300",
-                      programado: "bg-blue-50 text-blue-800 font-bold border-blue-300",
-                      pendiente: "bg-red-50 text-red-800 font-bold border-red-300",
-                    };
-
-                    return (
-                      <tr
-                        key={branch.id}
-                        className={`border-b border-gray-100 hover:bg-blue-50/40 transition-colors ${
-                          idx % 2 === 0 ? "bg-white" : "bg-gray-50/30"
-                        }`}
-                      >
-                        <td className="px-4 py-3 text-gray-900 font-semibold">{branch.name}</td>
-                        <td className="px-4 py-3 text-gray-900 font-medium">
-                          {latestPlanning ? formatDate(latestPlanning.scheduledDate) : <span className="text-gray-400">-</span>}
-                        </td>
-                        <td className="px-4 py-3 text-gray-900 font-medium">
-                          {latestPlanning?.technicalResponsible || <span className="text-gray-400">-</span>}
-                        </td>
-                        <td className="px-4 py-3">
-                          <select
-                            value={calendarEntry?.status || ""}
-                            onChange={(e) => {
-                              const currentMonth = new Date().getMonth();
-                              dispatch({
-                                type: "UPDATE_CALENDAR_ENTRY",
-                                payload: {
-                                  branchId: branch.id,
-                                  year: state.currentYear,
-                                  month: currentMonth,
-                                  status: e.target.value as any,
-                                  responsible: calendarEntry?.responsible || "",
-                                },
-                              });
-                            }}
-                            className={`px-3 py-2 rounded-lg font-bold text-sm cursor-pointer border transition-all focus:ring-2 focus:ring-blue-300 focus:outline-none ${
-                              statusStyles[calendarEntry?.status || ""] || "bg-gray-50 text-gray-600 border-gray-300"
-                            }`}
-                          >
-                            <option value="">Seleccionar...</option>
-                            <option value="programado">Programado</option>
-                            <option value="realizado">Realizado</option>
-                            <option value="pendiente">Pendiente</option>
-                          </select>
-                        </td>
-                        <td className="px-4 py-3 text-center">
-                          <button
-                            onClick={() => dispatch({ type: "DELETE_BRANCH", payload: branch.id })}
-                            className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-lg transition-colors font-bold"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                  {branches.map((branch, idx) => (
+                    <tr
+                      key={branch.id}
+                      className={`border-b border-gray-100 hover:bg-blue-50/40 transition-colors ${
+                        idx % 2 === 0 ? "bg-white" : "bg-gray-50/30"
+                      }`}
+                    >
+                      <td className="px-4 py-3 text-gray-900 font-semibold">{branch.name}</td>
+                      <td className="px-4 py-3 text-gray-900 font-medium">{branch.enterprise}</td>
+                      <td className="px-4 py-3 text-gray-900 font-medium">{branch.brand}</td>
+                      <td className="px-4 py-3 text-center">
+                        <button
+                          onClick={() => dispatch({ type: "DELETE_BRANCH", payload: branch.id })}
+                          className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-lg transition-colors font-bold"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
