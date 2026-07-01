@@ -7,12 +7,23 @@ import { formatDate } from "@/lib/dateUtils";
 import { downloadCostsTemplate, exportCostsToExcel, importCostsFromExcel } from "@/lib/excelUtils";
 import { useState, useRef } from "react";
 
+const MAINTENANCE_MONTHS = [
+  { value: 0, label: "Enero" },
+  { value: 3, label: "Abril" },
+  { value: 6, label: "Julio" },
+  { value: 9, label: "Octubre" }
+];
+
 export function CostsTab() {
   const { state, dispatch } = useMaintenanceContext();
   const [selectedBranch, setSelectedBranch] = useState(state.branches[0]?.id || "");
   const [items, setItems] = useState([{ material: "", quantity: "", unitCost: "" }]);
   const [assignedTo, setAssignedTo] = useState("");
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [date, setDate] = useState(() => {
+    const year = new Date().getFullYear();
+    return `${year}-01-15`; // Default to Enero
+  });
+  const [monthFilter, setMonthFilter] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleAddCost = (branchId: string = selectedBranch) => {
@@ -106,7 +117,15 @@ export function CostsTab() {
     }
   };
 
-  const branchCosts = state.costEntries.filter((c) => c.branchId === selectedBranch);
+  const filteredCostEntries = state.costEntries.filter((c) => {
+    if (monthFilter !== null) {
+      const d = c.date instanceof Date ? c.date : new Date(c.date);
+      return d.getMonth() === monthFilter;
+    }
+    return true;
+  });
+
+  const branchCosts = filteredCostEntries.filter((c) => c.branchId === selectedBranch);
   const total = branchCosts.reduce((sum, c) => sum + c.quantity * c.unitCost, 0);
 
   const inputClass = "px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-900 font-medium bg-white placeholder-gray-400 focus:ring-2 focus:ring-blue-300 focus:border-blue-300 focus:outline-none transition-all";
@@ -114,7 +133,7 @@ export function CostsTab() {
 
   return (
     <div className="space-y-5">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
         <h2 className="text-2xl font-bold text-gray-900">Costos de Insumos</h2>
         <div className="flex gap-2 flex-wrap">
           <Button
@@ -155,6 +174,26 @@ export function CostsTab() {
         </div>
       </div>
 
+      {/* Segmentador de Meses */}
+      <div className="bg-gray-100/80 p-1.5 rounded-2xl flex gap-1 border border-gray-200/50 max-w-xl">
+        {[
+          { label: "Consolidado (Todos)", value: null },
+          ...MAINTENANCE_MONTHS
+        ].map((opt) => (
+          <button
+            key={opt.label}
+            onClick={() => setMonthFilter(opt.value)}
+            className={`flex-1 py-2 px-3 text-xs font-bold rounded-xl transition-all duration-200 ${
+              monthFilter === opt.value
+                ? "bg-white text-blue-700 shadow-sm border border-gray-200/40"
+                : "text-gray-600 hover:bg-white/40 hover:text-gray-900"
+            }`}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
+
       <div className="rounded-2xl shadow-lg p-6 space-y-4 bg-white border border-gray-200/80">
         <h3 className="font-bold text-base text-gray-900 flex items-center gap-2">
           <span className="w-1.5 h-5 rounded-full bg-blue-500 inline-block" />
@@ -176,13 +215,20 @@ export function CostsTab() {
             </select>
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-semibold text-gray-500 uppercase">Fecha</label>
-            <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
+            <label className="text-xs font-semibold text-gray-500 uppercase">Mes a Asignar</label>
+            <select
+              value={date.split("-")[1] ? parseInt(date.split("-")[1]) - 1 : 0}
+              onChange={(e) => {
+                const year = date.split("-")[0] || new Date().getFullYear().toString();
+                const newMonth = (parseInt(e.target.value) + 1).toString().padStart(2, '0');
+                setDate(`${year}-${newMonth}-15`);
+              }}
               className={inputClass}
-            />
+            >
+              {MAINTENANCE_MONTHS.map((m) => (
+                <option key={m.value} value={m.value}>{m.label}</option>
+              ))}
+            </select>
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-xs font-semibold text-gray-500 uppercase">Asignado a</label>
@@ -345,7 +391,7 @@ export function CostsTab() {
           </thead>
           <tbody>
             {state.branches.map((branch, idx) => {
-              const branchTotal = state.costEntries
+              const branchTotal = filteredCostEntries
                 .filter((c) => c.branchId === branch.id)
                 .reduce((sum, c) => sum + c.quantity * c.unitCost, 0);
               
@@ -370,7 +416,7 @@ export function CostsTab() {
             <tr className="bg-gradient-to-r from-gray-50 to-blue-50/30 border-t-2 border-gray-200">
               <td className="px-4 py-4 font-bold text-gray-900 flex justify-between items-center">
                 <span className="uppercase tracking-wider text-sm">Total General</span>
-                {state.costEntries.length > 0 && (
+                {filteredCostEntries.length > 0 && (
                   <Button 
                     onClick={handleClearAllCosts} 
                     variant="destructive"
@@ -384,7 +430,7 @@ export function CostsTab() {
               </td>
               <td className="px-4 py-4 text-center">
                 <span className="font-extrabold text-lg text-blue-700 bg-blue-100 px-4 py-1.5 rounded-xl">
-                  ${state.costEntries.reduce((sum, c) => sum + c.quantity * c.unitCost, 0).toFixed(2)}
+                  ${filteredCostEntries.reduce((sum, c) => sum + c.quantity * c.unitCost, 0).toFixed(2)}
                 </span>
               </td>
             </tr>
