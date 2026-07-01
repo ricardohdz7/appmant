@@ -8,23 +8,40 @@ export interface KPI {
   color?: "green" | "blue" | "red" | "gray";
 }
 
-export function calculateKPIs(state: MaintenanceState): KPI[] {
+export function calculateKPIs(state: MaintenanceState, monthFilter: number | null = null): KPI[] {
   const { branches, calendarEntries, planningEntries, costEntries, currentYear } = state;
 
   // Filter entries for current year
   const yearCalendarEntries = calendarEntries.filter((e) => e.year === currentYear);
   const yearCostEntries = costEntries.filter((e) => {
     const d = e.date instanceof Date ? e.date : new Date(e.date);
-    return d.getFullYear() === currentYear;
+    const isSameYear = d.getFullYear() === currentYear;
+    if (monthFilter !== null) {
+      return isSameYear && d.getMonth() === monthFilter;
+    }
+    return isSameYear;
   });
 
   // Total branches
   const totalBranches = branches.length;
 
   // Calendar compliance
-  const totalExpectedMaintenances = totalBranches * 4; // Each branch gets 4 maintenances per year (quarterly)
-  const completedMaintenances = yearCalendarEntries.filter((e) => e.status === "realizado" && [0, 3, 6, 9].includes(e.month)).length;
-  const pendingMaintenances = yearCalendarEntries.filter((e) => e.status === "pendiente" && [0, 3, 6, 9].includes(e.month)).length;
+  const totalExpectedMaintenances = monthFilter !== null ? totalBranches : totalBranches * 4;
+  const completedMaintenances = yearCalendarEntries.filter((e) => {
+    const matchesStatus = e.status === "realizado";
+    if (monthFilter !== null) {
+      return matchesStatus && e.month === monthFilter;
+    }
+    return matchesStatus && [0, 3, 6, 9].includes(e.month);
+  }).length;
+
+  const pendingMaintenances = yearCalendarEntries.filter((e) => {
+    const matchesStatus = e.status === "pendiente";
+    if (monthFilter !== null) {
+      return matchesStatus && e.month === monthFilter;
+    }
+    return matchesStatus && [0, 3, 6, 9].includes(e.month);
+  }).length;
 
   // Costs
   const totalCosts = yearCostEntries.reduce((sum, c) => sum + c.quantity * c.unitCost, 0);
