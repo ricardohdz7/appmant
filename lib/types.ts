@@ -45,10 +45,18 @@ export interface ChecklistEntry {
   status: string; // "Realizado" | "No realizado" | "No aplica"
 }
 
+export interface User {
+  id: string;
+  username: string;
+  password?: string;
+  role: "admin" | "branch";
+  branchId?: string | null;
+}
+
 export interface HistoryEntry {
   id: string;
   timestamp: string; // ISO string
-  entity: "branch" | "calendar" | "planning" | "cost" | "system" | "checklist";
+  entity: "branch" | "calendar" | "planning" | "cost" | "system" | "checklist" | "user";
   action: "add" | "update" | "delete" | "clear" | "sync";
   description: string;
 }
@@ -59,6 +67,7 @@ export interface MaintenanceState {
   planningEntries: PlanningEntry[];
   costEntries: CostEntry[];
   checklistEntries: ChecklistEntry[];
+  users: User[];
   currentYear: number;
   historyLog: HistoryEntry[];
 }
@@ -78,6 +87,9 @@ export type MaintenanceAction =
   | { type: "UPDATE_CHECKLIST_ENTRY"; payload: ChecklistEntry }
   | { type: "BULK_UPDATE_CHECKLIST"; payload: { branchId: string; year: number; month: number; entries: ChecklistEntry[] } }
   | { type: "CLEAR_CHECKLIST"; payload: { branchId: string; year: number; month: number } }
+  | { type: "ADD_USER"; payload: User }
+  | { type: "UPDATE_USER"; payload: User }
+  | { type: "DELETE_USER"; payload: string }
   | { type: "SET_YEAR"; payload: number }
   | { type: "LOAD_STATE"; payload: MaintenanceState }
   | { type: "CLEAR_HISTORY" };

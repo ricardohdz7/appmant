@@ -224,6 +224,7 @@ export function BranchesTab() {
                     <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider">Sucursal</th>
                     <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider">Empresa</th>
                     <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider">Marca</th>
+                    <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider">Credenciales de Acceso</th>
                     <th className="px-4 py-3.5 text-center font-bold text-gray-700 uppercase text-[11px] tracking-wider">Acción</th>
                   </tr>
                 </thead>
@@ -238,6 +239,20 @@ export function BranchesTab() {
                       <td className="px-4 py-3 text-gray-900 font-semibold">{branch.name}</td>
                       <td className="px-4 py-3 text-gray-900 font-medium">{branch.enterprise}</td>
                       <td className="px-4 py-3 text-gray-900 font-medium">{branch.brand}</td>
+                      <td className="px-4 py-3 text-xs">
+                        {(() => {
+                          const bUser = state.users?.find((u) => u.branchId === branch.id);
+                          if (bUser) {
+                            return (
+                              <div className="font-sans text-gray-700 space-y-0.5">
+                                <div><span className="font-bold text-blue-800">Usuario:</span> <code className="bg-gray-100 px-1 py-0.5 rounded font-mono select-all">{bUser.username}</code></div>
+                                <div><span className="font-bold text-blue-800">Contraseña:</span> <code className="bg-gray-100 px-1 py-0.5 rounded font-mono select-all">{bUser.password || "sucursal2026"}</code></div>
+                              </div>
+                            );
+                          }
+                          return <span className="text-gray-400 italic">Generando...</span>;
+                        })()}
+                      </td>
                       <td className="px-4 py-3 text-center">
                         <button
                           onClick={() => dispatch({ type: "DELETE_BRANCH", payload: branch.id })}

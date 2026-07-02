@@ -17,6 +17,7 @@ model Branch {
   planningEntries PlanningEntry[]
   costEntries     CostEntry[]
   checklistEntries ChecklistEntry[]
+  users           User[]
 }
 
 model CalendarEntry {
@@ -59,6 +60,15 @@ model ChecklistEntry {
   branch     Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
 
   @@unique([branchId, year, month, taskKey])
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  role      String   // "admin" | "branch"
+  branchId  String?
+  branch    Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
 }
 
 model HistoryEntry {

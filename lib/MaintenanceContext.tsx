@@ -22,6 +22,7 @@ const initialState: MaintenanceState = {
   planningEntries: [],
   costEntries: [],
   checklistEntries: [],
+  users: [],
   currentYear: 2025,
   historyLog: [],
 };
@@ -129,6 +130,18 @@ function maintenanceReducer(state: MaintenanceState, action: MaintenanceAction):
               c.month === action.payload.month
             )
         ),
+      };
+    case "ADD_USER":
+      return { ...state, users: [...state.users, action.payload] };
+    case "UPDATE_USER":
+      return {
+        ...state,
+        users: state.users.map((u) => (u.id === action.payload.id ? action.payload : u)),
+      };
+    case "DELETE_USER":
+      return {
+        ...state,
+        users: state.users.filter((u) => u.id !== action.payload),
       };
     case "SET_YEAR":
       return { ...state, currentYear: action.payload };

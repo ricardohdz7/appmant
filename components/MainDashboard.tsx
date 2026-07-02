@@ -12,7 +12,14 @@ import { ChecklistTab } from "./tabs/ChecklistTab";
 import { Button } from "@/components/ui/button";
 import { exportToPDF } from "@/lib/exportUtils";
 
-export function MainDashboard() {
+import { User } from "@/lib/types";
+
+interface MainDashboardProps {
+  currentUser?: User;
+  onLogout?: () => void;
+}
+
+export function MainDashboard({ currentUser, onLogout }: MainDashboardProps) {
   const { state, dispatch } = useMaintenanceContext();
   const [activeTab, setActiveTab] = useState<"calendar" | "planning" | "gantt" | "costs" | "checklist" | "branches" | "history">(
     "calendar"
@@ -71,6 +78,23 @@ export function MainDashboard() {
               >
                 Imprimir / PDF
               </Button>
+
+              {currentUser && onLogout && (
+                <div className="flex items-center gap-3 border-l border-white/20 pl-4 ml-2">
+                  <div className="text-right hidden sm:block">
+                    <span className="text-[10px] text-blue-200 font-bold block uppercase">Panel de Control</span>
+                    <span className="text-xs text-white font-extrabold">{currentUser.username}</span>
+                  </div>
+                  <Button
+                    onClick={onLogout}
+                    variant="outline"
+                    size="sm"
+                    className="text-red-200 hover:text-red-100 hover:bg-red-500/20 border-red-500/30 hover:border-red-500/50 rounded-lg transition-all font-semibold"
+                  >
+                    Cerrar Sesión
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </div>

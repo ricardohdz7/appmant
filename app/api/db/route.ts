@@ -2,6 +2,15 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sampleBranches, sampleCalendarEntries, samplePlanningEntries, sampleCostEntries } from "@/lib/sampleData";
 
+function normalizeUsername(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]/g, "")
+    .substring(0, 40);
+}
+
 // Helper to seed database with sample data
 async function seedDatabase() {
   await prisma.$transaction(async (tx: any) => {
@@ -27,6 +36,30 @@ async function seedDatabase() {
         }))
       });
     }
+    
+    // Seed default admin user
+    await tx.user.create({
+      data: {
+        username: "admin",
+        password: "admin2026",
+        role: "admin"
+      }
+    });
+
+    // Seed sucursal users
+    if (sampleBranches.length > 0) {
+      for (const branch of sampleBranches) {
+        await tx.user.create({
+          data: {
+            username: `sucursal.${normalizeUsername(branch.name)}`,
+            password: "sucursal2026",
+            role: "branch",
+            branchId: branch.id
+          }
+        });
+      }
+    }
+
     await tx.globalState.upsert({
       where: { id: "global" },
       update: { currentYear: 2025 },
@@ -36,7 +69,7 @@ async function seedDatabase() {
       data: {
         entity: "system",
         action: "sync",
-        description: "Base de datos inicializada con datos de muestra"
+        description: "Base de datos inicializada con datos de muestra y usuarios"
       }
     });
   });
@@ -51,12 +84,36 @@ export async function GET() {
       await seedDatabase();
     }
 
-    const [branches, calendarEntries, planningEntries, costEntries, checklistEntries, globalState, historyLog] = await Promise.all([
+    // Self-heal empty users list
+    const usersCount = await prisma.user.count();
+    if (usersCount === 0) {
+      await prisma.user.create({
+        data: {
+          username: "admin",
+          password: "admin2026",
+          role: "admin"
+        }
+      });
+      const allBranches = await prisma.branch.findMany();
+      for (const b of allBranches) {
+        await prisma.user.create({
+          data: {
+            username: `sucursal.${normalizeUsername(b.name)}`,
+            password: "sucursal2026",
+            role: "branch",
+            branchId: b.id
+          }
+        });
+      }
+    }
+
+    const [branches, calendarEntries, planningEntries, costEntries, checklistEntries, users, globalState, historyLog] = await Promise.all([
       prisma.branch.findMany(),
       prisma.calendarEntry.findMany(),
       prisma.planningEntry.findMany(),
       prisma.costEntry.findMany(),
       prisma.checklistEntry.findMany(),
+      prisma.user.findMany(),
       prisma.globalState.findUnique({ where: { id: "global" } }),
       prisma.historyEntry.findMany({ orderBy: { timestamp: "desc" }, take: 500 })
     ]);
@@ -67,6 +124,7 @@ export async function GET() {
       planningEntries,
       costEntries,
       checklistEntries,
+      users,
       currentYear: globalState?.currentYear || 2025,
       historyLog
     });
@@ -81,13 +139,14 @@ export async function POST(request: Request) {
     const newData = await request.json();
     
     // Fetch old data from DB for comparison
-    const [oldBranches, oldCalendar, oldPlanning, oldCosts, oldChecklist, oldHistory] = await Promise.all([
+    const [oldBranches, oldCalendar, oldPlanning, oldCosts, oldChecklist, oldHistory, oldUsers] = await Promise.all([
       prisma.branch.findMany(),
       prisma.calendarEntry.findMany(),
       prisma.planningEntry.findMany(),
       prisma.costEntry.findMany(),
       prisma.checklistEntry.findMany(),
-      prisma.historyEntry.findMany({ orderBy: { timestamp: "desc" } })
+      prisma.historyEntry.findMany({ orderBy: { timestamp: "desc" } }),
+      prisma.user.findMany()
     ]);
     
     const oldData = {
@@ -309,6 +368,7 @@ export async function POST(request: Request) {
     // Perform transaction to rewrite all state
     await prisma.$transaction(async (tx: any) => {
       // Clear data (must delete child tables before parent because of FKs, though Cascade does it too)
+      await tx.user.deleteMany();
       await tx.checklistEntry.deleteMany();
       await tx.costEntry.deleteMany();
       await tx.planningEntry.deleteMany();
@@ -358,6 +418,44 @@ export async function POST(request: Request) {
         });
       }
 
+      // Merge and insert users
+      const finalUsersToInsert = [...(newData.users || [])];
+      for (const branch of newBranches) {
+        const hasUser = finalUsersToInsert.some((u: any) => u.branchId === branch.id);
+        if (!hasUser) {
+          const oldU = oldUsers.find((u: any) => u.branchId === branch.id);
+          finalUsersToInsert.push({
+            id: oldU?.id || `u-${Date.now()}-${branch.id}-${Math.random().toString(36).substring(2, 5)}`,
+            username: oldU?.username || `sucursal.${normalizeUsername(branch.name)}`,
+            password: oldU?.password || "sucursal2026",
+            role: "branch",
+            branchId: branch.id
+          });
+        }
+      }
+
+      const hasAdmin = finalUsersToInsert.some((u: any) => u.role === "admin");
+      if (!hasAdmin) {
+        finalUsersToInsert.push({
+          id: `u-admin-${Date.now()}`,
+          username: "admin",
+          password: "admin2026",
+          role: "admin"
+        });
+      }
+
+      if (finalUsersToInsert.length > 0) {
+        await tx.user.createMany({
+          data: finalUsersToInsert.map((u: any) => ({
+            id: u.id,
+            username: u.username,
+            password: u.password || "sucursal2026",
+            role: u.role,
+            branchId: u.branchId
+          }))
+        });
+      }
+
       await tx.globalState.upsert({
         where: { id: "global" },
         update: { currentYear: newData.currentYear || 2025 },
@@ -390,12 +488,13 @@ export async function POST(request: Request) {
     }
 
     // Return the updated state so the frontend can sync (especially the auto-generated history logs)
-    const [finalBranches, finalCalendar, finalPlanning, finalCosts, finalChecklist, finalGlobal, finalHistory] = await Promise.all([
+    const [finalBranches, finalCalendar, finalPlanning, finalCosts, finalChecklist, finalUsers, finalGlobal, finalHistory] = await Promise.all([
       prisma.branch.findMany(),
       prisma.calendarEntry.findMany(),
       prisma.planningEntry.findMany(),
       prisma.costEntry.findMany(),
       prisma.checklistEntry.findMany(),
+      prisma.user.findMany(),
       prisma.globalState.findUnique({ where: { id: "global" } }),
       prisma.historyEntry.findMany({ orderBy: { timestamp: "desc" }, take: 500 })
     ]);
@@ -406,6 +505,7 @@ export async function POST(request: Request) {
       planningEntries: finalPlanning,
       costEntries: finalCosts,
       checklistEntries: finalChecklist,
+      users: finalUsers,
       currentYear: finalGlobal?.currentYear || 2025,
       historyLog: finalHistory
     });
