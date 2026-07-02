@@ -8,12 +8,13 @@ import { GanttTab } from "./tabs/GanttTab";
 import { CostsTab } from "./tabs/CostsTab";
 import { BranchesTab } from "./tabs/BranchesTab";
 import { HistoryTab } from "./tabs/HistoryTab";
+import { ChecklistTab } from "./tabs/ChecklistTab";
 import { Button } from "@/components/ui/button";
 import { exportToPDF } from "@/lib/exportUtils";
 
 export function MainDashboard() {
   const { state, dispatch } = useMaintenanceContext();
-  const [activeTab, setActiveTab] = useState<"calendar" | "planning" | "gantt" | "costs" | "branches" | "history">(
+  const [activeTab, setActiveTab] = useState<"calendar" | "planning" | "gantt" | "costs" | "checklist" | "branches" | "history">(
     "calendar"
   );
 
@@ -22,6 +23,7 @@ export function MainDashboard() {
     { id: "planning", label: "Planeación", icon: "📋" },
     { id: "gantt", label: "Cumplimiento", icon: "📊" },
     { id: "costs", label: "Costos", icon: "💰" },
+    { id: "checklist", label: "Checklist", icon: "✅" },
     { id: "branches", label: "Sucursales", icon: "🏪" },
     { id: "history", label: "Historial", icon: "📜" },
   ];
@@ -102,6 +104,7 @@ export function MainDashboard() {
         {activeTab === "planning" && <PlanningTab />}
         {activeTab === "gantt" && <GanttTab />}
         {activeTab === "costs" && <CostsTab />}
+        {activeTab === "checklist" && <ChecklistTab />}
         {activeTab === "branches" && <BranchesTab />}
         {activeTab === "history" && <HistoryTab />}
       </main>

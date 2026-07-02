@@ -16,6 +16,7 @@ model Branch {
   calendarEntries CalendarEntry[]
   planningEntries PlanningEntry[]
   costEntries     CostEntry[]
+  checklistEntries ChecklistEntry[]
 }
 
 model CalendarEntry {
@@ -46,6 +47,18 @@ model CostEntry {
   unitCost   Float
   assignedTo String
   branch     Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+}
+
+model ChecklistEntry {
+  id         String   @id @default(cuid())
+  branchId   String
+  year       Int
+  month      Int
+  taskKey    String
+  status     String   // "Realizado", "No realizado", "No aplica"
+  branch     Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@unique([branchId, year, month, taskKey])
 }
 
 model HistoryEntry {

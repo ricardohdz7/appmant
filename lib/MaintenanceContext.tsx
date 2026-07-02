@@ -21,6 +21,7 @@ const initialState: MaintenanceState = {
   calendarEntries: [],
   planningEntries: [],
   costEntries: [],
+  checklistEntries: [],
   currentYear: 2025,
   historyLog: [],
 };
@@ -81,6 +82,54 @@ function maintenanceReducer(state: MaintenanceState, action: MaintenanceAction):
       return { ...state, costEntries: state.costEntries.filter((c) => c.branchId !== action.payload) };
     case "CLEAR_ALL_COSTS":
       return { ...state, costEntries: [] };
+    case "UPDATE_CHECKLIST_ENTRY": {
+      const existCheck = state.checklistEntries.find(
+        (c) =>
+          c.branchId === action.payload.branchId &&
+          c.year === action.payload.year &&
+          c.month === action.payload.month &&
+          c.taskKey === action.payload.taskKey
+      );
+      return {
+        ...state,
+        checklistEntries: existCheck
+          ? state.checklistEntries.map((c) =>
+              c.branchId === action.payload.branchId &&
+              c.year === action.payload.year &&
+              c.month === action.payload.month &&
+              c.taskKey === action.payload.taskKey
+                ? action.payload
+                : c
+            )
+          : [...state.checklistEntries, action.payload],
+      };
+    }
+    case "BULK_UPDATE_CHECKLIST": {
+      const restEntries = state.checklistEntries.filter(
+        (c) =>
+          !(
+            c.branchId === action.payload.branchId &&
+            c.year === action.payload.year &&
+            c.month === action.payload.month
+          )
+      );
+      return {
+        ...state,
+        checklistEntries: [...restEntries, ...action.payload.entries],
+      };
+    }
+    case "CLEAR_CHECKLIST":
+      return {
+        ...state,
+        checklistEntries: state.checklistEntries.filter(
+          (c) =>
+            !(
+              c.branchId === action.payload.branchId &&
+              c.year === action.payload.year &&
+              c.month === action.payload.month
+            )
+        ),
+      };
     case "SET_YEAR":
       return { ...state, currentYear: action.payload };
     case "LOAD_STATE":

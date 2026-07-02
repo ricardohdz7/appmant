@@ -36,10 +36,19 @@ export interface CostEntry {
   assignedTo: string;
 }
 
+export interface ChecklistEntry {
+  id: string;
+  branchId: string;
+  year: number;
+  month: number;
+  taskKey: string;
+  status: string; // "Realizado" | "No realizado" | "No aplica"
+}
+
 export interface HistoryEntry {
   id: string;
   timestamp: string; // ISO string
-  entity: "branch" | "calendar" | "planning" | "cost" | "system";
+  entity: "branch" | "calendar" | "planning" | "cost" | "system" | "checklist";
   action: "add" | "update" | "delete" | "clear" | "sync";
   description: string;
 }
@@ -49,6 +58,7 @@ export interface MaintenanceState {
   calendarEntries: CalendarEntry[];
   planningEntries: PlanningEntry[];
   costEntries: CostEntry[];
+  checklistEntries: ChecklistEntry[];
   currentYear: number;
   historyLog: HistoryEntry[];
 }
@@ -65,6 +75,9 @@ export type MaintenanceAction =
   | { type: "DELETE_COST_ENTRY"; payload: string }
   | { type: "CLEAR_BRANCH_COSTS"; payload: string }
   | { type: "CLEAR_ALL_COSTS" }
+  | { type: "UPDATE_CHECKLIST_ENTRY"; payload: ChecklistEntry }
+  | { type: "BULK_UPDATE_CHECKLIST"; payload: { branchId: string; year: number; month: number; entries: ChecklistEntry[] } }
+  | { type: "CLEAR_CHECKLIST"; payload: { branchId: string; year: number; month: number } }
   | { type: "SET_YEAR"; payload: number }
   | { type: "LOAD_STATE"; payload: MaintenanceState }
   | { type: "CLEAR_HISTORY" };

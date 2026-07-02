@@ -51,11 +51,12 @@ export async function GET() {
       await seedDatabase();
     }
 
-    const [branches, calendarEntries, planningEntries, costEntries, globalState, historyLog] = await Promise.all([
+    const [branches, calendarEntries, planningEntries, costEntries, checklistEntries, globalState, historyLog] = await Promise.all([
       prisma.branch.findMany(),
       prisma.calendarEntry.findMany(),
       prisma.planningEntry.findMany(),
       prisma.costEntry.findMany(),
+      prisma.checklistEntry.findMany(),
       prisma.globalState.findUnique({ where: { id: "global" } }),
       prisma.historyEntry.findMany({ orderBy: { timestamp: "desc" }, take: 500 })
     ]);
@@ -65,6 +66,7 @@ export async function GET() {
       calendarEntries,
       planningEntries,
       costEntries,
+      checklistEntries,
       currentYear: globalState?.currentYear || 2025,
       historyLog
     });
@@ -79,11 +81,12 @@ export async function POST(request: Request) {
     const newData = await request.json();
     
     // Fetch old data from DB for comparison
-    const [oldBranches, oldCalendar, oldPlanning, oldCosts, oldHistory] = await Promise.all([
+    const [oldBranches, oldCalendar, oldPlanning, oldCosts, oldChecklist, oldHistory] = await Promise.all([
       prisma.branch.findMany(),
       prisma.calendarEntry.findMany(),
       prisma.planningEntry.findMany(),
       prisma.costEntry.findMany(),
+      prisma.checklistEntry.findMany(),
       prisma.historyEntry.findMany({ orderBy: { timestamp: "desc" } })
     ]);
     
@@ -92,6 +95,7 @@ export async function POST(request: Request) {
        calendarEntries: oldCalendar,
        planningEntries: oldPlanning,
        costEntries: oldCosts,
+       checklistEntries: oldChecklist,
        historyLog: oldHistory
     };
 
@@ -273,9 +277,39 @@ export async function POST(request: Request) {
       });
     }
 
+    // Detect Checklist changes
+    const newChecklist = newData.checklistEntries || [];
+    const changedChecklistGroups = new Set<string>();
+    newChecklist.forEach((newCe: any) => {
+      const oldCe = oldChecklist.find(
+        (c: any) => c.branchId === newCe.branchId && c.year === newCe.year && c.month === newCe.month && c.taskKey === newCe.taskKey
+      );
+      if (!oldCe || oldCe.status !== newCe.status) {
+        changedChecklistGroups.add(`${newCe.branchId}-${newCe.year}-${newCe.month}`);
+      }
+    });
+    oldChecklist.forEach((oldCe: any) => {
+      if (!newChecklist.some((c: any) => c.branchId === oldCe.branchId && c.year === oldCe.year && c.month === oldCe.month && c.taskKey === oldCe.taskKey)) {
+        changedChecklistGroups.add(`${oldCe.branchId}-${oldCe.year}-${oldCe.month}`);
+      }
+    });
+
+    changedChecklistGroups.forEach((groupKey) => {
+      const [branchId, yearStr, monthStr] = groupKey.split("-");
+      const branchName = newBranches.find((b: any) => b.id === branchId)?.name || "Sucursal";
+      const monthName = getMonthNameSpanish(parseInt(monthStr));
+      newHistoryEntries.push({
+        timestamp: new Date(),
+        entity: "checklist",
+        action: "update",
+        description: `Se actualizó el checklist de mantenimiento de "${branchName}" para ${monthName} ${yearStr}`
+      });
+    });
+
     // Perform transaction to rewrite all state
     await prisma.$transaction(async (tx: any) => {
       // Clear data (must delete child tables before parent because of FKs, though Cascade does it too)
+      await tx.checklistEntry.deleteMany();
       await tx.costEntry.deleteMany();
       await tx.planningEntry.deleteMany();
       await tx.calendarEntry.deleteMany();
@@ -312,6 +346,17 @@ export async function POST(request: Request) {
           }))
         });
       }
+      if (newChecklist.length > 0) {
+        await tx.checklistEntry.createMany({
+          data: newChecklist.map((c: any) => ({
+            branchId: c.branchId,
+            year: c.year,
+            month: c.month,
+            taskKey: c.taskKey,
+            status: c.status
+          }))
+        });
+      }
 
       await tx.globalState.upsert({
         where: { id: "global" },
@@ -345,11 +390,12 @@ export async function POST(request: Request) {
     }
 
     // Return the updated state so the frontend can sync (especially the auto-generated history logs)
-    const [finalBranches, finalCalendar, finalPlanning, finalCosts, finalGlobal, finalHistory] = await Promise.all([
+    const [finalBranches, finalCalendar, finalPlanning, finalCosts, finalChecklist, finalGlobal, finalHistory] = await Promise.all([
       prisma.branch.findMany(),
       prisma.calendarEntry.findMany(),
       prisma.planningEntry.findMany(),
       prisma.costEntry.findMany(),
+      prisma.checklistEntry.findMany(),
       prisma.globalState.findUnique({ where: { id: "global" } }),
       prisma.historyEntry.findMany({ orderBy: { timestamp: "desc" }, take: 500 })
     ]);
@@ -359,6 +405,7 @@ export async function POST(request: Request) {
       calendarEntries: finalCalendar,
       planningEntries: finalPlanning,
       costEntries: finalCosts,
+      checklistEntries: finalChecklist,
       currentYear: finalGlobal?.currentYear || 2025,
       historyLog: finalHistory
     });
