@@ -5,6 +5,7 @@ import { calculateKPIs, getMonthName, getStatusColor } from "@/lib/kpiCalculatio
 import { KPIDashboard } from "@/components/KPIDashboard";
 import { useState } from "react";
 import { Calendar, AlertCircle, CheckCircle2, Clock, HelpCircle, DollarSign } from "lucide-react";
+import { CHECKLIST_CATEGORIES } from "@/lib/checklistTasks";
 
 export function GanttTab() {
   const { state } = useMaintenanceContext();
@@ -219,6 +220,68 @@ export function GanttTab() {
           </div>
         );
       })()}
+
+      {/* Avance de Checklists por Sucursal */}
+      {selectedMonth !== null && (
+        <div className="rounded-2xl p-5 border border-gray-200/80 bg-white shadow-lg space-y-4">
+          <h3 className="font-bold text-base text-gray-950 flex items-center gap-2">
+            <span className="w-1.5 h-5 rounded-full bg-blue-600 inline-block" />
+            Avance de Checklists de Mantenimiento ({getMonthName(selectedMonth)})
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {state.branches.map((branch) => {
+              const branchEntries = state.checklistEntries.filter(
+                (c) =>
+                  c.branchId === branch.id &&
+                  c.month === selectedMonth &&
+                  c.year === state.currentYear
+              );
+              const totalTasks = CHECKLIST_CATEGORIES.reduce((acc, cat) => acc + cat.tasks.length, 0);
+              const completedTasks = branchEntries.filter((e) => e.status === "Realizado").length;
+              const failedTasks = branchEntries.filter((e) => e.status === "No realizado").length;
+              const naTasks = branchEntries.filter((e) => e.status === "No aplica").length;
+              const answeredTasks = completedTasks + failedTasks + naTasks;
+              const compliance = answeredTasks > 0 ? Math.round((completedTasks / (totalTasks - naTasks || 1)) * 100) : 0;
+
+              let badgeColor = "bg-gray-100 text-gray-700 border-gray-200";
+              let badgeText = "Sin Iniciar";
+              if (compliance === 100) {
+                badgeColor = "bg-emerald-50 text-emerald-700 border-emerald-200";
+                badgeText = "Completo";
+              } else if (answeredTasks > 0) {
+                badgeColor = "bg-blue-50 text-blue-700 border-blue-200";
+                badgeText = `En proceso (${answeredTasks}/${totalTasks})`;
+              }
+
+              return (
+                <div key={branch.id} className="p-4 rounded-xl border border-gray-200/60 hover:border-blue-200 hover:shadow-md transition-all flex flex-col justify-between bg-gray-50/20">
+                  <div className="space-y-1">
+                    <div className="flex justify-between items-start gap-2">
+                      <h4 className="font-bold text-gray-900 text-sm">{branch.name}</h4>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${badgeColor}`}>
+                        {badgeText}
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-gray-500 font-semibold">{branch.enterprise} • {branch.brand}</p>
+                  </div>
+                  <div className="mt-4 space-y-1.5">
+                    <div className="flex justify-between text-xs font-semibold text-gray-700">
+                      <span>Cumplimiento:</span>
+                      <span className="text-blue-700 font-extrabold">{compliance}%</span>
+                    </div>
+                    <div className="w-full bg-gray-100 rounded-full h-1.5">
+                      <div
+                        className="bg-blue-600 h-1.5 rounded-full transition-all duration-300"
+                        style={{ width: `${compliance}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       <div className="rounded-2xl shadow-lg overflow-x-auto border border-gray-200/80 bg-white">
         <table className="w-full text-xs">
