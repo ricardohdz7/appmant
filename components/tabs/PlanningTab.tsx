@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Download, Plus, Trash2, Upload, FileText, Calendar, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { downloadCSV } from "@/lib/exportUtils";
 import { exportPlanningToExcel, importPlanningFromExcel, downloadPlanningTemplate } from "@/lib/excelUtils";
-import { calculateKPIs } from "@/lib/kpiCalculations";
+import { calculateKPIs, getMonthName } from "@/lib/kpiCalculations";
 import { KPIDashboard } from "@/components/KPIDashboard";
 import { formatDate } from "@/lib/dateUtils";
 import { useState, useRef } from "react";
@@ -48,10 +48,47 @@ export function PlanningTab() {
     });
   };
 
-  const kpis = calculateKPIs(state);
-  const planningKPIs = kpis.filter((k) =>
-    ["Planeación Lisa", "Planeación en Proceso", "Planeación Pendiente"].includes(k.label)
-  );
+  const [monthFilter, setMonthFilter] = useState<number | null>(null);
+
+  const filteredPlanningEntries = state.planningEntries.filter((p) => {
+    if (monthFilter === null) return true;
+    const dateObj = parseDateSafely(p.scheduledDate);
+    return dateObj.getMonth() === monthFilter;
+  });
+
+  const totalPlanned = filteredPlanningEntries.length;
+  const readyPlanned = filteredPlanningEntries.filter((p) => p.advanceStatus === "listo").length;
+  const inProgressPlanned = filteredPlanningEntries.filter((p) => p.advanceStatus === "en_proceso").length;
+  const pendingPlanned = filteredPlanningEntries.filter((p) => p.advanceStatus === "pendiente").length;
+
+  const planningKPIs = [
+    {
+      label: "Total Planeaciones",
+      value: totalPlanned,
+      color: "blue" as const
+    },
+    {
+      label: "Planeaciones Listas",
+      value: readyPlanned,
+      total: totalPlanned,
+      percentage: totalPlanned > 0 ? Math.round((readyPlanned / totalPlanned) * 100) : 0,
+      color: "green" as const
+    },
+    {
+      label: "Planeaciones en Proceso",
+      value: inProgressPlanned,
+      total: totalPlanned,
+      percentage: totalPlanned > 0 ? Math.round((inProgressPlanned / totalPlanned) * 100) : 0,
+      color: "blue" as const
+    },
+    {
+      label: "Planeaciones Pendientes",
+      value: pendingPlanned,
+      total: totalPlanned,
+      percentage: totalPlanned > 0 ? Math.round((pendingPlanned / totalPlanned) * 100) : 0,
+      color: "red" as const
+    }
+  ];
 
   // Group planning entries by enterprise and brand
   const grouped = state.branches.reduce(
@@ -195,7 +232,7 @@ export function PlanningTab() {
       tableRows += `<tr style="background:#f8fafc;"><th style="padding:8px 14px;text-align:left;font-size:11px;text-transform:uppercase;color:#475569;border-bottom:2px solid #e2e8f0;">Sucursal</th><th style="padding:8px 14px;text-align:left;font-size:11px;text-transform:uppercase;color:#475569;border-bottom:2px solid #e2e8f0;">Fecha</th><th style="padding:8px 14px;text-align:left;font-size:11px;text-transform:uppercase;color:#475569;border-bottom:2px solid #e2e8f0;">Responsable</th></tr>`;
       
       const rows = branches.flatMap((branch) =>
-        state.planningEntries
+        filteredPlanningEntries
           .filter((p) => p.branchId === branch.id)
           .map((entry) => ({ branch, entry }))
       ).sort((a, b) => {
@@ -226,7 +263,7 @@ export function PlanningTab() {
 <div class="header">
   <h1>Control de Mantenimiento Preventivo</h1>
   <p>Casa Muñoz S.A. • Beauty Hub S.A.</p>
-  <h2>Planeación de Mantenimiento (${state.currentYear})</h2>
+  <h2>Planeación de Mantenimiento ${monthFilter !== null ? `(${getMonthName(monthFilter)} - ${state.currentYear})` : `(${state.currentYear})`}</h2>
 </div>
 <table>${tableRows}</table>
 <script>window.onload = function() { window.print(); }</script>
@@ -245,7 +282,7 @@ export function PlanningTab() {
       <div className="hidden print:block text-center pb-4 border-b border-gray-300">
         <h1 className="text-2xl font-bold text-blue-900">Control de Mantenimiento Preventivo</h1>
         <p className="text-xs text-gray-500 font-medium">Casa Muñoz S.A. • Beauty Hub S.A.</p>
-        <h2 className="text-lg font-bold text-gray-800 mt-2">Planeación de Mantenimiento ({state.currentYear})</h2>
+        <h2 className="text-lg font-bold text-gray-800 mt-2">Planeación de Mantenimiento {monthFilter !== null ? `(${getMonthName(monthFilter)} - ${state.currentYear})` : `(${state.currentYear})`}</h2>
       </div>
 
       <div className="flex justify-between items-center">
@@ -314,6 +351,29 @@ export function PlanningTab() {
           <p className="text-red-700 text-sm mt-1">{importError}</p>
         </div>
       )}
+
+      {/* Segmentador de Meses */}
+      <div className="bg-gray-100/80 p-1.5 rounded-2xl flex gap-1 border border-gray-200/50 max-w-xl print:hidden">
+        {[
+          { label: "Consolidado (Todos)", value: null },
+          { value: 0, label: "Enero" },
+          { value: 3, label: "Abril" },
+          { value: 6, label: "Julio" },
+          { value: 9, label: "Octubre" }
+        ].map((opt) => (
+          <button
+            key={opt.label}
+            onClick={() => setMonthFilter(opt.value)}
+            className={`flex-1 py-2 px-3 text-xs font-bold rounded-xl transition-all duration-200 ${
+              monthFilter === opt.value
+                ? "bg-white text-blue-700 shadow-sm border border-gray-200/40"
+                : "text-gray-600 hover:bg-white/40 hover:text-gray-900"
+            }`}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
 
       <div className="print:hidden">
         <KPIDashboard kpis={planningKPIs} />
@@ -393,7 +453,7 @@ export function PlanningTab() {
               <tbody>
                 {branches
                   .flatMap((branch) =>
-                    state.planningEntries
+                    filteredPlanningEntries
                       .filter((p) => p.branchId === branch.id)
                       .map((entry) => ({ branch, entry }))
                   )
