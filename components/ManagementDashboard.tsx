@@ -27,6 +27,7 @@ import { TicketsTab } from "./tabs/TicketsTab";
 interface ManagementDashboardProps {
   currentUser: User;
   onLogout: () => void;
+  onBackToSelection?: () => void;
 }
 
 const SECTOR_MONTHS = [
@@ -36,7 +37,7 @@ const SECTOR_MONTHS = [
   { value: 9, label: "Octubre" }
 ];
 
-export function ManagementDashboard({ currentUser, onLogout }: ManagementDashboardProps) {
+export function ManagementDashboard({ currentUser, onLogout, onBackToSelection }: ManagementDashboardProps) {
   const { state } = useMaintenanceContext();
   const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<number>(0); // Default Enero
@@ -84,6 +85,16 @@ export function ManagementDashboard({ currentUser, onLogout }: ManagementDashboa
                   <span className="text-[10px] text-cm-gray font-bold block uppercase">Perfil</span>
                   <span className="text-xs text-cm-dark font-extrabold">{currentUser.username}</span>
                 </div>
+                {onBackToSelection && (
+                  <Button
+                    onClick={onBackToSelection}
+                    variant="outline"
+                    size="sm"
+                    className="text-cm-dark hover:bg-gray-100 border-gray-200 rounded-xl transition-all font-semibold"
+                  >
+                    Volver
+                  </Button>
+                )}
                 <Button
                   onClick={onLogout}
                   variant="outline"

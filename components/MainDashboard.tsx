@@ -20,9 +20,10 @@ import { User } from "@/lib/types";
 interface MainDashboardProps {
   currentUser?: User;
   onLogout?: () => void;
+  onBackToSelection?: () => void;
 }
 
-export function MainDashboard({ currentUser, onLogout }: MainDashboardProps) {
+export function MainDashboard({ currentUser, onLogout, onBackToSelection }: MainDashboardProps) {
   const { state, dispatch } = useMaintenanceContext();
   const [activeTab, setActiveTab] = useState<"calendar" | "planning" | "gantt" | "costs" | "checklist" | "branches" | "history" | "tickets" | "users">(
     "calendar"
@@ -110,6 +111,16 @@ export function MainDashboard({ currentUser, onLogout }: MainDashboardProps) {
                     </span>
                     <span className="text-xs text-cm-dark font-extrabold">{currentUser.username}</span>
                   </div>
+                  {onBackToSelection && (
+                    <Button
+                      onClick={onBackToSelection}
+                      variant="outline"
+                      size="sm"
+                      className="text-cm-dark hover:bg-gray-100 border-gray-200 rounded-lg transition-all font-semibold"
+                    >
+                      Volver
+                    </Button>
+                  )}
                   <Button
                     onClick={onLogout}
                     variant="outline"
