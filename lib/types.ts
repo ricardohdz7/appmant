@@ -49,7 +49,7 @@ export interface User {
   id: string;
   username: string;
   password?: string;
-  role: "admin" | "branch";
+  role: "admin" | "branch" | "management";
   branchId?: string | null;
 }
 

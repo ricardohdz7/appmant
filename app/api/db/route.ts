@@ -46,6 +46,15 @@ async function seedDatabase() {
       }
     });
 
+    // Seed management/administracion user
+    await tx.user.create({
+      data: {
+        username: "administracion",
+        password: "administracion2026",
+        role: "management"
+      }
+    });
+
     // Seed sucursal users
     if (sampleBranches.length > 0) {
       for (const branch of sampleBranches) {
@@ -92,6 +101,13 @@ export async function GET() {
           username: "admin",
           password: "admin2026",
           role: "admin"
+        }
+      });
+      await prisma.user.create({
+        data: {
+          username: "administracion",
+          password: "administracion2026",
+          role: "management"
         }
       });
       const allBranches = await prisma.branch.findMany();
@@ -441,6 +457,16 @@ export async function POST(request: Request) {
           username: "admin",
           password: "admin2026",
           role: "admin"
+        });
+      }
+
+      const hasManagement = finalUsersToInsert.some((u: any) => u.role === "management");
+      if (!hasManagement) {
+        finalUsersToInsert.push({
+          id: `u-management-${Date.now()}`,
+          username: "administracion",
+          password: "administracion2026",
+          role: "management"
         });
       }
 

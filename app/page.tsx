@@ -5,6 +5,7 @@ import { useMaintenanceContext } from "@/lib/MaintenanceContext";
 import { LoginScreen } from "@/components/LoginScreen";
 import { MainDashboard } from "@/components/MainDashboard";
 import { BranchDashboard } from "@/components/BranchDashboard";
+import { ManagementDashboard } from "@/components/ManagementDashboard";
 import { User } from "@/lib/types";
 
 export default function Home() {
@@ -59,6 +60,10 @@ export default function Home() {
 
   if (currentUser.role === "admin") {
     return <MainDashboard currentUser={currentUser} onLogout={handleLogout} />;
+  }
+
+  if (currentUser.role === "management") {
+    return <ManagementDashboard currentUser={currentUser} onLogout={handleLogout} />;
   }
 
   // Branch user dashboard (Restricted / Read-Only view of compliance)

@@ -23,7 +23,11 @@ const MAINTENANCE_MONTHS = [
   { value: 9, label: "Octubre" }
 ];
 
-export function ChecklistTab() {
+interface ChecklistTabProps {
+  readOnly?: boolean;
+}
+
+export function ChecklistTab({ readOnly }: ChecklistTabProps) {
   const { state, dispatch } = useMaintenanceContext();
   
   const [selectedBranch, setSelectedBranch] = useState(state.branches[0]?.id || "");
@@ -223,32 +227,34 @@ export function ChecklistTab() {
             </div>
 
             {/* Bulk actions and clean actions */}
-            <div className="flex gap-2 flex-wrap">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleBulkUpdate("Realizado")}
-                className="text-emerald-700 border-emerald-200 hover:bg-emerald-50 hover:border-emerald-300 rounded-lg text-xs"
-              >
-                <CheckSquare className="w-3.5 h-3.5 mr-1" /> Marcar Todo Realizado
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleBulkUpdate("No aplica")}
-                className="text-gray-700 border-gray-200 hover:bg-gray-50 rounded-lg text-xs"
-              >
-                Marcar Todo N/A
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleClear}
-                className="text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300 rounded-lg text-xs"
-              >
-                <Trash2 className="w-3.5 h-3.5 mr-1" /> Limpiar Respuestas
-              </Button>
-            </div>
+            {!readOnly && (
+              <div className="flex gap-2 flex-wrap">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleBulkUpdate("Realizado")}
+                  className="text-emerald-700 border-emerald-200 hover:bg-emerald-50 hover:border-emerald-300 rounded-lg text-xs"
+                >
+                  <CheckSquare className="w-3.5 h-3.5 mr-1" /> Marcar Todo Realizado
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleBulkUpdate("No aplica")}
+                  className="text-gray-700 border-gray-200 hover:bg-gray-50 rounded-lg text-xs"
+                >
+                  Marcar Todo N/A
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleClear}
+                  className="text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300 rounded-lg text-xs"
+                >
+                  <Trash2 className="w-3.5 h-3.5 mr-1" /> Limpiar Respuestas
+                </Button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -326,41 +332,60 @@ export function ChecklistTab() {
 
                         {/* Interactive status selectors */}
                         <div className="flex gap-1.5">
-                          <button
-                            onClick={() => handleSetStatus(task.key, "Realizado")}
-                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                          {readOnly ? (
+                            <span className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border ${
                               status === "Realizado"
-                                ? "bg-emerald-50 text-emerald-700 border-emerald-300 shadow-sm"
-                                : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50 hover:text-gray-700"
-                            }`}
-                          >
-                            <CheckCircle2 className="w-3.5 h-3.5" />
-                            Realizado
-                          </button>
+                                ? "bg-emerald-50 text-emerald-700 border-emerald-300"
+                                : status === "No realizado"
+                                ? "bg-red-50 text-red-700 border-red-300"
+                                : status === "No aplica"
+                                ? "bg-gray-100 text-gray-700 border-gray-300"
+                                : "bg-gray-50 text-gray-400 border-gray-200"
+                            }`}>
+                              {status === "Realizado" && <CheckCircle2 className="w-3.5 h-3.5" />}
+                              {status === "No realizado" && <XCircle className="w-3.5 h-3.5" />}
+                              {status === "No aplica" && <MinusCircle className="w-3.5 h-3.5" />}
+                              {status || "Sin respuesta"}
+                            </span>
+                          ) : (
+                            <>
+                              <button
+                                onClick={() => handleSetStatus(task.key, "Realizado")}
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                                  status === "Realizado"
+                                    ? "bg-emerald-50 text-emerald-700 border-emerald-300 shadow-sm"
+                                    : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50 hover:text-gray-700"
+                                }`}
+                              >
+                                <CheckCircle2 className="w-3.5 h-3.5" />
+                                Realizado
+                              </button>
 
-                          <button
-                            onClick={() => handleSetStatus(task.key, "No realizado")}
-                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
-                              status === "No realizado"
-                                ? "bg-red-50 text-red-700 border-red-300 shadow-sm"
-                                : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50 hover:text-gray-700"
-                            }`}
-                          >
-                            <XCircle className="w-3.5 h-3.5" />
-                            No realizado
-                          </button>
+                              <button
+                                onClick={() => handleSetStatus(task.key, "No realizado")}
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                                  status === "No realizado"
+                                    ? "bg-red-50 text-red-700 border-red-300 shadow-sm"
+                                    : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50 hover:text-gray-700"
+                                }`}
+                              >
+                                <XCircle className="w-3.5 h-3.5" />
+                                No realizado
+                              </button>
 
-                          <button
-                            onClick={() => handleSetStatus(task.key, "No aplica")}
-                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
-                              status === "No aplica"
-                                ? "bg-gray-100 text-gray-700 border-gray-300 shadow-sm"
-                                : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50 hover:text-gray-700"
-                            }`}
-                          >
-                            <MinusCircle className="w-3.5 h-3.5" />
-                            N/A
-                          </button>
+                              <button
+                                onClick={() => handleSetStatus(task.key, "No aplica")}
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                                  status === "No aplica"
+                                    ? "bg-gray-100 text-gray-700 border-gray-300 shadow-sm"
+                                    : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50 hover:text-gray-700"
+                                }`}
+                              >
+                                <MinusCircle className="w-3.5 h-3.5" />
+                                N/A
+                              </button>
+                            </>
+                          )}
                         </div>
                       </div>
                     );

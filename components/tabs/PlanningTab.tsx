@@ -28,7 +28,11 @@ function parseDateSafely(dateVal: any): Date {
   return new Date(0);
 }
 
-export function PlanningTab() {
+interface PlanningTabProps {
+  readOnly?: boolean;
+}
+
+export function PlanningTab({ readOnly }: PlanningTabProps) {
   const { state, dispatch } = useMaintenanceContext();
   const [newDate, setNewDate] = useState("");
   const [newResponsible, setNewResponsible] = useState("");
@@ -297,43 +301,47 @@ export function PlanningTab() {
             <FileText className="w-4 h-4" />
             Imprimir / PDF
           </Button>
-          <Button 
-            onClick={() => downloadPlanningTemplate(state.branches, state.planningEntries)}
-            variant="outline" 
-            size="sm"
-            className={"flex items-center gap-2 rounded-xl border-gray-300 hover:bg-blue-50 hover:border-blue-300 transition-all"}
-          >
-            <FileText className="w-4 h-4" />
-            Descargar Plantilla
-          </Button>
-          <Button 
-            onClick={handleImportClick}
-            disabled={isImporting}
-            variant="outline" 
-            size="sm"
-            className={"flex items-center gap-2 rounded-xl border-gray-300 hover:bg-blue-50 hover:border-blue-300 transition-all"}
-          >
-            <Upload className="w-4 h-4" />
-            {isImporting ? "Importando..." : "Importar Excel"}
-          </Button>
-          <Button 
-            onClick={handleExportExcel}
-            variant="outline" 
-            size="sm"
-            className={"flex items-center gap-2 rounded-xl border-gray-300 hover:bg-blue-50 hover:border-blue-300 transition-all"}
-          >
-            <Download className="w-4 h-4" />
-            Exportar Excel
-          </Button>
-          <Button 
-            onClick={() => downloadCSV(state)} 
-            variant="outline" 
-            size="sm"
-            className={"flex items-center gap-2 rounded-xl border-gray-300 hover:bg-blue-50 hover:border-blue-300 transition-all"}
-          >
-            <Download className="w-4 h-4" />
-            Exportar CSV
-          </Button>
+          {!readOnly && (
+            <>
+              <Button 
+                onClick={() => downloadPlanningTemplate(state.branches, state.planningEntries)}
+                variant="outline" 
+                size="sm"
+                className={"flex items-center gap-2 rounded-xl border-gray-300 hover:bg-blue-50 hover:border-blue-300 transition-all"}
+              >
+                <FileText className="w-4 h-4" />
+                Descargar Plantilla
+              </Button>
+              <Button 
+                onClick={handleImportClick}
+                disabled={isImporting}
+                variant="outline" 
+                size="sm"
+                className={"flex items-center gap-2 rounded-xl border-gray-300 hover:bg-blue-50 hover:border-blue-300 transition-all"}
+              >
+                <Upload className="w-4 h-4" />
+                {isImporting ? "Importando..." : "Importar Excel"}
+              </Button>
+              <Button 
+                onClick={handleExportExcel}
+                variant="outline" 
+                size="sm"
+                className={"flex items-center gap-2 rounded-xl border-gray-300 hover:bg-blue-50 hover:border-blue-300 transition-all"}
+              >
+                <Download className="w-4 h-4" />
+                Exportar Excel
+              </Button>
+              <Button 
+                onClick={() => downloadCSV(state)} 
+                variant="outline" 
+                size="sm"
+                className={"flex items-center gap-2 rounded-xl border-gray-300 hover:bg-blue-50 hover:border-blue-300 transition-all"}
+              >
+                <Download className="w-4 h-4" />
+                Exportar CSV
+              </Button>
+            </>
+          )}
         </div>
         <input
           ref={fileInputRef}
@@ -379,42 +387,44 @@ export function PlanningTab() {
         <KPIDashboard kpis={planningKPIs} />
       </div>
 
-      <div className="rounded-2xl shadow-lg p-6 space-y-4 bg-white border border-gray-200/80 print:hidden">
-        <h3 className="font-bold text-base text-gray-900 flex items-center gap-2">
-          <span className="w-1.5 h-5 rounded-full bg-blue-500 inline-block" />
-          Agregar Planeación
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-          <select
-            value={selectedBranch}
-            onChange={(e) => setSelectedBranch(e.target.value)}
-            className={inputClass}
-          >
-            {state.branches.map((branch) => (
-              <option key={branch.id} value={branch.id}>
-                {branch.name}
-              </option>
-            ))}
-          </select>
-          <input
-            type="date"
-            value={newDate}
-            onChange={(e) => setNewDate(e.target.value)}
-            className={inputClass}
-          />
-          <input
-            type="text"
-            placeholder="Responsable"
-            value={newResponsible}
-            onChange={(e) => setNewResponsible(e.target.value)}
-            className={inputClass}
-          />
-          <Button onClick={handleAddPlanning} size="sm" className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-200 transition-all">
-            <Plus className="w-4 h-4" />
-            Agregar
-          </Button>
+      {!readOnly && (
+        <div className="rounded-2xl shadow-lg p-6 space-y-4 bg-white border border-gray-200/80 print:hidden">
+          <h3 className="font-bold text-base text-gray-900 flex items-center gap-2">
+            <span className="w-1.5 h-5 rounded-full bg-blue-500 inline-block" />
+            Agregar Planeación
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <select
+              value={selectedBranch}
+              onChange={(e) => setSelectedBranch(e.target.value)}
+              className={inputClass}
+            >
+              {state.branches.map((branch) => (
+                <option key={branch.id} value={branch.id}>
+                  {branch.name}
+                </option>
+              ))}
+            </select>
+            <input
+              type="date"
+              value={newDate}
+              onChange={(e) => setNewDate(e.target.value)}
+              className={inputClass}
+            />
+            <input
+              type="text"
+              placeholder="Responsable"
+              value={newResponsible}
+              onChange={(e) => setNewResponsible(e.target.value)}
+              className={inputClass}
+            />
+            <Button onClick={handleAddPlanning} size="sm" className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-200 transition-all">
+              <Plus className="w-4 h-4" />
+              Agregar
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="space-y-5">
         {Object.entries(grouped).map(([group, branches]) => (
@@ -447,7 +457,7 @@ export function PlanningTab() {
                   </th>
                   <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider">Responsable</th>
                   <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider print:hidden">Estado</th>
-                  <th className="px-4 py-3.5 text-center font-bold text-gray-700 uppercase text-[11px] tracking-wider print:hidden">Acciones</th>
+                  {!readOnly && <th className="px-4 py-3.5 text-center font-bold text-gray-700 uppercase text-[11px] tracking-wider print:hidden">Acciones</th>}
                 </tr>
               </thead>
               <tbody>
@@ -472,7 +482,9 @@ export function PlanningTab() {
                     >
                       <td className="px-4 py-3 text-gray-900 font-semibold">{branch.name}</td>
                       <td className="px-4 py-3 text-gray-900 font-medium">
-                        {editingDateId === entry.id ? (
+                        {readOnly ? (
+                          <span>{formatDate(entry.scheduledDate)}</span>
+                        ) : editingDateId === entry.id ? (
                           <div className="flex gap-2 items-center flex-wrap">
                             <input
                               type="date"
@@ -513,35 +525,49 @@ export function PlanningTab() {
                       </td>
                       <td className="px-4 py-3 text-gray-900 font-medium">{entry.technicalResponsible}</td>
                       <td className="px-4 py-3 print:hidden">
-                        <select
-                          value={entry.advanceStatus}
-                          onChange={(e) => {
-                            dispatch({
-                              type: "UPDATE_PLANNING_ENTRY",
-                              payload: { ...entry, advanceStatus: e.target.value as any },
-                            });
-                          }}
-                          className={`px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer border transition-all focus:ring-2 focus:ring-blue-300 focus:outline-none ${
+                        {readOnly ? (
+                          <span className={`inline-block px-2.5 py-1.5 rounded-lg text-xs font-bold border ${
                             entry.advanceStatus === "listo"
                               ? "bg-emerald-50 text-emerald-800 border-emerald-300"
                               : entry.advanceStatus === "en_proceso"
                               ? "bg-blue-50 text-blue-800 border-blue-300"
                               : "bg-red-50 text-red-800 border-red-300"
-                          }`}
-                        >
-                          <option value="pendiente">Pendiente</option>
-                          <option value="en_proceso">En Proceso</option>
-                          <option value="listo">Listo</option>
-                        </select>
+                          }`}>
+                            {entry.advanceStatus === "listo" ? "Listo" : entry.advanceStatus === "en_proceso" ? "En Proceso" : "Pendiente"}
+                          </span>
+                        ) : (
+                          <select
+                            value={entry.advanceStatus}
+                            onChange={(e) => {
+                              dispatch({
+                                type: "UPDATE_PLANNING_ENTRY",
+                                payload: { ...entry, advanceStatus: e.target.value as any },
+                              });
+                            }}
+                            className={`px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer border transition-all focus:ring-2 focus:ring-blue-300 focus:outline-none ${
+                              entry.advanceStatus === "listo"
+                                ? "bg-emerald-50 text-emerald-800 border-emerald-300"
+                                : entry.advanceStatus === "en_proceso"
+                                ? "bg-blue-50 text-blue-800 border-blue-300"
+                                : "bg-red-50 text-red-800 border-red-300"
+                            }`}
+                          >
+                            <option value="pendiente">Pendiente</option>
+                            <option value="en_proceso">En Proceso</option>
+                            <option value="listo">Listo</option>
+                          </select>
+                        )}
                       </td>
-                      <td className="px-4 py-3 text-center print:hidden">
-                        <button
-                          onClick={() => dispatch({ type: "DELETE_PLANNING_ENTRY", payload: entry.id })}
-                          className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-lg transition-colors"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </td>
+                      {!readOnly && (
+                        <td className="px-4 py-3 text-center print:hidden">
+                          <button
+                            onClick={() => dispatch({ type: "DELETE_PLANNING_ENTRY", payload: entry.id })}
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-lg transition-colors"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </td>
+                      )}
                     </tr>
                   ))}
               </tbody>

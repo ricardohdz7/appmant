@@ -6,7 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { downloadCSV } from "@/lib/exportUtils";
 
-export function CalendarTab() {
+interface CalendarTabProps {
+  readOnly?: boolean;
+}
+
+export function CalendarTab({ readOnly }: CalendarTabProps) {
   const { state, dispatch } = useMaintenanceContext();
 
   return (
@@ -63,31 +67,46 @@ export function CalendarTab() {
                     "": "bg-gray-50 text-gray-600 border-gray-300",
                   };
 
+                  const statusLabels: Record<string, string> = {
+                    realizado: "Realizado",
+                    programado: "Programado",
+                    pendiente: "Pendiente",
+                    "": "-",
+                  };
+
                   return (
                     <td key={month} className="px-3 py-2 text-center">
-                      <select
-                        value={entry?.status || ""}
-                        onChange={(e) => {
-                          dispatch({
-                            type: "UPDATE_CALENDAR_ENTRY",
-                            payload: {
-                              branchId: branch.id,
-                              year: state.currentYear,
-                              month,
-                              status: e.target.value as any,
-                              responsible: entry?.responsible || "",
-                            },
-                          });
-                        }}
-                        className={`text-sm px-2.5 py-1.5 rounded-lg font-bold cursor-pointer border w-full transition-all focus:ring-2 focus:ring-blue-300 ${
+                      {readOnly ? (
+                        <span className={`inline-block text-sm px-2.5 py-1.5 rounded-lg font-bold border ${
                           statusStyles[entry?.status || ""] || "bg-gray-50 text-gray-600 border-gray-300"
-                        }`}
-                      >
-                        <option value="">-</option>
-                        <option value="programado">Programado</option>
-                        <option value="pendiente">Pendiente</option>
-                        <option value="realizado">Realizado</option>
-                      </select>
+                        }`}>
+                          {statusLabels[entry?.status || ""] || "-"}
+                        </span>
+                      ) : (
+                        <select
+                          value={entry?.status || ""}
+                          onChange={(e) => {
+                            dispatch({
+                              type: "UPDATE_CALENDAR_ENTRY",
+                              payload: {
+                                branchId: branch.id,
+                                year: state.currentYear,
+                                month,
+                                status: e.target.value as any,
+                                responsible: entry?.responsible || "",
+                              },
+                            });
+                          }}
+                          className={`text-sm px-2.5 py-1.5 rounded-lg font-bold cursor-pointer border w-full transition-all focus:ring-2 focus:ring-blue-300 ${
+                            statusStyles[entry?.status || ""] || "bg-gray-50 text-gray-600 border-gray-300"
+                          }`}
+                        >
+                          <option value="">-</option>
+                          <option value="programado">Programado</option>
+                          <option value="pendiente">Pendiente</option>
+                          <option value="realizado">Realizado</option>
+                        </select>
+                      )}
                     </td>
                   );
                 })}

@@ -14,7 +14,11 @@ const MAINTENANCE_MONTHS = [
   { value: 9, label: "Octubre" }
 ];
 
-export function CostsTab() {
+interface CostsTabProps {
+  readOnly?: boolean;
+}
+
+export function CostsTab({ readOnly }: CostsTabProps) {
   const { state, dispatch } = useMaintenanceContext();
   const [selectedBranch, setSelectedBranch] = useState(state.branches[0]?.id || "");
   const [items, setItems] = useState([{ material: "", quantity: "", unitCost: "" }]);
@@ -135,43 +139,45 @@ export function CostsTab() {
     <div className="space-y-5">
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
         <h2 className="text-2xl font-bold text-gray-900">Costos de Insumos</h2>
-        <div className="flex gap-2 flex-wrap">
-          <Button
-            onClick={() => downloadCostsTemplate(state.branches)}
-            variant="outline"
-            size="sm"
-            className={btnOutlineClass}
-          >
-            <Download className="w-4 h-4" />
-            Plantilla Excel
-          </Button>
-          <Button 
-            onClick={() => {
-              const branchesMap = state.branches.reduce((acc, b) => {
-                acc[b.id] = b.name;
-                return acc;
-              }, {} as Record<string, string>);
-              exportCostsToExcel(state.costEntries, branchesMap);
-            }}
-            variant="outline"
-            size="sm"
-            className={btnOutlineClass}
-          >
-            <FileDown className="w-4 h-4" />
-            Exportar Excel
-          </Button>
-          <Button onClick={() => fileInputRef.current?.click()} variant="outline" size="sm" className={btnOutlineClass}>
-            <Upload className="w-4 h-4" />
-            Cargar Excel
-          </Button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".xlsx,.xls"
-            onChange={handleImportExcel}
-            className="hidden"
-          />
-        </div>
+        {!readOnly && (
+          <div className="flex gap-2 flex-wrap">
+            <Button
+              onClick={() => downloadCostsTemplate(state.branches)}
+              variant="outline"
+              size="sm"
+              className={btnOutlineClass}
+            >
+              <Download className="w-4 h-4" />
+              Plantilla Excel
+            </Button>
+            <Button 
+              onClick={() => {
+                const branchesMap = state.branches.reduce((acc, b) => {
+                  acc[b.id] = b.name;
+                  return acc;
+                }, {} as Record<string, string>);
+                exportCostsToExcel(state.costEntries, branchesMap);
+              }}
+              variant="outline"
+              size="sm"
+              className={btnOutlineClass}
+            >
+              <FileDown className="w-4 h-4" />
+              Exportar Excel
+            </Button>
+            <Button onClick={() => fileInputRef.current?.click()} variant="outline" size="sm" className={btnOutlineClass}>
+              <Upload className="w-4 h-4" />
+              Cargar Excel
+            </Button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".xlsx,.xls"
+              onChange={handleImportExcel}
+              className="hidden"
+            />
+          </div>
+        )}
       </div>
 
       {/* Segmentador de Meses */}
@@ -194,124 +200,126 @@ export function CostsTab() {
         ))}
       </div>
 
-      <div className="rounded-2xl shadow-lg p-6 space-y-4 bg-white border border-gray-200/80">
-        <h3 className="font-bold text-base text-gray-900 flex items-center gap-2">
-          <span className="w-1.5 h-5 rounded-full bg-blue-500 inline-block" />
-          Agregar Insumos Masivos
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pb-3 border-b border-gray-100">
-          <div className="flex flex-col gap-1">
-            <label className="text-xs font-semibold text-gray-500 uppercase">Sucursal Destino</label>
-            <select
-              value={selectedBranch}
-              onChange={(e) => setSelectedBranch(e.target.value)}
-              className={inputClass}
-            >
-              {state.branches.map((branch) => (
-                <option key={branch.id} value={branch.id}>
-                  {branch.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-xs font-semibold text-gray-500 uppercase">Mes a Asignar</label>
-            <select
-              value={date.split("-")[1] ? parseInt(date.split("-")[1]) - 1 : 0}
-              onChange={(e) => {
-                const year = date.split("-")[0] || new Date().getFullYear().toString();
-                const newMonth = (parseInt(e.target.value) + 1).toString().padStart(2, '0');
-                setDate(`${year}-${newMonth}-15`);
-              }}
-              className={inputClass}
-            >
-              {MAINTENANCE_MONTHS.map((m) => (
-                <option key={m.value} value={m.value}>{m.label}</option>
-              ))}
-            </select>
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-xs font-semibold text-gray-500 uppercase">Asignado a</label>
-            <input
-              type="text"
-              placeholder="Nombre del responsable"
-              value={assignedTo}
-              onChange={(e) => setAssignedTo(e.target.value)}
-              className={inputClass}
-            />
-          </div>
-        </div>
-
-        <div className="space-y-3">
-          <div className="flex justify-between items-center">
-            <label className="text-xs font-semibold text-gray-500 uppercase">Lista de Materiales</label>
-            <Button onClick={addItemRow} variant="outline" size="sm" className="h-7 text-xs flex gap-1 items-center bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100">
-              <PlusCircle className="w-3.5 h-3.5" /> Agregar fila
-            </Button>
-          </div>
-          
-          {items.map((item, index) => (
-            <div key={index} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_auto] gap-2 items-center bg-gray-50/50 p-2 rounded-xl border border-gray-100">
+      {!readOnly && (
+        <div className="rounded-2xl shadow-lg p-6 space-y-4 bg-white border border-gray-200/80">
+          <h3 className="font-bold text-base text-gray-900 flex items-center gap-2">
+            <span className="w-1.5 h-5 rounded-full bg-blue-500 inline-block" />
+            Agregar Insumos Masivos
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pb-3 border-b border-gray-100">
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-semibold text-gray-500 uppercase">Sucursal Destino</label>
+              <select
+                value={selectedBranch}
+                onChange={(e) => setSelectedBranch(e.target.value)}
+                className={inputClass}
+              >
+                {state.branches.map((branch) => (
+                  <option key={branch.id} value={branch.id}>
+                    {branch.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-semibold text-gray-500 uppercase">Mes a Asignar</label>
+              <select
+                value={date.split("-")[1] ? parseInt(date.split("-")[1]) - 1 : 0}
+                onChange={(e) => {
+                  const year = date.split("-")[0] || new Date().getFullYear().toString();
+                  const newMonth = (parseInt(e.target.value) + 1).toString().padStart(2, '0');
+                  setDate(`${year}-${newMonth}-15`);
+                }}
+                className={inputClass}
+              >
+                {MAINTENANCE_MONTHS.map((m) => (
+                  <option key={m.value} value={m.value}>{m.label}</option>
+                ))}
+              </select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-semibold text-gray-500 uppercase">Asignado a</label>
               <input
                 type="text"
-                placeholder="Nombre del Material"
-                value={item.material}
-                onChange={(e) => updateItem(index, 'material', e.target.value)}
+                placeholder="Nombre del responsable"
+                value={assignedTo}
+                onChange={(e) => setAssignedTo(e.target.value)}
                 className={inputClass}
               />
-              <input
-                type="number"
-                placeholder="Cantidad"
-                value={item.quantity}
-                onChange={(e) => updateItem(index, 'quantity', e.target.value)}
-                className={inputClass}
-              />
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">$</span>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <label className="text-xs font-semibold text-gray-500 uppercase">Lista de Materiales</label>
+              <Button onClick={addItemRow} variant="outline" size="sm" className="h-7 text-xs flex gap-1 items-center bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100">
+                <PlusCircle className="w-3.5 h-3.5" /> Agregar fila
+              </Button>
+            </div>
+            
+            {items.map((item, index) => (
+              <div key={index} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_auto] gap-2 items-center bg-gray-50/50 p-2 rounded-xl border border-gray-100">
+                <input
+                  type="text"
+                  placeholder="Nombre del Material"
+                  value={item.material}
+                  onChange={(e) => updateItem(index, 'material', e.target.value)}
+                  className={inputClass}
+                />
                 <input
                   type="number"
-                  placeholder="Precio Unit."
-                  value={item.unitCost}
-                  onChange={(e) => updateItem(index, 'unitCost', e.target.value)}
-                  className={`${inputClass} pl-7 w-full`}
+                  placeholder="Cantidad"
+                  value={item.quantity}
+                  onChange={(e) => updateItem(index, 'quantity', e.target.value)}
+                  className={inputClass}
                 />
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">$</span>
+                  <input
+                    type="number"
+                    placeholder="Precio Unit."
+                    value={item.unitCost}
+                    onChange={(e) => updateItem(index, 'unitCost', e.target.value)}
+                    className={`${inputClass} pl-7 w-full`}
+                  />
+                </div>
+                <button
+                  onClick={() => removeItem(index)}
+                  className="p-2.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"
+                  title="Eliminar fila"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
               </div>
-              <button
-                onClick={() => removeItem(index)}
-                className="p-2.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"
-                title="Eliminar fila"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        <div className="flex gap-2 pt-2">
-          <Button 
-            onClick={() => {
-              const count = handleAddCost();
-              if (count > 0) {
-                setItems([{ material: "", quantity: "", unitCost: "" }]);
-                setAssignedTo("");
-              }
-            }} 
-            className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-200 transition-all flex-1 md:flex-none"
-          >
-            <Plus className="w-4 h-4" />
-            Agregar Lista a Sucursal
-          </Button>
+          <div className="flex gap-2 pt-2">
+            <Button 
+              onClick={() => {
+                const count = handleAddCost();
+                if (count > 0) {
+                  setItems([{ material: "", quantity: "", unitCost: "" }]);
+                  setAssignedTo("");
+                }
+              }} 
+              className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-200 transition-all flex-1 md:flex-none"
+            >
+              <Plus className="w-4 h-4" />
+              Agregar Lista a Sucursal
+            </Button>
 
-          <Button 
-            onClick={handleAddToAllBranches}
-            variant="outline"
-            className="flex items-center gap-2 rounded-xl border-emerald-300 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-400 transition-all flex-1 md:flex-none"
-          >
-            <Copy className="w-4 h-4" />
-            Agregar Lista a Todas
-          </Button>
+            <Button 
+              onClick={handleAddToAllBranches}
+              variant="outline"
+              className="flex items-center gap-2 rounded-xl border-emerald-300 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-400 transition-all flex-1 md:flex-none"
+            >
+              <Copy className="w-4 h-4" />
+              Agregar Lista a Todas
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="rounded-2xl shadow-lg overflow-x-auto border border-gray-200/80 bg-white">
         <table className="w-full text-sm">
@@ -323,7 +331,7 @@ export function CostsTab() {
               <th className="px-4 py-3.5 text-center font-bold text-gray-700 uppercase text-[11px] tracking-wider">Costo Unitario</th>
               <th className="px-4 py-3.5 text-center font-bold text-gray-700 uppercase text-[11px] tracking-wider">Total</th>
               <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider">Asignado a</th>
-              <th className="px-4 py-3.5 text-center font-bold text-gray-700 uppercase text-[11px] tracking-wider">Acción</th>
+              {!readOnly && <th className="px-4 py-3.5 text-center font-bold text-gray-700 uppercase text-[11px] tracking-wider">Acción</th>}
             </tr>
           </thead>
           <tbody>
@@ -344,14 +352,16 @@ export function CostsTab() {
                   </span>
                 </td>
                 <td className="px-4 py-3 text-gray-900 font-medium">{cost.assignedTo}</td>
-                <td className="px-4 py-3 text-center">
-                  <button
-                    onClick={() => dispatch({ type: "DELETE_COST_ENTRY", payload: cost.id })}
-                    className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-lg transition-colors"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </td>
+                {!readOnly && (
+                  <td className="px-4 py-3 text-center">
+                    <button
+                      onClick={() => dispatch({ type: "DELETE_COST_ENTRY", payload: cost.id })}
+                      className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-lg transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
@@ -367,15 +377,17 @@ export function CostsTab() {
             <span className="font-bold text-blue-900">Total de Costos (Sucursal Actual):</span>
             <div className="flex items-center gap-4">
               <span className="text-3xl font-extrabold text-blue-700">${total.toFixed(2)}</span>
-              <Button 
-                onClick={handleClearBranchCosts} 
-                variant="destructive"
-                size="sm"
-                className="flex items-center gap-1 rounded-xl bg-red-600 hover:bg-red-700 shadow-md shadow-red-200"
-              >
-                <Trash2 className="w-4 h-4" />
-                Vaciar Sucursal
-              </Button>
+              {!readOnly && (
+                <Button 
+                  onClick={handleClearBranchCosts} 
+                  variant="destructive"
+                  size="sm"
+                  className="flex items-center gap-1 rounded-xl bg-red-600 hover:bg-red-700 shadow-md shadow-red-200"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Vaciar Sucursal
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -416,7 +428,7 @@ export function CostsTab() {
             <tr className="bg-gradient-to-r from-gray-50 to-blue-50/30 border-t-2 border-gray-200">
               <td className="px-4 py-4 font-bold text-gray-900 flex justify-between items-center">
                 <span className="uppercase tracking-wider text-sm">Total General</span>
-                {filteredCostEntries.length > 0 && (
+                {!readOnly && filteredCostEntries.length > 0 && (
                   <Button 
                     onClick={handleClearAllCosts} 
                     variant="destructive"

@@ -25,6 +25,8 @@ export function MainDashboard({ currentUser, onLogout }: MainDashboardProps) {
     "calendar"
   );
 
+  const isReadOnly = currentUser?.role === "management";
+
   const tabs = [
     { id: "calendar", label: "Calendario", icon: "📅" },
     { id: "planning", label: "Planeación", icon: "📋" },
@@ -39,7 +41,9 @@ export function MainDashboard({ currentUser, onLogout }: MainDashboardProps) {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-100">
       {/* Header */}
       <header className="sticky top-0 z-40 shadow-lg print:hidden" style={{
-        background: "linear-gradient(135deg, #0b3d91 0%, #1e56a0 50%, #2563eb 100%)",
+        background: isReadOnly 
+          ? "linear-gradient(135deg, #1a4731 0%, #166534 50%, #15803d 100%)"
+          : "linear-gradient(135deg, #0b3d91 0%, #1e56a0 50%, #2563eb 100%)",
       }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
           <div className="flex justify-between items-center">
@@ -47,14 +51,19 @@ export function MainDashboard({ currentUser, onLogout }: MainDashboardProps) {
               <h1 className="text-2xl font-extrabold text-white tracking-tight">
                 Control de Mantenimiento Preventivo
               </h1>
-              <p className="text-sm text-blue-200 mt-1 font-medium">
-                Casa Muñoz S.A. • Beauty Hub S.A.
+              <p className={`text-sm mt-1 font-medium ${isReadOnly ? "text-emerald-200" : "text-blue-200"}`}>
+                {isReadOnly ? "Vista Administración • Sólo Lectura" : "Casa Muñoz S.A. • Beauty Hub S.A."}
               </p>
             </div>
 
             <div className="flex items-center gap-4">
+              {isReadOnly && (
+                <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-yellow-400/20 text-yellow-200 border border-yellow-400/30">
+                  🔒 Sólo Lectura
+                </span>
+              )}
               <div className="flex items-center gap-2">
-                <label className="text-sm font-bold text-blue-200">Año:</label>
+                <label className={`text-sm font-bold ${isReadOnly ? "text-emerald-200" : "text-blue-200"}`}>Año:</label>
                 <select
                   value={state.currentYear}
                   onChange={(e) =>
@@ -82,7 +91,9 @@ export function MainDashboard({ currentUser, onLogout }: MainDashboardProps) {
               {currentUser && onLogout && (
                 <div className="flex items-center gap-3 border-l border-white/20 pl-4 ml-2">
                   <div className="text-right hidden sm:block">
-                    <span className="text-[10px] text-blue-200 font-bold block uppercase">Panel de Control</span>
+                    <span className={`text-[10px] font-bold block uppercase ${isReadOnly ? "text-emerald-200" : "text-blue-200"}`}>
+                      {isReadOnly ? "Administración" : "Panel de Control"}
+                    </span>
                     <span className="text-xs text-white font-extrabold">{currentUser.username}</span>
                   </div>
                   <Button
@@ -124,13 +135,13 @@ export function MainDashboard({ currentUser, onLogout }: MainDashboardProps) {
 
       {/* Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {activeTab === "calendar" && <CalendarTab />}
-        {activeTab === "planning" && <PlanningTab />}
+        {activeTab === "calendar" && <CalendarTab readOnly={isReadOnly} />}
+        {activeTab === "planning" && <PlanningTab readOnly={isReadOnly} />}
         {activeTab === "gantt" && <GanttTab />}
-        {activeTab === "costs" && <CostsTab />}
-        {activeTab === "checklist" && <ChecklistTab />}
-        {activeTab === "branches" && <BranchesTab />}
-        {activeTab === "history" && <HistoryTab />}
+        {activeTab === "costs" && <CostsTab readOnly={isReadOnly} />}
+        {activeTab === "checklist" && <ChecklistTab readOnly={isReadOnly} />}
+        {activeTab === "branches" && <BranchesTab readOnly={isReadOnly} />}
+        {activeTab === "history" && <HistoryTab readOnly={isReadOnly} />}
       </main>
 
       {/* Footer */}
