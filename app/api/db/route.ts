@@ -3,12 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { sampleBranches, sampleCalendarEntries, samplePlanningEntries, sampleCostEntries } from "@/lib/sampleData";
 
 function normalizeUsername(name: string): string {
-  return name
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]/g, "")
-    .substring(0, 40);
+  const parts = name.split('|');
+  return parts.length > 1 ? parts[1].trim() : parts[0].trim();
 }
 
 // Helper to seed database with sample data
@@ -60,7 +56,7 @@ async function seedDatabase() {
       for (const branch of sampleBranches) {
         await tx.user.create({
           data: {
-            username: `sucursal.${normalizeUsername(branch.name)}`,
+            username: normalizeUsername(branch.name),
             password: "sucursal2026",
             role: "branch",
             branchId: branch.id
@@ -114,7 +110,7 @@ export async function GET() {
       for (const b of allBranches) {
         await prisma.user.create({
           data: {
-            username: `sucursal.${normalizeUsername(b.name)}`,
+            username: normalizeUsername(b.name),
             password: "sucursal2026",
             role: "branch",
             branchId: b.id
@@ -466,7 +462,7 @@ export async function POST(request: Request) {
           const oldU = oldUsers.find((u: any) => u.branchId === branch.id);
           finalUsersToInsert.push({
             id: oldU?.id || `u-${Date.now()}-${branch.id}-${Math.random().toString(36).substring(2, 5)}`,
-            username: oldU?.username || `sucursal.${normalizeUsername(branch.name)}`,
+            username: oldU?.username || normalizeUsername(branch.name),
             password: oldU?.password || "sucursal2026",
             role: "branch",
             branchId: branch.id

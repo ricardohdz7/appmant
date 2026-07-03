@@ -151,7 +151,7 @@ export function TicketsTab({ readOnly = false, branchNameFilter }: TicketsTabPro
         <div className="px-5 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
           <h3 className="font-bold text-gray-900">{title} <span className="ml-2 text-sm text-gray-500 font-medium">({list.length})</span></h3>
           {showCompliance && (
-            <span className="text-xs font-bold text-emerald-600 bg-emerald-100 px-3 py-1 rounded-full">
+            <span className="text-xs font-bold text-cm-teal bg-cm-teal/10 px-3 py-1 rounded-full">
               {compliancePct}% Cumplimiento Global
             </span>
           )}
@@ -177,7 +177,7 @@ export function TicketsTab({ readOnly = false, branchNameFilter }: TicketsTabPro
                   </td>
                   <td className="px-5 py-4">
                     <span className={`inline-block px-2.5 py-1 rounded-lg text-[10px] font-bold border uppercase ${
-                      t.isOpen ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-gray-100 text-gray-700 border-gray-200'
+                      t.isOpen ? 'bg-cm-teal/10 text-cm-teal border-cm-teal/20' : 'bg-gray-100 text-gray-700 border-gray-200'
                     }`}>
                       {t.etapa}
                     </span>
@@ -231,7 +231,7 @@ export function TicketsTab({ readOnly = false, branchNameFilter }: TicketsTabPro
               id="excel-upload"
             />
             <label htmlFor="excel-upload">
-              <div className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-xl shadow-md cursor-pointer">
+              <div className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-cm-teal text-white hover:bg-cm-teal/90 rounded-xl shadow-md cursor-pointer">
                 {isProcessing ? (
                   <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
                 ) : (
@@ -253,7 +253,7 @@ export function TicketsTab({ readOnly = false, branchNameFilter }: TicketsTabPro
 
       {tickets.length === 0 && !error && !isProcessing && (
         <div className="bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl p-12 flex flex-col items-center justify-center text-center">
-          <div className="w-16 h-16 bg-blue-50 text-blue-500 rounded-2xl flex items-center justify-center mb-4">
+          <div className="w-16 h-16 bg-cm-teal/10 text-cm-teal rounded-2xl flex items-center justify-center mb-4">
             <FileSpreadsheet className="w-8 h-8" />
           </div>
           <h3 className="text-lg font-bold text-gray-900 mb-1">Sin datos de tickets</h3>
@@ -269,7 +269,7 @@ export function TicketsTab({ readOnly = false, branchNameFilter }: TicketsTabPro
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-200/80">
               <div className="flex items-center gap-3 text-gray-500 mb-3 text-sm font-bold uppercase tracking-wider">
-                <Ticket className="w-5 h-5 text-blue-500" />
+                <Ticket className="w-5 h-5 text-cm-teal" />
                 Tickets Abiertos
               </div>
               <div className="text-4xl font-extrabold text-gray-900">{openTickets}</div>

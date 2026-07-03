@@ -47,50 +47,46 @@ export function MainDashboard({ currentUser, onLogout }: MainDashboardProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-100">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-40 shadow-lg print:hidden" style={{
-        background: isReadOnly 
-          ? "linear-gradient(135deg, #1a4731 0%, #166534 50%, #15803d 100%)"
-          : "linear-gradient(135deg, #0b3d91 0%, #1e56a0 50%, #2563eb 100%)",
-      }}>
+      <header className="sticky top-0 z-40 bg-white shadow-sm border-b border-gray-100 print:hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-4 flex-1">
               <button 
                 onClick={() => setIsSidebarOpen(true)}
-                className="p-2 -ml-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                className="p-2 -ml-2 rounded-lg text-gray-500 hover:text-cm-dark hover:bg-gray-100 transition-colors"
               >
                 <Menu className="w-6 h-6" />
               </button>
               
               <div>
-                <h1 className="text-2xl font-extrabold text-white tracking-tight flex items-center gap-2">
+                <h1 className="text-2xl font-extrabold text-cm-dark tracking-tight flex items-center gap-2">
                   Control de Mantenimiento Preventivo
                 </h1>
-                <p className={`text-sm mt-1 font-medium ${isReadOnly ? "text-emerald-200" : "text-blue-200"}`}>
-                  {isReadOnly ? "Vista Administración • Sólo Lectura" : "Casa Muñoz S.A. • Beauty Hub S.A."}
+                <p className="text-sm mt-1 font-medium text-cm-gray">
+                  {isReadOnly ? "Vista Administración • Sólo Lectura" : "Casa Muñoz S.A. • Medi Pedi"}
                 </p>
               </div>
             </div>
 
             <div className="flex items-center gap-4">
               {isReadOnly && (
-                <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-yellow-400/20 text-yellow-200 border border-yellow-400/30">
+                <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-gray-100 text-gray-500 border border-gray-200">
                   🔒 Sólo Lectura
                 </span>
               )}
               <div className="flex items-center gap-2">
-                <label className={`text-sm font-bold ${isReadOnly ? "text-emerald-200" : "text-blue-200"}`}>Año:</label>
+                <label className="text-sm font-bold text-cm-gray">Año:</label>
                 <select
                   value={state.currentYear}
                   onChange={(e) =>
                     dispatch({ type: "SET_YEAR", payload: parseInt(e.target.value) })
                   }
-                  className="px-3 py-1.5 rounded-lg bg-white/15 text-white text-sm font-bold border border-white/20 backdrop-blur-sm focus:ring-2 focus:ring-white/30 focus:outline-none cursor-pointer hover:bg-white/25 transition-colors"
+                  className="px-3 py-1.5 rounded-lg bg-gray-50 text-cm-dark text-sm font-bold border border-gray-200 focus:ring-2 focus:ring-cm-teal/50 focus:border-cm-teal outline-none cursor-pointer hover:bg-gray-100 transition-colors"
                 >
                   {[2023, 2024, 2025, 2026, 2027].map((year) => (
-                    <option key={year} value={year} className="text-gray-900">
+                    <option key={year} value={year}>
                       {year}
                     </option>
                   ))}
@@ -100,25 +96,25 @@ export function MainDashboard({ currentUser, onLogout }: MainDashboardProps) {
               <Button
                 onClick={exportToPDF}
                 variant="outline"
-                className="text-white border-white/30 hover:bg-white/15 hover:border-white/50 rounded-lg transition-all backdrop-blur-sm font-semibold"
+                className="text-cm-dark border-gray-200 hover:bg-gray-50 rounded-lg transition-all font-semibold"
                 size="sm"
               >
                 Imprimir / PDF
               </Button>
 
               {currentUser && onLogout && (
-                <div className="flex items-center gap-3 border-l border-white/20 pl-4 ml-2">
+                <div className="flex items-center gap-3 border-l border-gray-200 pl-4 ml-2">
                   <div className="text-right hidden sm:block">
-                    <span className={`text-[10px] font-bold block uppercase ${isReadOnly ? "text-emerald-200" : "text-blue-200"}`}>
+                    <span className="text-[10px] font-bold block uppercase text-cm-gray">
                       {isReadOnly ? "Administración" : "Panel de Control"}
                     </span>
-                    <span className="text-xs text-white font-extrabold">{currentUser.username}</span>
+                    <span className="text-xs text-cm-dark font-extrabold">{currentUser.username}</span>
                   </div>
                   <Button
                     onClick={onLogout}
                     variant="outline"
                     size="sm"
-                    className="text-red-200 hover:text-red-100 hover:bg-red-500/20 border-red-500/30 hover:border-red-500/50 rounded-lg transition-all font-semibold"
+                    className="text-red-500 hover:text-red-600 hover:bg-red-50 border-red-200 hover:border-red-300 rounded-lg transition-all font-semibold"
                   >
                     Cerrar Sesión
                   </Button>
@@ -139,18 +135,18 @@ export function MainDashboard({ currentUser, onLogout }: MainDashboardProps) {
 
       {/* Sidebar Menu */}
       <div 
-        className={`fixed inset-y-0 left-0 z-50 w-72 bg-[#0d1117] transform transition-transform duration-300 ease-in-out border-r border-gray-800 print:hidden flex flex-col ${
+        className={`fixed inset-y-0 left-0 z-50 w-72 bg-white transform transition-transform duration-300 ease-in-out border-r border-gray-200 print:hidden flex flex-col shadow-2xl ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex items-center justify-between p-5 border-b border-gray-800">
-          <div className="flex items-center gap-3 text-white">
-            <Wrench className="w-6 h-6" />
+        <div className="flex items-center justify-between p-5 border-b border-gray-100">
+          <div className="flex items-center gap-3 text-cm-dark">
+            <Wrench className="w-6 h-6 text-cm-teal" />
             <span className="font-bold tracking-wide">Mantenimiento</span>
           </div>
           <button 
             onClick={() => setIsSidebarOpen(false)}
-            className="text-gray-400 hover:text-white transition-colors p-1 rounded-md hover:bg-gray-800"
+            className="text-gray-400 hover:text-cm-dark transition-colors p-1 rounded-md hover:bg-gray-100"
           >
             <X className="w-5 h-5" />
           </button>
@@ -167,8 +163,8 @@ export function MainDashboard({ currentUser, onLogout }: MainDashboardProps) {
                 }}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                   activeTab === tab.id
-                    ? "bg-blue-600/10 text-blue-400 border border-blue-500/20"
-                    : "text-gray-300 hover:bg-gray-800 hover:text-white border border-transparent"
+                    ? "bg-cm-teal/10 text-cm-teal border border-cm-teal/20"
+                    : "text-gray-500 hover:bg-gray-50 hover:text-cm-dark border border-transparent"
                 }`}
               >
                 <span className="text-lg opacity-80">{tab.icon}</span>
@@ -178,8 +174,8 @@ export function MainDashboard({ currentUser, onLogout }: MainDashboardProps) {
           </nav>
         </div>
 
-        <div className="p-4 border-t border-gray-800 text-xs text-gray-500">
-          <p>Control Preventivo v2.0</p>
+        <div className="p-4 border-t border-gray-100 text-xs text-cm-gray text-center font-semibold">
+          <p>Casa Muñoz Medi Pedi v2.0</p>
         </div>
       </div>
 

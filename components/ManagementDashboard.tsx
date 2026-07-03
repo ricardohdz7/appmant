@@ -53,27 +53,27 @@ export function ManagementDashboard({ currentUser, onLogout }: ManagementDashboa
   // --- LIST VIEW (CARDS) ---
   if (!selectedBranchId) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50/20 to-slate-100 flex flex-col">
+      <div className="min-h-screen bg-background flex flex-col">
         {/* Header */}
-        <header className="sticky top-0 z-40 shadow-md bg-gradient-to-r from-emerald-900 to-emerald-800 print:hidden">
+        <header className="sticky top-0 z-40 bg-white shadow-sm border-b border-gray-100 print:hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-3 flex-1">
                 <button 
                   onClick={() => setIsSidebarOpen(true)}
-                  className="p-2 -ml-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                  className="p-2 -ml-2 rounded-lg text-gray-500 hover:text-cm-dark hover:bg-gray-100 transition-colors"
                 >
                   <Menu className="w-6 h-6" />
                 </button>
 
-                <div className="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white font-bold shadow-md shadow-emerald-500/20">
+                <div className="w-10 h-10 rounded-xl bg-cm-teal/10 flex items-center justify-center text-cm-teal font-bold shadow-sm border border-cm-teal/20">
                   <ShieldAlert className="w-5.5 h-5.5" />
                 </div>
                 <div>
-                  <h1 className="text-lg font-extrabold text-white leading-tight">
+                  <h1 className="text-lg font-extrabold text-cm-dark leading-tight">
                     Administración General
                   </h1>
-                  <p className="text-[10px] text-emerald-200 font-semibold uppercase tracking-wider mt-0.5">
+                  <p className="text-[10px] text-cm-gray font-semibold uppercase tracking-wider mt-0.5">
                     Vista de Cumplimiento de Sucursales
                   </p>
                 </div>
@@ -81,14 +81,14 @@ export function ManagementDashboard({ currentUser, onLogout }: ManagementDashboa
 
               <div className="flex items-center gap-4">
                 <div className="text-right hidden sm:block">
-                  <span className="text-[10px] text-emerald-300 font-bold block uppercase">Perfil</span>
-                  <span className="text-xs text-white font-extrabold">{currentUser.username}</span>
+                  <span className="text-[10px] text-cm-gray font-bold block uppercase">Perfil</span>
+                  <span className="text-xs text-cm-dark font-extrabold">{currentUser.username}</span>
                 </div>
                 <Button
                   onClick={onLogout}
                   variant="outline"
                   size="sm"
-                  className="text-red-400 hover:text-red-300 border-red-500/30 hover:bg-red-500/10 rounded-xl transition-all"
+                  className="text-red-500 hover:text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300 rounded-xl transition-all font-semibold"
                 >
                   <LogOut className="w-4 h-4 mr-1.5" />
                   Cerrar Sesión
@@ -108,18 +108,18 @@ export function ManagementDashboard({ currentUser, onLogout }: ManagementDashboa
 
         {/* Sidebar Menu */}
         <div 
-          className={`fixed inset-y-0 left-0 z-50 w-72 bg-[#0d1117] transform transition-transform duration-300 ease-in-out border-r border-gray-800 print:hidden flex flex-col ${
+          className={`fixed inset-y-0 left-0 z-50 w-72 bg-white transform transition-transform duration-300 ease-in-out border-r border-gray-200 print:hidden flex flex-col shadow-2xl ${
             isSidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <div className="flex items-center justify-between p-5 border-b border-gray-800">
-            <div className="flex items-center gap-3 text-white">
-              <Wrench className="w-6 h-6" />
+          <div className="flex items-center justify-between p-5 border-b border-gray-100">
+            <div className="flex items-center gap-3 text-cm-dark">
+              <Wrench className="w-6 h-6 text-cm-teal" />
               <span className="font-bold tracking-wide">Menú Gerencial</span>
             </div>
             <button 
               onClick={() => setIsSidebarOpen(false)}
-              className="text-gray-400 hover:text-white transition-colors p-1 rounded-md hover:bg-gray-800"
+              className="text-gray-400 hover:text-cm-dark transition-colors p-1 rounded-md hover:bg-gray-100"
             >
               <X className="w-5 h-5" />
             </button>
@@ -134,8 +134,8 @@ export function ManagementDashboard({ currentUser, onLogout }: ManagementDashboa
                 }}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                   activeTab === "general"
-                    ? "bg-emerald-600/10 text-emerald-400 border border-emerald-500/20"
-                    : "text-gray-300 hover:bg-gray-800 hover:text-white border border-transparent"
+                    ? "bg-cm-teal/10 text-cm-teal border border-cm-teal/20"
+                    : "text-gray-500 hover:bg-gray-50 hover:text-cm-dark border border-transparent"
                 }`}
               >
                 <span className="text-lg opacity-80">📊</span>
@@ -148,8 +148,8 @@ export function ManagementDashboard({ currentUser, onLogout }: ManagementDashboa
                 }}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                   activeTab === "tickets"
-                    ? "bg-emerald-600/10 text-emerald-400 border border-emerald-500/20"
-                    : "text-gray-300 hover:bg-gray-800 hover:text-white border border-transparent"
+                    ? "bg-cm-teal/10 text-cm-teal border border-cm-teal/20"
+                    : "text-gray-500 hover:bg-gray-50 hover:text-cm-dark border border-transparent"
                 }`}
               >
                 <span className="text-lg opacity-80">🎫</span>
@@ -158,8 +158,8 @@ export function ManagementDashboard({ currentUser, onLogout }: ManagementDashboa
             </nav>
           </div>
 
-          <div className="p-4 border-t border-gray-800 text-xs text-gray-500">
-            <p>Control Preventivo v2.0</p>
+          <div className="p-4 border-t border-gray-100 text-xs text-cm-gray text-center font-semibold">
+            <p>Casa Muñoz Medi Pedi v2.0</p>
           </div>
         </div>
 
