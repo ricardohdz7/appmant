@@ -25,6 +25,7 @@ const initialState: MaintenanceState = {
   users: [],
   currentYear: 2025,
   historyLog: [],
+  odooTickets: [],
 };
 
 function maintenanceReducer(state: MaintenanceState, action: MaintenanceAction): MaintenanceState {
@@ -145,8 +146,14 @@ function maintenanceReducer(state: MaintenanceState, action: MaintenanceAction):
       };
     case "SET_YEAR":
       return { ...state, currentYear: action.payload };
+    case "SET_ODOO_TICKETS":
+      return { ...state, odooTickets: action.payload };
     case "LOAD_STATE":
-      return action.payload;
+      return {
+        ...action.payload,
+        // Ensure odooTickets is always an array even if missing from API
+        odooTickets: action.payload.odooTickets || []
+      };
     case "CLEAR_HISTORY":
       return { ...state, historyLog: [] };
     default:
@@ -177,6 +184,13 @@ export function MaintenanceProvider({ children }: { children: ReactNode }) {
             parsed.costEntries = parsed.costEntries.map((c: any) => ({
               ...c,
               date: typeof c.date === 'string' ? new Date(c.date) : c.date,
+            }));
+          }
+          if (parsed.odooTickets) {
+            parsed.odooTickets = parsed.odooTickets.map((t: any) => ({
+              ...t,
+              creadoEl: typeof t.creadoEl === 'string' ? new Date(t.creadoEl) : t.creadoEl,
+              fechaContacto: typeof t.fechaContacto === 'string' ? new Date(t.fechaContacto) : t.fechaContacto,
             }));
           }
           dispatch({ type: "LOAD_STATE", payload: parsed });
@@ -227,6 +241,13 @@ export function MaintenanceProvider({ children }: { children: ReactNode }) {
               parsed.costEntries = parsed.costEntries.map((c: any) => ({
                 ...c,
                 date: typeof c.date === 'string' ? new Date(c.date) : c.date,
+              }));
+            }
+            if (parsed.odooTickets) {
+              parsed.odooTickets = parsed.odooTickets.map((t: any) => ({
+                ...t,
+                creadoEl: typeof t.creadoEl === 'string' ? new Date(t.creadoEl) : t.creadoEl,
+                fechaContacto: typeof t.fechaContacto === 'string' ? new Date(t.fechaContacto) : t.fechaContacto,
               }));
             }
             dispatch({ type: "LOAD_STATE", payload: parsed });

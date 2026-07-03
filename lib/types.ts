@@ -45,6 +45,23 @@ export interface ChecklistEntry {
   status: string; // "Realizado" | "No realizado" | "No aplica"
 }
 
+export interface OdooTicket {
+  id: string;
+  asignadoA: string;
+  asunto: string;
+  estadoKanban: string;
+  etapa: string;
+  creadoEl: Date | null;
+  fechaContacto: Date | null;
+  descripcion: string;
+  prioridad: string;
+  propiedades: string;
+  sucursal: string;
+  slaMet: boolean;
+  slaDays: number | null;
+  isOpen: boolean;
+}
+
 export interface User {
   id: string;
   username: string;
@@ -70,6 +87,7 @@ export interface MaintenanceState {
   users: User[];
   currentYear: number;
   historyLog: HistoryEntry[];
+  odooTickets?: OdooTicket[];
 }
 
 export type MaintenanceAction =
@@ -92,5 +110,6 @@ export type MaintenanceAction =
   | { type: "DELETE_USER"; payload: string }
   | { type: "SET_YEAR"; payload: number }
   | { type: "LOAD_STATE"; payload: MaintenanceState }
-  | { type: "CLEAR_HISTORY" };
+  | { type: "CLEAR_HISTORY" }
+  | { type: "SET_ODOO_TICKETS"; payload: OdooTicket[] };
 

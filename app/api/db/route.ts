@@ -123,7 +123,7 @@ export async function GET() {
       }
     }
 
-    const [branches, calendarEntries, planningEntries, costEntries, checklistEntries, users, globalState, historyLog] = await Promise.all([
+    const [branches, calendarEntries, planningEntries, costEntries, checklistEntries, users, globalState, historyLog, odooTickets] = await Promise.all([
       prisma.branch.findMany(),
       prisma.calendarEntry.findMany(),
       prisma.planningEntry.findMany(),
@@ -131,7 +131,8 @@ export async function GET() {
       prisma.checklistEntry.findMany(),
       prisma.user.findMany(),
       prisma.globalState.findUnique({ where: { id: "global" } }),
-      prisma.historyEntry.findMany({ orderBy: { timestamp: "desc" }, take: 500 })
+      prisma.historyEntry.findMany({ orderBy: { timestamp: "desc" }, take: 500 }),
+      prisma.odooTicket.findMany()
     ]);
 
     return NextResponse.json({
@@ -142,7 +143,8 @@ export async function GET() {
       checklistEntries,
       users,
       currentYear: globalState?.currentYear || 2025,
-      historyLog
+      historyLog,
+      odooTickets
     });
   } catch (error) {
     console.error("Failed to GET database", error);
@@ -384,6 +386,7 @@ export async function POST(request: Request) {
     // Perform transaction to rewrite all state
     await prisma.$transaction(async (tx: any) => {
       // Clear data (must delete child tables before parent because of FKs, though Cascade does it too)
+      await tx.odooTicket.deleteMany();
       await tx.user.deleteMany();
       await tx.checklistEntry.deleteMany();
       await tx.costEntry.deleteMany();
@@ -430,6 +433,27 @@ export async function POST(request: Request) {
             month: c.month,
             taskKey: c.taskKey,
             status: c.status
+          }))
+        });
+      }
+
+      if (newData.odooTickets && newData.odooTickets.length > 0) {
+        await tx.odooTicket.createMany({
+          data: newData.odooTickets.map((t: any) => ({
+            id: t.id,
+            asignadoA: t.asignadoA,
+            asunto: t.asunto,
+            estadoKanban: t.estadoKanban,
+            etapa: t.etapa,
+            creadoEl: t.creadoEl ? new Date(t.creadoEl) : null,
+            fechaContacto: t.fechaContacto ? new Date(t.fechaContacto) : null,
+            descripcion: t.descripcion,
+            prioridad: t.prioridad,
+            propiedades: t.propiedades,
+            sucursal: t.sucursal,
+            slaMet: t.slaMet,
+            slaDays: t.slaDays,
+            isOpen: t.isOpen
           }))
         });
       }
@@ -514,7 +538,7 @@ export async function POST(request: Request) {
     }
 
     // Return the updated state so the frontend can sync (especially the auto-generated history logs)
-    const [finalBranches, finalCalendar, finalPlanning, finalCosts, finalChecklist, finalUsers, finalGlobal, finalHistory] = await Promise.all([
+    const [finalBranches, finalCalendar, finalPlanning, finalCosts, finalChecklist, finalUsers, finalGlobal, finalHistory, finalTickets] = await Promise.all([
       prisma.branch.findMany(),
       prisma.calendarEntry.findMany(),
       prisma.planningEntry.findMany(),
@@ -522,7 +546,8 @@ export async function POST(request: Request) {
       prisma.checklistEntry.findMany(),
       prisma.user.findMany(),
       prisma.globalState.findUnique({ where: { id: "global" } }),
-      prisma.historyEntry.findMany({ orderBy: { timestamp: "desc" }, take: 500 })
+      prisma.historyEntry.findMany({ orderBy: { timestamp: "desc" }, take: 500 }),
+      prisma.odooTicket.findMany()
     ]);
 
     return NextResponse.json({
@@ -533,7 +558,8 @@ export async function POST(request: Request) {
       checklistEntries: finalChecklist,
       users: finalUsers,
       currentYear: finalGlobal?.currentYear || 2025,
-      historyLog: finalHistory
+      historyLog: finalHistory,
+      odooTickets: finalTickets
     });
   } catch (error) {
     console.error("Error updating database", error);

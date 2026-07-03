@@ -83,3 +83,20 @@ model GlobalState {
   id          String @id @default("global")
   currentYear Int
 }
+
+model OdooTicket {
+  id            String    @id @default(cuid())
+  asignadoA     String
+  asunto        String
+  estadoKanban  String
+  etapa         String
+  creadoEl      DateTime?
+  fechaContacto DateTime?
+  descripcion   String
+  prioridad     String
+  propiedades   String
+  sucursal      String
+  slaMet        Boolean
+  slaDays       Int?
+  isOpen        Boolean
+}

@@ -9,6 +9,7 @@ import { CostsTab } from "./tabs/CostsTab";
 import { BranchesTab } from "./tabs/BranchesTab";
 import { HistoryTab } from "./tabs/HistoryTab";
 import { ChecklistTab } from "./tabs/ChecklistTab";
+import { TicketsTab } from "./tabs/TicketsTab";
 import { Button } from "@/components/ui/button";
 import { exportToPDF } from "@/lib/exportUtils";
 
@@ -21,7 +22,7 @@ interface MainDashboardProps {
 
 export function MainDashboard({ currentUser, onLogout }: MainDashboardProps) {
   const { state, dispatch } = useMaintenanceContext();
-  const [activeTab, setActiveTab] = useState<"calendar" | "planning" | "gantt" | "costs" | "checklist" | "branches" | "history">(
+  const [activeTab, setActiveTab] = useState<"calendar" | "planning" | "gantt" | "costs" | "checklist" | "branches" | "history" | "tickets">(
     "calendar"
   );
 
@@ -33,6 +34,7 @@ export function MainDashboard({ currentUser, onLogout }: MainDashboardProps) {
     { id: "gantt", label: "Cumplimiento", icon: "📊" },
     { id: "costs", label: "Costos", icon: "💰" },
     { id: "checklist", label: "Checklist", icon: "✅" },
+    { id: "tickets", label: "Tickets Odoo", icon: "🎫" },
     { id: "branches", label: "Sucursales", icon: "🏪" },
     { id: "history", label: "Historial", icon: "📜" },
   ];
@@ -140,6 +142,7 @@ export function MainDashboard({ currentUser, onLogout }: MainDashboardProps) {
         {activeTab === "gantt" && <GanttTab />}
         {activeTab === "costs" && <CostsTab readOnly={isReadOnly} />}
         {activeTab === "checklist" && <ChecklistTab readOnly={isReadOnly} />}
+        {activeTab === "tickets" && <TicketsTab />}
         {activeTab === "branches" && <BranchesTab readOnly={isReadOnly} />}
         {activeTab === "history" && <HistoryTab readOnly={isReadOnly} />}
       </main>
