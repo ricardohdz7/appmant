@@ -16,7 +16,10 @@ import {
   ShieldAlert,
   Clock,
   CheckCircle2,
-  XCircle
+  XCircle,
+  Menu,
+  X,
+  Wrench
 } from "lucide-react";
 import { formatDate } from "@/lib/dateUtils";
 import { TicketsTab } from "./tabs/TicketsTab";
@@ -37,6 +40,7 @@ export function BranchDashboard({ currentUser, onLogout }: BranchDashboardProps)
   const { state } = useMaintenanceContext();
   const [selectedMonth, setSelectedMonth] = useState<number>(0); // Default Enero
   const [activeTab, setActiveTab] = useState<"general" | "tickets">("general");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const branchId = currentUser.branchId || "";
   const branch = state.branches.find(b => b.id === branchId);
@@ -95,7 +99,14 @@ export function BranchDashboard({ currentUser, onLogout }: BranchDashboardProps)
       <header className="sticky top-0 z-40 shadow-md bg-gradient-to-r from-slate-900 to-slate-800 print:hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-1">
+              <button 
+                onClick={() => setIsSidebarOpen(true)}
+                className="p-2 -ml-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+              >
+                <Menu className="w-6 h-6" />
+              </button>
+              
               <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold shadow-md shadow-blue-500/20">
                 <Building className="w-5.5 h-5.5" />
               </div>
@@ -125,31 +136,73 @@ export function BranchDashboard({ currentUser, onLogout }: BranchDashboardProps)
               </Button>
             </div>
           </div>
-          
-          <div className="mt-6 flex items-center gap-6 border-b border-blue-700/50 pb-0">
+        </div>
+      </header>
+
+      {/* Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 z-50 transition-opacity backdrop-blur-sm print:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar Menu */}
+      <div 
+        className={`fixed inset-y-0 left-0 z-50 w-72 bg-[#0d1117] transform transition-transform duration-300 ease-in-out border-r border-gray-800 print:hidden flex flex-col ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="flex items-center justify-between p-5 border-b border-gray-800">
+          <div className="flex items-center gap-3 text-white">
+            <Wrench className="w-6 h-6" />
+            <span className="font-bold tracking-wide">Menú Sucursal</span>
+          </div>
+          <button 
+            onClick={() => setIsSidebarOpen(false)}
+            className="text-gray-400 hover:text-white transition-colors p-1 rounded-md hover:bg-gray-800"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        
+        <div className="overflow-y-auto flex-1 py-4 px-3">
+          <nav className="space-y-1">
             <button
-              onClick={() => setActiveTab("general")}
-              className={`pb-3 text-sm font-bold uppercase tracking-wider transition-colors border-b-2 ${
+              onClick={() => {
+                setActiveTab("general");
+                setIsSidebarOpen(false);
+              }}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                 activeTab === "general"
-                  ? "text-white border-white"
-                  : "text-blue-300 border-transparent hover:text-blue-100 hover:border-blue-500/50"
+                  ? "bg-blue-600/10 text-blue-400 border border-blue-500/20"
+                  : "text-gray-300 hover:bg-gray-800 hover:text-white border border-transparent"
               }`}
             >
+              <span className="text-lg opacity-80">📋</span>
               Mantenimiento
             </button>
             <button
-              onClick={() => setActiveTab("tickets")}
-              className={`pb-3 text-sm font-bold uppercase tracking-wider transition-colors border-b-2 ${
+              onClick={() => {
+                setActiveTab("tickets");
+                setIsSidebarOpen(false);
+              }}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                 activeTab === "tickets"
-                  ? "text-white border-white"
-                  : "text-blue-300 border-transparent hover:text-blue-100 hover:border-blue-500/50"
+                  ? "bg-blue-600/10 text-blue-400 border border-blue-500/20"
+                  : "text-gray-300 hover:bg-gray-800 hover:text-white border border-transparent"
               }`}
             >
+              <span className="text-lg opacity-80">🎫</span>
               Mis Tickets Odoo
             </button>
-          </div>
+          </nav>
         </div>
-      </header>
+
+        <div className="p-4 border-t border-gray-800 text-xs text-gray-500">
+          <p>Control Preventivo v2.0</p>
+        </div>
+      </div>
 
       {/* Main Container */}
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full space-y-6">
