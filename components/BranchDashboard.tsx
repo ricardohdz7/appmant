@@ -19,6 +19,7 @@ import {
   XCircle
 } from "lucide-react";
 import { formatDate } from "@/lib/dateUtils";
+import { TicketsTab } from "./tabs/TicketsTab";
 
 interface BranchDashboardProps {
   currentUser: User;
@@ -35,6 +36,7 @@ const SECTOR_MONTHS = [
 export function BranchDashboard({ currentUser, onLogout }: BranchDashboardProps) {
   const { state } = useMaintenanceContext();
   const [selectedMonth, setSelectedMonth] = useState<number>(0); // Default Enero
+  const [activeTab, setActiveTab] = useState<"general" | "tickets">("general");
 
   const branchId = currentUser.branchId || "";
   const branch = state.branches.find(b => b.id === branchId);
@@ -123,12 +125,47 @@ export function BranchDashboard({ currentUser, onLogout }: BranchDashboardProps)
               </Button>
             </div>
           </div>
+          
+          <div className="mt-6 flex items-center gap-6 border-b border-blue-700/50 pb-0">
+            <button
+              onClick={() => setActiveTab("general")}
+              className={`pb-3 text-sm font-bold uppercase tracking-wider transition-colors border-b-2 ${
+                activeTab === "general"
+                  ? "text-white border-white"
+                  : "text-blue-300 border-transparent hover:text-blue-100 hover:border-blue-500/50"
+              }`}
+            >
+              Mantenimiento
+            </button>
+            <button
+              onClick={() => setActiveTab("tickets")}
+              className={`pb-3 text-sm font-bold uppercase tracking-wider transition-colors border-b-2 ${
+                activeTab === "tickets"
+                  ? "text-white border-white"
+                  : "text-blue-300 border-transparent hover:text-blue-100 hover:border-blue-500/50"
+              }`}
+            >
+              Mis Tickets Odoo
+            </button>
+          </div>
         </div>
       </header>
 
       {/* Main Container */}
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full space-y-6">
-        {/* Month Selector Panel */}
+        
+        {activeTab === "tickets" && (
+          <div className="bg-white rounded-3xl shadow-sm border border-gray-200/80 p-6 sm:p-8 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-bl-full -z-0 opacity-50" />
+            <div className="relative z-10">
+              <TicketsTab readOnly={true} branchNameFilter={branch?.name} />
+            </div>
+          </div>
+        )}
+
+        {activeTab === "general" && (
+          <>
+            {/* Month Selector Panel */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200/80 p-4 flex flex-col sm:flex-row items-center justify-between gap-4 print:hidden">
           <div>
             <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider">Período de Mantenimiento</h2>
@@ -287,8 +324,10 @@ export function BranchDashboard({ currentUser, onLogout }: BranchDashboardProps)
                 </div>
               </div>
             ))}
+            </div>
           </div>
-        </div>
+          </>
+        )}
       </main>
 
       {/* Footer */}

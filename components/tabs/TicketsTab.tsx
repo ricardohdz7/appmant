@@ -6,9 +6,16 @@ import { Upload, Ticket, CheckCircle, AlertCircle, Clock, FileSpreadsheet } from
 import { useMaintenanceContext } from "@/lib/MaintenanceContext";
 import { OdooTicket } from "@/lib/types";
 
-export function TicketsTab() {
+interface TicketsTabProps {
+  readOnly?: boolean;
+  branchNameFilter?: string;
+}
+
+export function TicketsTab({ readOnly = false, branchNameFilter }: TicketsTabProps = {}) {
   const { state, dispatch } = useMaintenanceContext();
-  const tickets: OdooTicket[] = state.odooTickets || [];
+  const tickets: OdooTicket[] = (state.odooTickets || []).filter(t => 
+    branchNameFilter ? t.sucursal?.toLowerCase().includes(branchNameFilter.toLowerCase()) : true
+  );
   
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -209,28 +216,32 @@ export function TicketsTab() {
       <div className="flex justify-between items-start">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Mesa de Ayuda (Odoo)</h2>
-          <p className="text-sm text-gray-500 mt-1">Sube el reporte exportado para analizar los tiempos de respuesta y SLA (15 días)</p>
+          <p className="text-sm text-gray-500 mt-1">
+            {readOnly ? "Visualización de métricas de SLA y estado de tickets" : "Sube el reporte exportado para analizar los tiempos de respuesta y SLA (15 días)"}
+          </p>
         </div>
         
-        <div>
-          <input 
-            type="file" 
-            accept=".xlsx, .xls, .csv" 
-            onChange={handleFileUpload} 
-            className="hidden" 
-            id="excel-upload"
-          />
-          <label htmlFor="excel-upload">
-            <div className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-xl shadow-md cursor-pointer">
-              {isProcessing ? (
-                <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
-              ) : (
-                <Upload className="w-4 h-4" />
-              )}
-              {isProcessing ? "Procesando..." : "Subir XLSX de Odoo"}
-            </div>
-          </label>
-        </div>
+        {!readOnly && (
+          <div>
+            <input 
+              type="file" 
+              accept=".xlsx, .xls, .csv" 
+              onChange={handleFileUpload} 
+              className="hidden" 
+              id="excel-upload"
+            />
+            <label htmlFor="excel-upload">
+              <div className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-xl shadow-md cursor-pointer">
+                {isProcessing ? (
+                  <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                ) : (
+                  <Upload className="w-4 h-4" />
+                )}
+                {isProcessing ? "Procesando..." : "Subir XLSX de Odoo"}
+              </div>
+            </label>
+          </div>
+        )}
       </div>
 
       {error && (
@@ -247,7 +258,7 @@ export function TicketsTab() {
           </div>
           <h3 className="text-lg font-bold text-gray-900 mb-1">Sin datos de tickets</h3>
           <p className="text-sm text-gray-500 max-w-md">
-            Sube el archivo Excel (.xlsx) exportado desde Odoo. Asegúrate de incluir las columnas: Creado el, Fecha de contacto al cliente, y Etapa.
+            {readOnly ? "No hay tickets disponibles para mostrar." : "Sube el archivo Excel (.xlsx) exportado desde Odoo. Asegúrate de incluir las columnas: Creado el, Fecha de contacto al cliente, y Etapa."}
           </p>
         </div>
       )}

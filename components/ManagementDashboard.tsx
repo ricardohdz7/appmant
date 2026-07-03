@@ -19,6 +19,7 @@ import {
   User as UserIcon 
 } from "lucide-react";
 import { formatDate } from "@/lib/dateUtils";
+import { TicketsTab } from "./tabs/TicketsTab";
 
 interface ManagementDashboardProps {
   currentUser: User;
@@ -36,6 +37,7 @@ export function ManagementDashboard({ currentUser, onLogout }: ManagementDashboa
   const { state } = useMaintenanceContext();
   const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<number>(0); // Default Enero
+  const [activeTab, setActiveTab] = useState<"general" | "tickets">("general");
 
   const getMonthName = (monthNum: number): string => {
     const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
@@ -82,12 +84,47 @@ export function ManagementDashboard({ currentUser, onLogout }: ManagementDashboa
                 </Button>
               </div>
             </div>
+            
+            <div className="mt-6 flex items-center gap-6 border-b border-emerald-700/50 pb-0">
+              <button
+                onClick={() => setActiveTab("general")}
+                className={`pb-3 text-sm font-bold uppercase tracking-wider transition-colors border-b-2 ${
+                  activeTab === "general"
+                    ? "text-white border-white"
+                    : "text-emerald-300 border-transparent hover:text-emerald-100 hover:border-emerald-500/50"
+                }`}
+              >
+                Cumplimiento General
+              </button>
+              <button
+                onClick={() => setActiveTab("tickets")}
+                className={`pb-3 text-sm font-bold uppercase tracking-wider transition-colors border-b-2 ${
+                  activeTab === "tickets"
+                    ? "text-white border-white"
+                    : "text-emerald-300 border-transparent hover:text-emerald-100 hover:border-emerald-500/50"
+                }`}
+              >
+                Tickets Odoo
+              </button>
+            </div>
           </div>
         </header>
 
         {/* Main Content */}
         <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full space-y-6">
-          {/* Month Selector Panel */}
+          
+          {activeTab === "tickets" && (
+            <div className="bg-white rounded-3xl shadow-sm border border-gray-200/80 p-6 sm:p-8 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-bl-full -z-0 opacity-50" />
+              <div className="relative z-10">
+                <TicketsTab readOnly={true} />
+              </div>
+            </div>
+          )}
+
+          {activeTab === "general" && (
+            <>
+              {/* Month Selector Panel */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-200/80 p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
               <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider">Período a Consultar</h2>
@@ -171,7 +208,9 @@ export function ManagementDashboard({ currentUser, onLogout }: ManagementDashboa
                 </div>
               );
             })}
-          </div>
+            </div>
+            </>
+          )}
         </main>
       </div>
     );
