@@ -10,8 +10,10 @@ import { BranchesTab } from "./tabs/BranchesTab";
 import { HistoryTab } from "./tabs/HistoryTab";
 import { ChecklistTab } from "./tabs/ChecklistTab";
 import { TicketsTab } from "./tabs/TicketsTab";
+import { UsersTab } from "./tabs/UsersTab";
 import { Button } from "@/components/ui/button";
 import { exportToPDF } from "@/lib/exportUtils";
+import { Menu, X, Wrench } from "lucide-react";
 
 import { User } from "@/lib/types";
 
@@ -22,9 +24,10 @@ interface MainDashboardProps {
 
 export function MainDashboard({ currentUser, onLogout }: MainDashboardProps) {
   const { state, dispatch } = useMaintenanceContext();
-  const [activeTab, setActiveTab] = useState<"calendar" | "planning" | "gantt" | "costs" | "checklist" | "branches" | "history" | "tickets">(
+  const [activeTab, setActiveTab] = useState<"calendar" | "planning" | "gantt" | "costs" | "checklist" | "branches" | "history" | "tickets" | "users">(
     "calendar"
   );
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const isReadOnly = currentUser?.role === "management";
 
@@ -38,6 +41,10 @@ export function MainDashboard({ currentUser, onLogout }: MainDashboardProps) {
     { id: "branches", label: "Sucursales", icon: "🏪" },
     { id: "history", label: "Historial", icon: "📜" },
   ];
+  
+  if (!isReadOnly) {
+    tabs.push({ id: "users", label: "Usuarios y Permisos", icon: "👥" });
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-100">
@@ -49,13 +56,22 @@ export function MainDashboard({ currentUser, onLogout }: MainDashboardProps) {
       }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
           <div className="flex justify-between items-center">
-            <div className="flex-1">
-              <h1 className="text-2xl font-extrabold text-white tracking-tight">
-                Control de Mantenimiento Preventivo
-              </h1>
-              <p className={`text-sm mt-1 font-medium ${isReadOnly ? "text-emerald-200" : "text-blue-200"}`}>
-                {isReadOnly ? "Vista Administración • Sólo Lectura" : "Casa Muñoz S.A. • Beauty Hub S.A."}
-              </p>
+            <div className="flex items-center gap-4 flex-1">
+              <button 
+                onClick={() => setIsSidebarOpen(true)}
+                className="p-2 -ml-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+              >
+                <Menu className="w-6 h-6" />
+              </button>
+              
+              <div>
+                <h1 className="text-2xl font-extrabold text-white tracking-tight flex items-center gap-2">
+                  Control de Mantenimiento Preventivo
+                </h1>
+                <p className={`text-sm mt-1 font-medium ${isReadOnly ? "text-emerald-200" : "text-blue-200"}`}>
+                  {isReadOnly ? "Vista Administración • Sólo Lectura" : "Casa Muñoz S.A. • Beauty Hub S.A."}
+                </p>
+              </div>
             </div>
 
             <div className="flex items-center gap-4">
@@ -113,25 +129,57 @@ export function MainDashboard({ currentUser, onLogout }: MainDashboardProps) {
         </div>
       </header>
 
-      {/* Navigation Tabs */}
-      <div className="bg-white/80 backdrop-blur-md border-b border-gray-200/80 sticky top-[76px] z-30 shadow-sm print:hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex overflow-x-auto gap-1">
+      {/* Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 z-50 transition-opacity backdrop-blur-sm print:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar Menu */}
+      <div 
+        className={`fixed inset-y-0 left-0 z-50 w-72 bg-[#0d1117] transform transition-transform duration-300 ease-in-out border-r border-gray-800 print:hidden flex flex-col ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="flex items-center justify-between p-5 border-b border-gray-800">
+          <div className="flex items-center gap-3 text-white">
+            <Wrench className="w-6 h-6" />
+            <span className="font-bold tracking-wide">Mantenimiento</span>
+          </div>
+          <button 
+            onClick={() => setIsSidebarOpen(false)}
+            className="text-gray-400 hover:text-white transition-colors p-1 rounded-md hover:bg-gray-800"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        
+        <div className="overflow-y-auto flex-1 py-4 px-3">
+          <nav className="space-y-1">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center gap-2 px-5 py-3.5 text-sm font-bold whitespace-nowrap border-b-3 transition-all duration-200 rounded-t-lg ${
+                onClick={() => {
+                  setActiveTab(tab.id as any);
+                  setIsSidebarOpen(false);
+                }}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                   activeTab === tab.id
-                    ? "border-blue-600 text-blue-700 bg-blue-50/60"
-                    : "border-transparent text-gray-500 hover:text-gray-800 hover:bg-gray-50/80"
+                    ? "bg-blue-600/10 text-blue-400 border border-blue-500/20"
+                    : "text-gray-300 hover:bg-gray-800 hover:text-white border border-transparent"
                 }`}
               >
-                <span className="text-base">{tab.icon}</span>
+                <span className="text-lg opacity-80">{tab.icon}</span>
                 {tab.label}
               </button>
             ))}
-          </div>
+          </nav>
+        </div>
+
+        <div className="p-4 border-t border-gray-800 text-xs text-gray-500">
+          <p>Control Preventivo v2.0</p>
         </div>
       </div>
 
@@ -145,6 +193,7 @@ export function MainDashboard({ currentUser, onLogout }: MainDashboardProps) {
         {activeTab === "tickets" && <TicketsTab />}
         {activeTab === "branches" && <BranchesTab readOnly={isReadOnly} />}
         {activeTab === "history" && <HistoryTab readOnly={isReadOnly} />}
+        {activeTab === "users" && !isReadOnly && <UsersTab />}
       </main>
 
       {/* Footer */}
