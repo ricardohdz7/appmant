@@ -64,12 +64,20 @@ export function PlanningTab({ readOnly }: PlanningTabProps) {
   const readyPlanned = filteredPlanningEntries.filter((p) => p.advanceStatus === "listo").length;
   const inProgressPlanned = filteredPlanningEntries.filter((p) => p.advanceStatus === "en_proceso").length;
   const pendingPlanned = filteredPlanningEntries.filter((p) => p.advanceStatus === "pendiente").length;
+  const finalizedPlanned = filteredPlanningEntries.filter((p) => p.advanceStatus === "finalizado").length;
 
   const planningKPIs = [
     {
       label: "Total Planeaciones",
       value: totalPlanned,
       color: "blue" as const
+    },
+    {
+      label: "Planeaciones Finalizadas",
+      value: finalizedPlanned,
+      total: totalPlanned,
+      percentage: totalPlanned > 0 ? Math.round((finalizedPlanned / totalPlanned) * 100) : 0,
+      color: "purple" as const
     },
     {
       label: "Planeaciones Listas",
@@ -165,6 +173,8 @@ export function PlanningTab({ readOnly }: PlanningTabProps) {
         branchId: entry.branchId,
         technicalResponsible: entry.technicalResponsible,
         advanceStatus: entry.advanceStatus,
+        newInterventionDate: entry.newInterventionDate,
+        observations: entry.observations,
       };
       dispatch({
         type: "UPDATE_PLANNING_ENTRY",
@@ -233,7 +243,7 @@ export function PlanningTab({ readOnly }: PlanningTabProps) {
     let tableRows = "";
     Object.entries(grouped).forEach(([group, branches]) => {
       tableRows += `<tr><td colspan="3" style="background:#eff6ff;border-left:4px solid #2563eb;padding:10px 14px;font-weight:bold;font-size:14px;color:#1e3a5f;">${group}</td></tr>`;
-      tableRows += `<tr style="background:#f8fafc;"><th style="padding:8px 14px;text-align:left;font-size:11px;text-transform:uppercase;color:#475569;border-bottom:2px solid #e2e8f0;">Sucursal</th><th style="padding:8px 14px;text-align:left;font-size:11px;text-transform:uppercase;color:#475569;border-bottom:2px solid #e2e8f0;">Fecha</th><th style="padding:8px 14px;text-align:left;font-size:11px;text-transform:uppercase;color:#475569;border-bottom:2px solid #e2e8f0;">Responsable</th></tr>`;
+      tableRows += `<tr style="background:#f8fafc;"><th style="padding:8px 14px;text-align:left;font-size:11px;text-transform:uppercase;color:#475569;border-bottom:2px solid #e2e8f0;">Sucursal</th><th style="padding:8px 14px;text-align:left;font-size:11px;text-transform:uppercase;color:#475569;border-bottom:2px solid #e2e8f0;">Fecha</th><th style="padding:8px 14px;text-align:left;font-size:11px;text-transform:uppercase;color:#475569;border-bottom:2px solid #e2e8f0;">Nueva Fecha</th><th style="padding:8px 14px;text-align:left;font-size:11px;text-transform:uppercase;color:#475569;border-bottom:2px solid #e2e8f0;">Responsable</th><th style="padding:8px 14px;text-align:left;font-size:11px;text-transform:uppercase;color:#475569;border-bottom:2px solid #e2e8f0;">Observaciones</th></tr>`;
       
       const rows = branches.flatMap((branch) =>
         filteredPlanningEntries
@@ -248,7 +258,9 @@ export function PlanningTab({ readOnly }: PlanningTabProps) {
       rows.forEach(({ branch, entry }, idx) => {
         const bg = idx % 2 === 0 ? "#ffffff" : "#f8fafc";
         const dateStr = formatDate(entry.scheduledDate);
-        tableRows += `<tr style="background:${bg};border-bottom:1px solid #f1f5f9;"><td style="padding:8px 14px;font-size:13px;color:#1e293b;">${branch.name}</td><td style="padding:8px 14px;font-size:13px;color:#1e293b;">${dateStr}</td><td style="padding:8px 14px;font-size:13px;color:#1e293b;">${entry.technicalResponsible}</td></tr>`;
+        const newDateStr = entry.newInterventionDate ? formatDate(entry.newInterventionDate) : "-";
+        const obsStr = entry.observations || "-";
+        tableRows += `<tr style="background:${bg};"><td style="padding:10px 14px;border-bottom:1px solid #e2e8f0;font-size:13px;font-weight:600;">${branch.name}</td><td style="padding:10px 14px;border-bottom:1px solid #e2e8f0;font-size:13px;">${dateStr}</td><td style="padding:10px 14px;border-bottom:1px solid #e2e8f0;font-size:13px;">${newDateStr}</td><td style="padding:10px 14px;border-bottom:1px solid #e2e8f0;font-size:13px;">${entry.technicalResponsible}</td><td style="padding:10px 14px;border-bottom:1px solid #e2e8f0;font-size:13px;">${obsStr}</td></tr>`;
       });
     });
 
@@ -455,7 +467,9 @@ export function PlanningTab({ readOnly }: PlanningTabProps) {
                       )}
                     </div>
                   </th>
+                  <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider">Nueva Fecha Intervención</th>
                   <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider">Responsable</th>
+                  <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider">Observaciones</th>
                   <th className="px-4 py-3.5 text-left font-bold text-gray-700 uppercase text-[11px] tracking-wider print:hidden">Estado</th>
                   {!readOnly && <th className="px-4 py-3.5 text-center font-bold text-gray-700 uppercase text-[11px] tracking-wider print:hidden">Acciones</th>}
                 </tr>
@@ -523,17 +537,55 @@ export function PlanningTab({ readOnly }: PlanningTabProps) {
                           </div>
                         )}
                       </td>
+                      <td className="px-4 py-3 text-gray-900 font-medium">
+                        {readOnly ? (
+                          <span>{entry.newInterventionDate ? formatDate(entry.newInterventionDate) : "-"}</span>
+                        ) : (
+                          <input
+                            type="date"
+                            value={entry.newInterventionDate ? new Date(entry.newInterventionDate).toISOString().split('T')[0] : ""}
+                            onChange={(e) => {
+                              const newDate = e.target.value ? new Date(e.target.value + 'T00:00:00') : null;
+                              dispatch({
+                                type: "UPDATE_PLANNING_ENTRY",
+                                payload: { ...entry, newInterventionDate: newDate },
+                              });
+                            }}
+                            className="px-2 py-1.5 border border-gray-200 rounded-lg text-xs text-gray-900 font-medium bg-white focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                          />
+                        )}
+                      </td>
                       <td className="px-4 py-3 text-gray-900 font-medium">{entry.technicalResponsible}</td>
+                      <td className="px-4 py-3 text-gray-900 font-medium">
+                        {readOnly ? (
+                          <span className="break-words max-w-[200px] block">{entry.observations || "-"}</span>
+                        ) : (
+                          <input
+                            type="text"
+                            placeholder="Observaciones..."
+                            value={entry.observations || ""}
+                            onChange={(e) => {
+                              dispatch({
+                                type: "UPDATE_PLANNING_ENTRY",
+                                payload: { ...entry, observations: e.target.value },
+                              });
+                            }}
+                            className="px-2 py-1.5 border border-gray-200 rounded-lg text-xs text-gray-900 font-medium bg-white focus:ring-2 focus:ring-blue-300 focus:outline-none w-full min-w-[150px]"
+                          />
+                        )}
+                      </td>
                       <td className="px-4 py-3 print:hidden">
                         {readOnly ? (
                           <span className={`inline-block px-2.5 py-1.5 rounded-lg text-xs font-bold border ${
-                            entry.advanceStatus === "listo"
+                            entry.advanceStatus === "finalizado"
+                              ? "bg-purple-50 text-purple-800 border-purple-300"
+                              : entry.advanceStatus === "listo"
                               ? "bg-emerald-50 text-emerald-800 border-emerald-300"
                               : entry.advanceStatus === "en_proceso"
                               ? "bg-blue-50 text-blue-800 border-blue-300"
                               : "bg-red-50 text-red-800 border-red-300"
                           }`}>
-                            {entry.advanceStatus === "listo" ? "Listo" : entry.advanceStatus === "en_proceso" ? "En Proceso" : "Pendiente"}
+                            {entry.advanceStatus === "finalizado" ? "Finalizado" : entry.advanceStatus === "listo" ? "Listo" : entry.advanceStatus === "en_proceso" ? "En Proceso" : "Pendiente"}
                           </span>
                         ) : (
                           <select
@@ -545,7 +597,9 @@ export function PlanningTab({ readOnly }: PlanningTabProps) {
                               });
                             }}
                             className={`px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer border transition-all focus:ring-2 focus:ring-blue-300 focus:outline-none ${
-                              entry.advanceStatus === "listo"
+                              entry.advanceStatus === "finalizado"
+                                ? "bg-purple-50 text-purple-800 border-purple-300"
+                                : entry.advanceStatus === "listo"
                                 ? "bg-emerald-50 text-emerald-800 border-emerald-300"
                                 : entry.advanceStatus === "en_proceso"
                                 ? "bg-blue-50 text-blue-800 border-blue-300"
@@ -555,6 +609,7 @@ export function PlanningTab({ readOnly }: PlanningTabProps) {
                             <option value="pendiente">Pendiente</option>
                             <option value="en_proceso">En Proceso</option>
                             <option value="listo">Listo</option>
+                            <option value="finalizado">Finalizado</option>
                           </select>
                         )}
                       </td>

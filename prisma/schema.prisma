@@ -31,12 +31,14 @@ model CalendarEntry {
 }
 
 model PlanningEntry {
-  id                   String   @id @default(cuid())
+  id                   String    @id @default(cuid())
   branchId             String
   scheduledDate        DateTime
   technicalResponsible String
   advanceStatus        String
-  branch               Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  newInterventionDate  DateTime?
+  observations         String?
+  branch               Branch    @relation(fields: [branchId], references: [id], onDelete: Cascade)
 }
 
 model CostEntry {

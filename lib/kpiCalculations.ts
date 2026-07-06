@@ -5,7 +5,7 @@ export interface KPI {
   value: number | string;
   total?: number;
   percentage?: number;
-  color?: "green" | "blue" | "red" | "gray";
+  color?: "green" | "blue" | "red" | "gray" | "purple";
 }
 
 export function calculateKPIs(state: MaintenanceState, monthFilter: number | null = null): KPI[] {

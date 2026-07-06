@@ -408,8 +408,13 @@ export async function POST(request: Request) {
       if (newPlanning.length > 0) {
         await tx.planningEntry.createMany({ 
           data: newPlanning.map((p: any) => ({
-            ...p,
-            scheduledDate: new Date(p.scheduledDate)
+            id: p.id,
+            branchId: p.branchId,
+            scheduledDate: new Date(p.scheduledDate),
+            technicalResponsible: p.technicalResponsible,
+            advanceStatus: p.advanceStatus,
+            newInterventionDate: p.newInterventionDate ? new Date(p.newInterventionDate) : null,
+            observations: p.observations || null
           }))
         });
       }

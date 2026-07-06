@@ -178,6 +178,7 @@ export function MaintenanceProvider({ children }: { children: ReactNode }) {
             parsed.planningEntries = parsed.planningEntries.map((p: any) => ({
               ...p,
               scheduledDate: typeof p.scheduledDate === 'string' ? new Date(p.scheduledDate) : p.scheduledDate,
+              newInterventionDate: typeof p.newInterventionDate === 'string' ? new Date(p.newInterventionDate) : p.newInterventionDate,
             }));
           }
           if (parsed.costEntries) {
@@ -235,6 +236,7 @@ export function MaintenanceProvider({ children }: { children: ReactNode }) {
               parsed.planningEntries = parsed.planningEntries.map((p: any) => ({
                 ...p,
                 scheduledDate: typeof p.scheduledDate === 'string' ? new Date(p.scheduledDate) : p.scheduledDate,
+                newInterventionDate: typeof p.newInterventionDate === 'string' ? new Date(p.newInterventionDate) : p.newInterventionDate,
               }));
             }
             if (parsed.costEntries) {

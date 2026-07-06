@@ -39,6 +39,14 @@ export function KPICard({ kpi }: { kpi: KPI }) {
       progressBg: "#fecaca",
       icon: "⚠️",
     },
+    purple: {
+      gradient: "linear-gradient(135deg, #faf5ff 0%, #e9d5ff 100%)",
+      accentColor: "#9333ea",
+      textColor: "#6b21a8",
+      bgLight: "#d8b4fe",
+      progressBg: "#e9d5ff",
+      icon: "✨",
+    },
     gray: {
       gradient: "linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%)",
       accentColor: "#4b5563",

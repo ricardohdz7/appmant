@@ -1,7 +1,7 @@
 export type Enterprise = "CASA MUÑOZ S.A DE C.V" | "BEAUTY HUB S.A. DE C.V.";
 export type Brand = "Casa Muñoz" | "ELÁN" | "Beauty Hub";
 export type MaintenanceStatus = "programado" | "pendiente" | "realizado" | "";
-export type AdvanceStatus = "pendiente" | "en_proceso" | "listo";
+export type AdvanceStatus = "pendiente" | "en_proceso" | "listo" | "finalizado";
 
 export interface Branch {
   id: string;
@@ -24,6 +24,8 @@ export interface PlanningEntry {
   scheduledDate: Date;
   technicalResponsible: string;
   advanceStatus: AdvanceStatus;
+  newInterventionDate?: Date | null;
+  observations?: string | null;
 }
 
 export interface CostEntry {

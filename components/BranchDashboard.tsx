@@ -299,16 +299,28 @@ export function BranchDashboard({ currentUser, onLogout, onBackToSelection }: Br
                     <div className="flex justify-between items-center">
                       <span className="text-xs text-gray-800 font-bold">{formatDate(p.scheduledDate)}</span>
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-                        p.advanceStatus === "listo"
+                        p.advanceStatus === "finalizado"
+                          ? "bg-purple-50 text-purple-700 border-purple-200"
+                          : p.advanceStatus === "listo"
                           ? "bg-emerald-50 text-emerald-700 border-emerald-200"
                           : p.advanceStatus === "en_proceso"
                           ? "bg-blue-50 text-blue-700 border-blue-200"
                           : "bg-red-50 text-red-700 border-red-200"
                       }`}>
-                        {p.advanceStatus === "listo" ? "Listo" : p.advanceStatus === "en_proceso" ? "En Proceso" : "Pendiente"}
+                        {p.advanceStatus === "finalizado" ? "Finalizado" : p.advanceStatus === "listo" ? "Listo" : p.advanceStatus === "en_proceso" ? "En Proceso" : "Pendiente"}
                       </span>
                     </div>
                     <span className="text-[10px] text-gray-500 font-semibold block">Técnico: {p.technicalResponsible}</span>
+                    {p.newInterventionDate && (
+                      <span className="text-[10px] text-gray-600 font-semibold block mt-1">
+                        Reprogramado: <span className="text-gray-900">{formatDate(p.newInterventionDate)}</span>
+                      </span>
+                    )}
+                    {p.observations && (
+                      <span className="text-[10px] text-gray-600 block mt-1 bg-white p-2 rounded-lg border border-gray-100 italic">
+                        "{p.observations}"
+                      </span>
+                    )}
                   </div>
                 ))}
               </div>
