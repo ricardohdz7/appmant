@@ -134,8 +134,30 @@ export function LoginScreen({ users, onLogin }: LoginScreenProps) {
           </Button>
         </form>
 
+        {/* Acceso Rápido (Dev) */}
+        <div className="pt-4 border-t border-white/10 text-left space-y-2 mt-4">
+          <label className="text-xs font-bold text-gray-400 uppercase tracking-wider pl-1">
+            Acceso Rápido (Dev)
+          </label>
+          <select
+            className="w-full py-2.5 px-3 border border-white/10 rounded-xl text-xs text-white font-medium bg-white/5 focus:ring-2 focus:ring-blue-500 focus:outline-none appearance-none"
+            onChange={(e) => {
+              const user = users.find(u => u.id === e.target.value);
+              if (user) onLogin(user);
+            }}
+            defaultValue=""
+          >
+            <option value="" disabled className="text-gray-900">Selecciona un usuario para entrar directo...</option>
+            {users.map(u => (
+              <option key={u.id} value={u.id} className="text-gray-900">
+                {u.username} ({u.role === "admin" ? "Admin" : u.role === "management" ? "Gerencia" : "Sucursal"})
+              </option>
+            ))}
+          </select>
+        </div>
+
         {/* Footer info */}
-        <div className="text-[10px] text-gray-500 font-semibold pt-2 border-t border-white/5">
+        <div className="text-[10px] text-gray-500 font-semibold pt-4">
           Soporte TI • Casa Muñoz S.A. DE C.V.
         </div>
       </div>
